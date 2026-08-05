@@ -1,6 +1,6 @@
 : 1
 name: libbx
-version: 1.0.0-a.0.z
+version: 1.153.9149-a.0.z
 language: c++
 project: bgfx
 summary: Base C++ utilities used by bgfx and bimg

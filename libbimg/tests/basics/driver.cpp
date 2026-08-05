@@ -1,34 +1,23 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <bimg/bimg.hpp>
+#include <bimg/bimg.h>
+#include <bx/allocator.h>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace bimg;
-
-  // Basics.
+  // Non-inline texture info helper from the core library.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  bimg::TextureInfo ti;
+  bimg::imageGetSize (
+    &ti,
+    64, 64, 1,
+    false, false, 1,
+    bimg::TextureFormat::RGBA8);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (ti.width == 64);
+  assert (ti.height == 64);
+  assert (ti.storageSize > 0);
+
+  return 0;
 }

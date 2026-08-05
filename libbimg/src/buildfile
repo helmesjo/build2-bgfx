@@ -1,6 +1,7 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+import intf_libs += libbx%lib{bx}
 
 # Public headers.
 #
@@ -12,9 +13,16 @@ pub_hdrs = $($pub/ pub_hdrs)
 
 lib{bimg}: $pub/{$pub_hdrs}
 
-# Private headers and sources as well as dependencies.
+# Core image implementation + private headers + astc-encoder.
 #
-lib{bimg}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{bimg}: {hxx cxx}{** -3rdparty/**} \
+           3rdparty/astc-encoder/source/cxx{**} \
+           $impl_libs $intf_libs
+
+# Private headers under 3rdparty (astc) and src.
+#
+lib{bimg}: 3rdparty/astc-encoder/source/hxx{**}: include = adhoc
+lib{bimg}: 3rdparty/astc-encoder/include/hxx{**}: include = adhoc
 
 # Build options.
 #
@@ -22,28 +30,27 @@ out_pfx_inc = [dir_path] $out_root/include/
 src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
+astc_inc    = [dir_path] $src_pfx_src/3rdparty/astc-encoder/include/
 
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-                "-I$out_pfx_inc" "-I$src_pfx_inc"
+                "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                "-I$astc_inc"
 
-#obja{*}: cxx.poptions += -DBIMG_STATIC_BUILD
-#objs{*}: cxx.poptions += -DBIMG_SHARED_BUILD
+# Match upstream genie defines for astc-encoder.
+#
+cxx.poptions += -DASTCENC_F16C=0 -DASTCENC_NEON=0
 
-# Export options.
+# Export options (bimg is not in public headers of consumers of libbgfx as
+# interface, but libbimg consumers need bimg headers + libbx).
 #
 lib{bimg}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                        "-I$out_pfx_inc/bimg" "-I$src_pfx_inc/bimg"
   cxx.export.libs = $intf_libs
+  cxx.pkgconfig.include = include/ include/bimg/
 }
 
-#liba{bimg}: cxx.export.poptions += -DBIMG_STATIC
-#libs{bimg}: cxx.export.poptions += -DBIMG_SHARED
-
-# For pre-releases use the complete version to make sure they cannot
-# be used in place of another pre-release or the final version. See
-# the version module for details on the version.* variable values.
-#
 if $version.pre_release
   lib{bimg}: bin.lib.version = "-$version.project_id"
 else
