@@ -1,15 +1,17 @@
-# Uncomment to suppress warnings coming from external libraries.
+# Upstream bx uses .h / .inl public headers and .cpp sources.
 #
-#cxx.internal.scope = current
-
 cxx.std = latest
 
 using cxx
 
-hxx{*}: extension = hpp
+hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
+
+# BX_CONFIG_DEBUG is required by public headers. Default false (release).
+#
+config [bool] config.libbx.debug ?= false
 
 # The test target for cross-testing (running tests under Wine, etc).
 #

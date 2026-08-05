@@ -1,10 +1,9 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
 
-# Public headers.
+# Public headers (bx/, tinystl/, compat/).
 #
-pub = [dir_path] ../include/bx/
+pub = [dir_path] ../include/
 
 include $pub
 
@@ -12,9 +11,9 @@ pub_hdrs = $($pub/ pub_hdrs)
 
 lib{bx}: $pub/{$pub_hdrs}
 
-# Private headers and sources as well as dependencies.
+# Sources (exclude amalgamated single-TU build).
 #
-lib{bx}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{bx}: cxx{** -amalgamated} $impl_libs $intf_libs
 
 # Build options.
 #
@@ -23,22 +22,59 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
-cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-                "-I$out_pfx_inc" "-I$src_pfx_inc"
+cxx.poptions =+ "-I$out_pfx_inc" "-I$src_pfx_inc"
 
-#obja{*}: cxx.poptions += -DBX_STATIC_BUILD
-#objs{*}: cxx.poptions += -DBX_SHARED_BUILD
+# Platform compatibility headers (also exported to consumers).
+#
+compat_inc = [dir_path]
+if ($cxx.target.class == 'windows')
+{
+  if ($cxx.target.system == 'mingw32')
+    compat_inc = [dir_path] $src_pfx_inc/compat/mingw/
+  else
+    compat_inc = [dir_path] $src_pfx_inc/compat/msvc/
+}
+elif ($cxx.target.class == 'macos')
+  compat_inc = [dir_path] $src_pfx_inc/compat/osx/
+elif ($cxx.target.class == 'linux')
+  compat_inc = [dir_path] $src_pfx_inc/compat/linux/
+elif ($cxx.target.class == 'bsd')
+  compat_inc = [dir_path] $src_pfx_inc/compat/freebsd/
+
+if ($compat_inc != [dir_path])
+  cxx.poptions =+ "-I$compat_inc"
+
+# Required by every translation unit and by public headers.
+#
+if $config.libbx.debug
+  debug_def = -DBX_CONFIG_DEBUG=1
+else
+  debug_def = -DBX_CONFIG_DEBUG=0
+
+cxx.poptions += $debug_def
+
+# System libraries / frameworks.
+#
+if ($cxx.target.class == 'macos')
+  cxx.libs += -framework Foundation -framework CoreFoundation
+elif ($cxx.target.class != 'windows')
+  cxx.libs += -lpthread
 
 # Export options.
 #
 lib{bx}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" $debug_def
   cxx.export.libs = $intf_libs
 }
 
-#liba{bx}: cxx.export.poptions += -DBX_STATIC
-#libs{bx}: cxx.export.poptions += -DBX_SHARED
+if ($compat_inc != [dir_path])
+  lib{bx}: cxx.export.poptions =+ "-I$compat_inc"
+
+if ($cxx.target.class == 'macos')
+  lib{bx}: cxx.export.libs += -framework Foundation -framework CoreFoundation
+elif ($cxx.target.class != 'windows')
+  lib{bx}: cxx.export.libs += -lpthread
 
 # For pre-releases use the complete version to make sure they cannot
 # be used in place of another pre-release or the final version. See
@@ -49,6 +85,6 @@ if $version.pre_release
 else
   lib{bx}: bin.lib.version = "-$version.major.$version.minor"
 
-# Don't install private headers.
+# Don't install private headers (none under src/, but keep the rule).
 #
 {hxx ixx txx}{*}: install = false

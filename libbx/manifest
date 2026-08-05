@@ -1,15 +1,17 @@
 : 1
 name: libbx
-version: 0.1.0-a.0.z
+version: 1.0.0-a.0.z
 language: c++
 project: bgfx
-summary: bx C++ library
-license: other: proprietary ; Not free/open source.
+summary: Base C++ utilities used by bgfx and bimg
+license: BSD-2-Clause
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
+url: https://github.com/bkaradzic/bx
+email: packaging@build2.org
+doc-url: https://github.com/bkaradzic/bx
+src-url: https://github.com/bkaradzic/bx
 package-url: https://github.com/build2-packaging/bgfx
-package-email: packaging@build2.org ; Mailing list.
+package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0

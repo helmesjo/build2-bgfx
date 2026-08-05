@@ -1,0 +1,17 @@
+pub_hdrs = hxx{**} file{**.inl}
+
+./: $pub_hdrs
+
+# Install recreating subdirectories (bx/, tinystl/, compat/).
+#
+hxx{*}:
+{
+  install         = include/
+  install.subdirs = true
+}
+
+file{**.inl}:
+{
+  install         = include/
+  install.subdirs = true
+}

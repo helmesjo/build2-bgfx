@@ -1,34 +1,25 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <bx/bx.hpp>
+#include <bx/bx.h>
+#include <bx/allocator.h>
+#include <bx/string.h>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace bx;
-
-  // Basics.
+  // Non-inline: default allocator.
   //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  bx::DefaultAllocator allocator;
+  void* p = bx::alloc (&allocator, 64);
+  assert (p != nullptr);
+  bx::free (&allocator, p);
 
-  // Empty name.
+  // Non-inline string helper.
   //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  char buf[32];
+  int32_t n = bx::snprintf (buf, sizeof (buf), "bx-%d", 1);
+  assert (n > 0);
+  assert (bx::strCmp (buf, "bx-1") == 0);
+
+  return 0;
 }
