@@ -1,0 +1,3 @@
+import libs = libbimg%lib{bimg}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
