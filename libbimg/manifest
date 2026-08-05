@@ -1,15 +1,18 @@
 : 1
 name: libbimg
-version: 0.1.0-a.0.z
+version: 1.153.9149-a.0.z
 language: c++
 project: bgfx
-summary: bimg C++ library
-license: other: proprietary ; Not free/open source.
+summary: Image encoding and decoding for bgfx
+license: BSD-2-Clause
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
+url: https://github.com/bkaradzic/bimg
+email: packaging@build2.org
+doc-url: https://github.com/bkaradzic/bimg
+src-url: https://github.com/bkaradzic/bimg
 package-url: https://github.com/build2-packaging/bgfx
-package-email: packaging@build2.org ; Mailing list.
+package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libbx == $
