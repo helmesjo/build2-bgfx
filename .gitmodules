@@ -1,0 +1,9 @@
+[submodule "upstream/bx"]
+	path = upstream/bx
+	url = https://github.com/bkaradzic/bx.git
+[submodule "upstream/bimg"]
+	path = upstream/bimg
+	url = https://github.com/bkaradzic/bimg.git
+[submodule "upstream/bgfx"]
+	path = upstream/bgfx
+	url = https://github.com/bkaradzic/bgfx.git
