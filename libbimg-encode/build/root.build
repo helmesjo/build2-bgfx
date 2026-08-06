@@ -1,16 +1,21 @@
-# Uncomment to suppress warnings coming from external libraries.
-#
-#cxx.internal.scope = current
-
 cxx.std = latest
 
+using c
 using cxx
 
-hxx{*}: extension = hpp
+hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
+c{*}: extension = c
 
-# The test target for cross-testing (running tests under Wine, etc).
+# Required when including libbx public headers under MSVC.
+# /wd4828: vendored nvtt (and similar) sources contain non-UTF-8 bytes.
 #
+if ($cxx.target.system == 'win32-msvc')
+  cxx.coptions += /Zc:preprocessor /wd4828
+
+# Propagate BX_CONFIG_DEBUG via libbx (through libbimg). No extra package
+# config for v1.
+
 test.target = $cxx.target

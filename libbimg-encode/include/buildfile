@@ -1,0 +1,9 @@
+# Full bimg/ tree is present so quoted includes in encode.h resolve during
+# this package's build. Installed public headers come from libbimg (interface
+# dependency). Do not install a second copy from this package.
+#
+pub_hdrs = hxx{**}
+
+./: $pub_hdrs
+
+hxx{*}: install = false
