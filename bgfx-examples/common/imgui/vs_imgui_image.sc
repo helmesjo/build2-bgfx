@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/imgui/vs_imgui_image.sc

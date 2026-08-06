@@ -1,15 +1,18 @@
 : 1
 name: bgfx-examples
-version: 0.1.0-a.0.z
+version: 1.153.9149-a.0.z
 language: c++
 project: bgfx
-summary: bgfx-examples C++ executable
-license: other: proprietary ; Not free/open source.
+summary: Interactive examples for the bgfx rendering library
+license: BSD-2-Clause
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
+url: https://github.com/bkaradzic/bgfx
+email: packaging@build2.org
+doc-url: https://bkaradzic.github.io/bgfx/examples.html
+src-url: https://github.com/bkaradzic/bgfx
 package-url: https://github.com/build2-packaging/bgfx
-package-email: packaging@build2.org ; Mailing list.
+package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libbgfx == $
