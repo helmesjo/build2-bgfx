@@ -1,0 +1,11 @@
+--- image.cpp.orig	2026-08-06 01:49:50
++++ image.cpp	2026-08-06 21:00:07
+@@ -6583,7 +6583,7 @@
+ 					}
+ 
+ 					astcenc_context* context;
+-					status = astcenc_context_alloc(&config, 1, &context);
++					status = astcenc_context_alloc(&config, 1, &context, nullptr);
+ 
+ 					if (status != ASTCENC_SUCCESS)
+ 					{
