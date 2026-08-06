@@ -75,26 +75,43 @@ cxx.poptions += \
   -DBGFX_CONFIG_RENDERER_NVN=0 \
   -DBGFX_CONFIG_VIDEO=0
 
-# macOS: Cocoa/Metal/IOKit for Metal renderer and Vulkan surface interop.
+# Platform system libraries (not importable targets: use *.libs).
+# Vulkan is dlopen'd at runtime. pthread/dl come from libbx export.
 #
 if ($cxx.target.class == 'macos')
 {
-  cxx.libs += \
+  # Cocoa/Metal/IOKit: Metal backend and MoltenVK surface interop.
+  #
+  sys_libs = \
     -framework Cocoa \
     -framework Metal \
     -framework MetalKit \
     -framework QuartzCore \
     -framework IOKit
 }
+elif ($cxx.target.class == 'windows')
+{
+  if ($cxx.target.system == 'mingw32')
+    sys_libs = -luser32 -lgdi32
+  else
+    sys_libs = user32.lib gdi32.lib
+}
+else
+  sys_libs = [null]
 
 # Export options. libbx is an interface dependency (AllocatorI, embedded
-# shader helpers). Vulkan-Headers is needed if consumers include backend
-# types via public headers (they mostly do not). Export libbx only.
+# shader helpers). Export platform libs for shared-library consumers.
 #
 lib{bgfx}:
 {
   cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
   cxx.export.libs = $intf_libs
+}
+
+if ($sys_libs != [null])
+{
+  cxx.libs += $sys_libs
+  lib{bgfx}: cxx.export.libs += $sys_libs
 }
 
 if $version.pre_release
