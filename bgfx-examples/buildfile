@@ -23,4 +23,5 @@ if ($build.meta_operation != 'dist')
   ./: 05-instancing/
   ./: 07-callback/
   ./: 17-drawstress/
+  ./: 19-oit/
 }
