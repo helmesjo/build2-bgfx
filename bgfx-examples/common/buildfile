@@ -1,5 +1,57 @@
-# Placeholder directory for shared example sources (symlinks). Built as part of
-# each example executable for now (see helloworld/buildfile). Expand later
-# into liba{example-common} when multiple exes share it.
+import libs = libbgfx%lib{bgfx}
+import libs += libbimg%lib{bimg}
+
+third = [dir_path] $src_base/3rdparty/
+
+platform_entry =
+if ($cxx.target.class == 'macos')
+  platform_entry = mm{entry/entry_osx entry/dialog_darwin}
+elif ($cxx.target.class == 'windows')
+  platform_entry = cxx{entry/entry_windows}
+else
+  platform_entry = cxx{entry/entry_x11}
+
+# Shared example glue (entry + imgui). Linked into each example executable.
 #
-./:
+./: libue{example-common}
+
+libue{example-common}: \
+  cxx{example-glue} \
+  cxx{entry/entry entry/cmd entry/input entry/dialog} \
+  $platform_entry \
+  cxx{imgui/imgui} \
+  3rdparty/dear-imgui/cxx{imgui imgui_draw imgui_tables imgui_widgets} \
+  $libs
+
+libue{example-common}:
+{
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$third" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+libue{example-common}: imgui/file{**.bin.h **.ttf.h}: include = adhoc
+libue{example-common}: 3rdparty/dear-imgui/hxx{**} \
+  3rdparty/dear-imgui/file{**.inl}: include = adhoc
+libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc
+libue{example-common}: hxx{common args bgfx_utils}: include = adhoc
+
+if ($cxx.target.class == 'macos')
+{
+  libue{example-common}: cxx.libs += \
+    -framework Cocoa \
+    -framework QuartzCore \
+    -framework Metal \
+    -framework IOKit
+}
+elif ($cxx.target.class == 'windows')
+{
+  if ($cxx.target.system == 'mingw32')
+    libue{example-common}: cxx.libs += -luser32 -lgdi32 -lshell32 -lxinput
+  else
+    libue{example-common}: cxx.libs += user32.lib gdi32.lib shell32.lib xinput.lib
+}
+else
+  libue{example-common}: cxx.libs += -lX11
