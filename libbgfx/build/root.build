@@ -14,6 +14,11 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.target.system == 'win32-msvc')
+  cxx.coptions += /Zc:preprocessor
+
 # BX_CONFIG_DEBUG comes from libbx export. Backend selection is fixed in the
 # source buildfile for the initial Vulkan + Noop package.
 

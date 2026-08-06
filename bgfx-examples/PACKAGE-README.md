@@ -21,6 +21,11 @@ bdep update
 ../bgfx-apple/bgfx-examples/00-helloworld/helloworld
 ```
 
+Examples import `liba{}` (static) for `libbgfx` / `libbimg` / `libbx`. Shared
+builds of those libraries use automatic symbol export (best-effort), but
+Windows auto-import does not cover global data referenced from public inlines
+(for example `bx::Ticks::s_kInvFreq` on MSVC).
+
 Optional args (see upstream `Args`): `--vk`, `--mtl`, `--noop`, etc.
 
 ## Windowing

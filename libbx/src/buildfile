@@ -9,11 +9,16 @@ include $pub
 
 pub_hdrs = $($pub/ pub_hdrs)
 
-lib{bx}: $pub/{$pub_hdrs}
+# Automatic DLL symbol exporting (bdep new auto-symexport pattern).
+#
+lib{bx}: libul{bx}: $pub/{$pub_hdrs}
 
 # Sources (exclude amalgamated single-TU build).
 #
-lib{bx}: cxx{** -amalgamated} $impl_libs $intf_libs
+libul{bx}: cxx{** -amalgamated} $impl_libs $intf_libs
+
+libs{bx}: def{bx}: include = ($cxx.target.system == 'win32-msvc')
+def{bx}: libul{bx}
 
 # Build options.
 #
@@ -66,6 +71,9 @@ if ($cxx.target.class == 'macos')
   sys_libs += -framework Foundation -framework CoreFoundation
 elif ($cxx.target.class != 'windows')
   sys_libs += -ldl
+
+if ($cxx.target.system == 'mingw32')
+  cxx.loptions += -Wl,--export-all-symbols
 
 # Export options.
 #

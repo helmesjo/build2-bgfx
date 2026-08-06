@@ -7,6 +7,11 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.target.system == 'win32-msvc')
+  cxx.coptions += /Zc:preprocessor
+
 # Propagate BX_CONFIG_DEBUG via libbx export. No extra package config for v1.
 
 test.target = $cxx.target

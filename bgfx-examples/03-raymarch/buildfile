@@ -1,5 +1,8 @@
-import libs = libbgfx%lib{bgfx}
-import libs += libbimg%lib{bimg}
+# Static libs: see ../common/buildfile (auto-symexport data caveat on MSVC).
+#
+import libs = libbgfx%liba{bgfx}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
 
 include ../common/
 

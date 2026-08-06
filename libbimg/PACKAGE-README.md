@@ -14,3 +14,6 @@ installs `bimg.h` into `include/bimg/`. The pkg-config file also adds
 `include/bimg/` for the unprefixed `"bimg.h"` include used by
 `decode.h` / `encode.h`. Those headers are installed by `libbimg-decode`
 and `libbimg-encode`.
+
+Shared libraries use automatic DLL symbol exporting on Windows (generated
+`.def` on MSVC, `--export-all-symbols` on MinGW).

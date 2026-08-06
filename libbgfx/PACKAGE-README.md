@@ -21,6 +21,9 @@ exe{hello}: cxx{**} $libs
 Public headers use the `<bgfx/...>` include style. `libbx` is an interface
 dependency (for example `bx::AllocatorI` and `<bgfx/embedded_shader.h>`).
 
+Shared libraries use automatic DLL symbol exporting on Windows (generated
+`.def` on MSVC, `--export-all-symbols` on MinGW).
+
 ## Dependencies
 
 - `libbx`, `libbimg` (co-located packages in this repository)

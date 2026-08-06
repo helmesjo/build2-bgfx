@@ -10,6 +10,13 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
+# Required when including libbx public headers under MSVC.
+# /wd4828: third-party dear-imgui widget sources contain non-UTF-8 bytes
+# that MSVC rejects under /utf-8 + /WX.
+#
+if ($cxx.target.system == 'win32-msvc')
+  cxx.coptions += /Zc:preprocessor /wd4828
+
 # Suppress warnings from third-party dear-imgui / example glue.
 #
 cxx.internal.scope = current
