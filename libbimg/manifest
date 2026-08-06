@@ -16,3 +16,4 @@ package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbx == $
+depends: libastcenc ^5.7.0-
