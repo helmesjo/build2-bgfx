@@ -3,3 +3,6 @@ location: libbx/
 
 :
 location: libbimg/
+
+:
+location: libbgfx/

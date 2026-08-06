@@ -1,15 +1,20 @@
 : 1
 name: libbgfx
-version: 0.1.0-a.0.z
+version: 1.153.9149-a.0.z
 language: c++
 project: bgfx
-summary: bgfx C++ library
-license: other: proprietary ; Not free/open source.
+summary: Cross-platform rendering library
+license: BSD-2-Clause
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
+url: https://github.com/bkaradzic/bgfx
+email: packaging@build2.org
+doc-url: https://bkaradzic.github.io/bgfx/
+src-url: https://github.com/bkaradzic/bgfx
 package-url: https://github.com/build2-packaging/bgfx
-package-email: packaging@build2.org ; Mailing list.
+package-email: packaging@build2.org
+upstream-version: d2633c6ac2cce448ab3a7ba7f5873ae677b385aa
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libbx == $
+depends: libbimg == $

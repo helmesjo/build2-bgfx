@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/vs_debugfont.bin.h

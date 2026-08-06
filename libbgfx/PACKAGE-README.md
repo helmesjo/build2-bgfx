@@ -1,42 +1,31 @@
-# libbgfx - A C++ library
+# libbgfx package
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-C++ library. It provides <SUMMARY-OF-FUNCTIONALITY>.
+Cross-platform rendering library (bgfx) packaged for build2.
 
+## Backends
+
+This package build enables **Vulkan** and **Noop** only. Other backends
+(Metal, D3D, OpenGL, WebGPU) are compiled out.
 
 ## Usage
 
-To start using `libbgfx` in your project, add the following `depends`
-value to your `manifest`, adjusting the version constraint as appropriate:
-
 ```
-depends: libbgfx ^<VERSION>
+import libs = libbgfx%lib{bgfx}
+exe{hello}: cxx{**} $libs
 ```
 
-Then import the library in your `buildfile`:
+Public headers use the `<bgfx/...>` include style. `libbx` is an interface
+dependency (for example `bx::AllocatorI` and `<bgfx/embedded_shader.h>`).
 
-```
-import libs = libbgfx%lib{<TARGET>}
-```
+## Dependencies
 
+- `libbx`, `libbimg` (co-located packages in this repository)
 
-## Importable targets
+Vulkan API headers are taken from upstream `3rdparty/khronos/vulkan-local`
+for this pin. A newer `Vulkan-Headers` package on cppget can replace that
+once it is new enough for this bgfx revision.
 
-This package provides the following importable targets:
-
-```
-lib{<TARGET>}
-```
-
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
-
-
-## Configuration variables
-
-This package provides the following configuration variables:
-
-```
-[bool] config.libbgfx.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+The Vulkan runtime is **not** linked. bgfx loads it dynamically
+(`libMoltenVK.dylib` on macOS, `libvulkan.so.1` on Linux, `vulkan-1.dll` on
+Windows). Install a Vulkan loader / MoltenVK to use the Vulkan backend at
+runtime.
