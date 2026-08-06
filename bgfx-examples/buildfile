@@ -1,7 +1,21 @@
-./: {*/ -build/ -shaders/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
+# Auto-include non-example dirs (common/, etc.). Numbered example dirs are
+# excluded from the wildcard and added explicitly.
+#
+./: {*/ -build/ -shaders/ -[0-9]*-*/} \
+  00-helloworld/ \
+  doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
 
 # common/ is a private utility library, not installed as a product.
-# shaders/ holds prebuilt runtime bins (not a build subdirectory).
 #
 common/: install = false
+
+# Prebuilt runtime assets (shader bins, etc.): monorepo only.
+#
 shaders/: install = false
+
+# Resource-backed examples (need shaders/). Not source-distributed.
+# Use a meta-operation guard rather than include=: include= still keeps the
+# target in the dist graph (see config-independent-build-graph HOWTO).
+#
+if ($build.meta_operation != 'dist')
+  ./: 01-cubes/
