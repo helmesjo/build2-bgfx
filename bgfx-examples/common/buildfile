@@ -7,7 +7,14 @@ import libs = libbgfx%liba{bgfx}
 import libs += libbimg%liba{bimg}
 import libs += libbx%liba{bx}
 
+# Header-only stb from cppget (binless). Shims under include/stb/ map
+# bgfx's <stb/foo.h> includes to the package layout.
+#
+import libs += stb_truetype%lib{stb_truetype}
+import libs += stb_rect_pack%lib{stb_rect_pack}
+
 third = [dir_path] $src_base/3rdparty/
+stb_shim = [dir_path] $src_base/include/
 
 platform_entry =
 if ($cxx.target.class == 'macos')
@@ -35,6 +42,7 @@ libue{example-load-program}: cxx{load_program} $libs
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
     "-I$third" \
+    "-I$stb_shim" \
     "-DBGFX_EXAMPLES_SHADERS_DIR=\"$shaders_dir\""
 }
 
@@ -54,6 +62,7 @@ libue{example-common}:
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
     "-I$third" \
+    "-I$stb_shim" \
     -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
     -DUSE_ENTRY=1
 }

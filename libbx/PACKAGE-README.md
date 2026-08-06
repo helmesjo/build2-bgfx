@@ -1,35 +1,49 @@
-# libbx package
+# libbx - Base C++ utilities used by bgfx and bimg
 
-Base C++ utilities used by bgfx and bimg.
+This is a `build2` package for the [bx](https://github.com/bkaradzic/bx) C++
+library. It provides OS, runtime, and compiler independent core utilities used
+by bgfx and bimg.
+
 
 ## Usage
 
+To start using `libbx` in your project, add the following `depends`
+value to your `manifest`, adjusting the version constraint as appropriate:
+
+```
+depends: libbx ^1.153.0
+```
+
+Then import the library in your `buildfile`:
+
 ```
 import libs = libbx%lib{bx}
-exe{hello}: cxx{**} $libs
 ```
 
-Public headers use the `<bx/...>` include style.
+Public headers use the `<bx/...>` include style. With MSVC, enable
+`/Zc:preprocessor` when compiling code that includes those headers (public
+headers require the conforming preprocessor).
 
-## Configuration
 
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `config.libbx.debug` | `false` | Define `BX_CONFIG_DEBUG` (required by public headers) |
+## Importable targets
 
-## MSVC
-
-Public headers require the conforming preprocessor. When building against
-`libbx` with MSVC, enable `/Zc:preprocessor` (this package does so for its
-own translation units). For a whole configuration:
+This package provides the following importable targets:
 
 ```
-config.cxx.coptions+=/Zc:preprocessor
+lib{bx}
 ```
 
-This package also uses `/EHs-c-` for its own sources (upstream
-`NoExceptions`, needed for SEH `__try` in `thread.cpp`). Consumers are not
-required to disable exceptions.
+The base utilities library.
 
-Shared libraries use automatic DLL symbol exporting on Windows (generated
-`.def` on MSVC, `--export-all-symbols` on MinGW).
+
+## Configuration variables
+
+This package provides the following configuration variables:
+
+```
+[bool] config.libbx.debug ?= false
+```
+
+`config.libbx.debug` defines `BX_CONFIG_DEBUG`. When true, consumers of
+`libbgfx` also treat `BGFX_CONFIG_DEBUG` as true and default
+`bgfx::Init::debug` to true (for example Vulkan validation layers).

@@ -1,42 +1,34 @@
-# bgfx - build2 packaging
+# bgfx
 
-This is a `build2` multi-package repository for the
-[bkaradzic](https://github.com/bkaradzic) graphics stack:
+This is a `build2` package repository for the
+[bkaradzic](https://github.com/bkaradzic) graphics stack
+([bx](https://github.com/bkaradzic/bx), [bimg](https://github.com/bkaradzic/bimg),
+[bgfx](https://github.com/bkaradzic/bgfx)).
 
-| Package | Upstream | Role |
-|---------|----------|------|
-| `libbx` | [bx](https://github.com/bkaradzic/bx) | Base utilities |
-| `libbimg` | [bimg](https://github.com/bkaradzic/bimg) | Image core (+ astc-encoder) |
-| `libbgfx` | [bgfx](https://github.com/bkaradzic/bgfx) | Renderer (Vulkan + Noop, Metal on Apple) |
-| `bgfx-examples` | bgfx examples subset | Interactive demos (start: helloworld) |
+This file contains setup instructions and other details that are more
+appropriate for development rather than consumption. If you want to use these
+packages in your `build2`-based project, then instead see the accompanying
+`PACKAGE-README.md` files:
 
-Upstream sources live as git submodules under `upstream/{bx,bimg,bgfx}/`.
+- [`libbx`](libbx/PACKAGE-README.md)
+- [`libbimg`](libbimg/PACKAGE-README.md)
+- [`libbgfx`](libbgfx/PACKAGE-README.md)
+- [`bgfx-examples`](bgfx-examples/PACKAGE-README.md)
+- [`libbx-tests`](libbx-tests/PACKAGE-README.md)
 
 ## Development
 
+The development setup uses the standard `bdep`-based workflow. For example:
+
 ```
-git clone --recurse-submodules .../bgfx.git
+git clone --recurse-submodules https://github.com/build2-packaging/bgfx.git
 cd bgfx
+
 bdep init -C @gcc cc config.cxx=g++
 bdep update
 bdep test
 ```
 
-### Run helloworld (interactive)
-
-```
-bdep update
-# out-tree path depends on your configuration, for example:
-../build-gcc/bgfx-examples/00-helloworld/helloworld
-# optional renderer flags: --mtl  --vk  --noop
-```
-
-The executable is named after the primary source file (`helloworld.cpp`).
-It is not part of `bdep test` (needs a display).
-
-See each package's `PACKAGE-README.md` for consumption notes.
-
-## Version
-
+Upstream sources live as git submodules under `upstream/{bx,bimg,bgfx}/`.
 Packages share stack version `1.<BGFX_API_VERSION>.<BGFX_REV_NUMBER>` (currently
 1.153.9149 pre-release).
