@@ -1,0 +1,1 @@
+../../upstream/bgfx/examples/common/camera.cpp

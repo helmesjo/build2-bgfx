@@ -24,4 +24,5 @@ if ($build.meta_operation != 'dist')
   ./: 07-callback/
   ./: 17-drawstress/
   ./: 19-oit/
+  ./: 26-occlusion/
 }
