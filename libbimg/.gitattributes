@@ -1,0 +1,2 @@
+include/bimg symlink=dir
+src/3rdparty/astc-encoder symlink=dir
