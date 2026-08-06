@@ -25,4 +25,6 @@ if ($build.meta_operation != 'dist')
   ./: 17-drawstress/
   ./: 19-oit/
   ./: 26-occlusion/
+  ./: 34-mvs/
+  ./: 35-dynamic/
 }
