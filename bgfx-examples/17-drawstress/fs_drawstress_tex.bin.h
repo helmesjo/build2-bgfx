@@ -1,0 +1,1 @@
+../../upstream/bgfx/examples/17-drawstress/fs_drawstress_tex.bin.h

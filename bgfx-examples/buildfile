@@ -22,4 +22,5 @@ if ($build.meta_operation != 'dist')
   ./: 03-raymarch/
   ./: 05-instancing/
   ./: 07-callback/
+  ./: 17-drawstress/
 }
