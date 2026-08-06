@@ -1,0 +1,3 @@
+include/bx symlink=dir
+include/compat symlink=dir
+include/tinystl symlink=dir
