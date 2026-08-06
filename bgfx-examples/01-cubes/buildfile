@@ -4,7 +4,7 @@ import libs += libbimg%lib{bimg}
 include ../common/
 
 # Executable named after the primary source (cubes.cpp). Geometry is inlined.
-# Prebuilt shader bins under $src_root/shaders/ (run with package-root CWD).
+# Requires prebuilt bins under $src_root/shaders/ (not source-distributed).
 #
 exe{cubes}: \
   {hxx cxx}{**} \
