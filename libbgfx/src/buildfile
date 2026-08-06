@@ -16,7 +16,9 @@ include $pub
 
 pub_hdrs = $($pub/ pub_hdrs)
 
-lib{bgfx}: $pub/{$pub_hdrs}
+# Automatic DLL symbol exporting (bdep new auto-symexport pattern).
+#
+lib{bgfx}: libul{bgfx}: $pub/{$pub_hdrs}
 
 # Implementation sources. Exclude amalgamated TU. Platform backends that are
 # disabled via BGFX_CONFIG_* still compile to empty TUs (ifdef guards).
@@ -25,26 +27,29 @@ lib{bgfx}: $pub/{$pub_hdrs}
 # Cocoa/Metal surface interop). Elsewhere the plain .cpp is used.
 #
 if ($cxx.target.class == 'macos')
-  lib{bgfx}: {hxx cxx}{** -amalgamated -renderer_vk -3rdparty/** -vulkan-local/**} \
-             mm{renderer_vk} \
-             $impl_libs $intf_libs
+  libul{bgfx}: {hxx cxx}{** -amalgamated -renderer_vk -3rdparty/** -vulkan-local/**} \
+               mm{renderer_vk} \
+               $impl_libs $intf_libs
 else
-  lib{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/** -vulkan-local/**} \
-             $impl_libs $intf_libs
+  libul{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/** -vulkan-local/**} \
+               $impl_libs $intf_libs
 
 # Embedded shader binaries and shader sources are included from C++ headers.
 #
-lib{bgfx}: file{**.bin.h}: include = adhoc
-lib{bgfx}: file{**.sc}: include = adhoc
-lib{bgfx}: file{**.sh}: include = adhoc
-lib{bgfx}: file{**.idl.inl}: include = adhoc
+libul{bgfx}: file{**.bin.h}: include = adhoc
+libul{bgfx}: file{**.sc}: include = adhoc
+libul{bgfx}: file{**.sh}: include = adhoc
+libul{bgfx}: file{**.idl.inl}: include = adhoc
 
 # RenderDoc, h264, and vulkan-local thunks (not installed).
 #
-lib{bgfx}: 3rdparty/renderdoc/hxx{renderdoc_app}: include = adhoc
-lib{bgfx}: 3rdparty/h264/hxx{h264}: include = adhoc
-lib{bgfx}: 3rdparty/metal-cpp/file{**}: include = adhoc
-lib{bgfx}: vulkan-local/hxx{**}: include = adhoc
+libul{bgfx}: 3rdparty/renderdoc/hxx{renderdoc_app}: include = adhoc
+libul{bgfx}: 3rdparty/h264/hxx{h264}: include = adhoc
+libul{bgfx}: 3rdparty/metal-cpp/file{**}: include = adhoc
+libul{bgfx}: vulkan-local/hxx{**}: include = adhoc
+
+libs{bgfx}: def{bgfx}: include = ($cxx.target.system == 'win32-msvc')
+def{bgfx}: libul{bgfx}
 
 # Build options.
 #
@@ -98,6 +103,9 @@ elif ($cxx.target.class == 'windows')
 }
 else
   sys_libs = [null]
+
+if ($cxx.target.system == 'mingw32')
+  cxx.loptions += -Wl,--export-all-symbols
 
 # Export options. libbx is an interface dependency (AllocatorI, embedded
 # shader helpers). Export platform libs for shared-library consumers.

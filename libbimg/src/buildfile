@@ -11,18 +11,23 @@ include $pub
 
 pub_hdrs = $($pub/ pub_hdrs)
 
-lib{bimg}: $pub/{$pub_hdrs}
+# Automatic DLL symbol exporting (bdep new auto-symexport pattern).
+#
+lib{bimg}: libul{bimg}: $pub/{$pub_hdrs}
 
 # Core image implementation + private headers + astc-encoder.
 #
-lib{bimg}: {hxx cxx}{** -3rdparty/**} \
-           3rdparty/astc-encoder/source/cxx{**} \
-           $impl_libs $intf_libs
+libul{bimg}: {hxx cxx}{** -3rdparty/**} \
+             3rdparty/astc-encoder/source/cxx{**} \
+             $impl_libs $intf_libs
 
 # Private headers under 3rdparty (astc) and src.
 #
-lib{bimg}: 3rdparty/astc-encoder/source/hxx{**}: include = adhoc
-lib{bimg}: 3rdparty/astc-encoder/include/hxx{**}: include = adhoc
+libul{bimg}: 3rdparty/astc-encoder/source/hxx{**}: include = adhoc
+libul{bimg}: 3rdparty/astc-encoder/include/hxx{**}: include = adhoc
+
+libs{bimg}: def{bimg}: include = ($cxx.target.system == 'win32-msvc')
+def{bimg}: libul{bimg}
 
 # Build options.
 #
@@ -39,6 +44,9 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 # Match upstream genie defines for astc-encoder.
 #
 cxx.poptions += -DASTCENC_F16C=0 -DASTCENC_NEON=0
+
+if ($cxx.target.system == 'mingw32')
+  cxx.loptions += -Wl,--export-all-symbols
 
 # Export options (bimg is not in public headers of consumers of libbgfx as
 # interface, but libbimg consumers need bimg headers + libbx).

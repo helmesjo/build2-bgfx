@@ -1,5 +1,11 @@
-import libs = libbgfx%lib{bgfx}
-import libs += libbimg%lib{bimg}
+# Link static archives. libbx/libbimg/libbgfx use auto-symexport for shared
+# builds (best-effort), but Windows auto-import does not cover global data.
+# Public bx inlines (e.g. toSeconds) reference Ticks::s_kInvFreq, which fails
+# to resolve against the shared import library on MSVC.
+#
+import libs = libbgfx%liba{bgfx}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
 
 third = [dir_path] $src_base/3rdparty/
 
@@ -20,12 +26,16 @@ else
 if ($build.meta_operation != 'dist')
   ./: libue{example-load-program}
 
+# POSIX separators so the string literal is valid on Windows (no \U, \h, ...).
+#
+shaders_dir = $path.posix_string($src_root/shaders)
+
 libue{example-load-program}: cxx{load_program} $libs
 {
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
     "-I$third" \
-    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$src_root/shaders\""
+    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$shaders_dir\""
 }
 
 libue{example-load-program}: hxx{common bgfx_utils}: include = adhoc
@@ -65,9 +75,9 @@ if ($cxx.target.class == 'macos')
 elif ($cxx.target.class == 'windows')
 {
   if ($cxx.target.system == 'mingw32')
-    libue{example-common}: cxx.libs += -luser32 -lgdi32 -lshell32 -lxinput
+    libue{example-common}: cxx.libs += -luser32 -lgdi32 -lshell32 -lcomdlg32 -lxinput
   else
-    libue{example-common}: cxx.libs += user32.lib gdi32.lib shell32.lib xinput.lib
+    libue{example-common}: cxx.libs += user32.lib gdi32.lib shell32.lib comdlg32.lib xinput.lib
 }
 else
   libue{example-common}: cxx.libs += -lX11
