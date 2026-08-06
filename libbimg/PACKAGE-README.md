@@ -30,7 +30,7 @@ This package provides the following importable targets:
 lib{bimg}
 ```
 
-The image library. Depends on `libbx`.
+The image library. Depends on `libbx` and `libastcenc`.
 
 
 ## Configuration variables
