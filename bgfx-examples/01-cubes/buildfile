@@ -8,7 +8,7 @@ include ../common/
 #
 exe{cubes}: \
   {hxx cxx}{**} \
-  ../common/cxx{load_program} \
+  ../common/libue{example-load-program} \
   ../common/libue{example-common} \
   $libs
 {
@@ -19,8 +19,7 @@ exe{cubes}: \
     "-I$src_root/common" \
     "-I$src_root/common/3rdparty" \
     -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
-    -DUSE_ENTRY=1 \
-    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$src_root/shaders\""
+    -DUSE_ENTRY=1
 }
 
 exe{cubes}: ../common/hxx{common args bgfx_utils}: include = adhoc

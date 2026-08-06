@@ -15,6 +15,22 @@ else
 #
 ./: libue{example-common}
 
+# loadProgram for monorepo examples that use runtime shaders/ (not distributed).
+#
+if ($build.meta_operation != 'dist')
+  ./: libue{example-load-program}
+
+libue{example-load-program}: cxx{load_program} $libs
+{
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$third" \
+    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$src_root/shaders\""
+}
+
+libue{example-load-program}: hxx{common bgfx_utils}: include = adhoc
+libue{example-load-program}: entry/hxx{**}: include = adhoc
+
 libue{example-common}: \
   cxx{example-glue} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
