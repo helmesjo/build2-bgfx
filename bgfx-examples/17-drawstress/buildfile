@@ -1,0 +1,23 @@
+import libs = libbgfx%lib{bgfx}
+import libs += libbimg%lib{bimg}
+
+include ../common/
+
+exe{drawstress}: \
+  {hxx cxx}{**} \
+  file{*.bin.h} \
+  ../common/libue{example-common} \
+  $libs
+{
+  test = false
+
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$src_root/common" \
+    "-I$src_root/common/3rdparty" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+exe{drawstress}: file{*.bin.h}: include = adhoc
+exe{drawstress}: ../common/hxx{common args bgfx_utils}: include = adhoc
