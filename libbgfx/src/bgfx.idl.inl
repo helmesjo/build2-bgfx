@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/bgfx.idl.inl

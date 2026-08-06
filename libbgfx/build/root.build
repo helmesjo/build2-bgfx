@@ -1,16 +1,20 @@
-# Uncomment to suppress warnings coming from external libraries.
+# C++26 breaks Apple SDK headers when compiling Objective-C++ (ColorSync
+# enum arithmetic). Upstream targets modern C++ without requiring latest.
 #
-#cxx.internal.scope = current
-
-cxx.std = latest
+cxx.std = c++20
 
 using cxx
+using cxx.objcxx
 
-hxx{*}: extension = hpp
+# Upstream uses .h public/private headers and .cpp sources. Embedded shaders
+# are .bin.h (header-only inclusion). IDL fragment is .idl.inl.
+#
+hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
-# The test target for cross-testing (running tests under Wine, etc).
-#
+# BX_CONFIG_DEBUG comes from libbx export. Backend selection is fixed in the
+# source buildfile for the initial Vulkan + Noop package.
+
 test.target = $cxx.target

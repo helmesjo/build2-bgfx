@@ -1,10 +1,16 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+import intf_libs += libbx%lib{bx}
+import impl_libs += libbimg%lib{bimg}
+
+# Vulkan is loaded at runtime via dlopen (libMoltenVK.dylib / libvulkan.so.1 /
+# vulkan-1.dll). Headers come from upstream 3rdparty/khronos/vulkan-local
+# (cppget Vulkan-Headers 1.3.216 is older than this bgfx pin requires).
 
 # Public headers.
 #
-pub = [dir_path] ../include/bgfx/
+pub = [dir_path] ../include/
 
 include $pub
 
@@ -12,9 +18,32 @@ pub_hdrs = $($pub/ pub_hdrs)
 
 lib{bgfx}: $pub/{$pub_hdrs}
 
-# Private headers and sources as well as dependencies.
+# Implementation sources. Exclude amalgamated TU. Platform backends that are
+# disabled via BGFX_CONFIG_* still compile to empty TUs (ifdef guards).
 #
-lib{bgfx}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+# On macOS, renderer_vk.cpp is compiled as renderer_vk.mm (Objective-C++ for
+# Cocoa/Metal surface interop). Elsewhere the plain .cpp is used.
+#
+if ($cxx.target.class == 'macos')
+  lib{bgfx}: {hxx cxx}{** -amalgamated -renderer_vk -3rdparty/** -vulkan-local/**} \
+             mm{renderer_vk} \
+             $impl_libs $intf_libs
+else
+  lib{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/** -vulkan-local/**} \
+             $impl_libs $intf_libs
+
+# Embedded shader binaries and shader sources are included from C++ headers.
+#
+lib{bgfx}: file{**.bin.h}: include = adhoc
+lib{bgfx}: file{**.sc}: include = adhoc
+lib{bgfx}: file{**.sh}: include = adhoc
+lib{bgfx}: file{**.idl.inl}: include = adhoc
+
+# RenderDoc, h264, and vulkan-local thunks (not installed).
+#
+lib{bgfx}: 3rdparty/renderdoc/hxx{renderdoc_app}: include = adhoc
+lib{bgfx}: 3rdparty/h264/hxx{h264}: include = adhoc
+lib{bgfx}: vulkan-local/hxx{**}: include = adhoc
 
 # Build options.
 #
@@ -24,12 +53,39 @@ out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-                "-I$out_pfx_inc" "-I$src_pfx_inc"
+                "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                "-I$src_pfx_src/3rdparty"
 
-#obja{*}: cxx.poptions += -DBGFX_STATIC_BUILD
-#objs{*}: cxx.poptions += -DBGFX_SHARED_BUILD
+# Initial backend set: Vulkan + Noop only. Defining any BGFX_CONFIG_RENDERER_*
+# skips the platform-default block in config.h, then we zero the rest.
+#
+cxx.poptions += \
+  -DBGFX_CONFIG_RENDERER_VULKAN=1 \
+  -DBGFX_CONFIG_RENDERER_DIRECT3D11=0 \
+  -DBGFX_CONFIG_RENDERER_DIRECT3D12=0 \
+  -DBGFX_CONFIG_RENDERER_METAL=0 \
+  -DBGFX_CONFIG_RENDERER_OPENGL=0 \
+  -DBGFX_CONFIG_RENDERER_OPENGLES=0 \
+  -DBGFX_CONFIG_RENDERER_WEBGPU=0 \
+  -DBGFX_CONFIG_RENDERER_GNM=0 \
+  -DBGFX_CONFIG_RENDERER_AGC=0 \
+  -DBGFX_CONFIG_RENDERER_NVN=0 \
+  -DBGFX_CONFIG_VIDEO=0
 
-# Export options.
+# macOS: Metal/Cocoa frameworks for MoltenVK surface interop in renderer_vk.mm.
+#
+if ($cxx.target.class == 'macos')
+{
+  cxx.libs += \
+    -framework Cocoa \
+    -framework Metal \
+    -framework QuartzCore \
+    -framework IOKit
+}
+
+# Export options. libbx is an interface dependency (AllocatorI, embedded
+# shader helpers). Vulkan-Headers is needed if consumers include backend
+# types via public headers (they mostly do not). Export libbx only.
 #
 lib{bgfx}:
 {
@@ -37,13 +93,6 @@ lib{bgfx}:
   cxx.export.libs = $intf_libs
 }
 
-#liba{bgfx}: cxx.export.poptions += -DBGFX_STATIC
-#libs{bgfx}: cxx.export.poptions += -DBGFX_SHARED
-
-# For pre-releases use the complete version to make sure they cannot
-# be used in place of another pre-release or the final version. See
-# the version module for details on the version.* variable values.
-#
 if $version.pre_release
   lib{bgfx}: bin.lib.version = "-$version.project_id"
 else

@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/debug_renderdoc.h

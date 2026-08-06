@@ -1,34 +1,33 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <bgfx/bgfx.hpp>
+#include <bgfx/bgfx.h>
+#include <bgfx/defines.h>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace bgfx;
-
-  // Basics.
+  // Non-inline API: query supported renderers without creating a window.
   //
+  bgfx::RendererType::Enum types[8];
+  uint8_t n = bgfx::getSupportedRenderers (8, types);
+  assert (n > 0);
+
+  bool has_noop = false;
+  bool has_vulkan = false;
+  for (uint8_t i = 0; i < n; ++i)
   {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
+    if (types[i] == bgfx::RendererType::Noop)
+      has_noop = true;
+    if (types[i] == bgfx::RendererType::Vulkan)
+      has_vulkan = true;
   }
 
-  // Empty name.
+  // Noop is always available. Vulkan is enabled in this package build.
   //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (has_noop);
+  assert (has_vulkan);
+
+  assert (BGFX_API_VERSION == 153);
+
+  return 0;
 }
