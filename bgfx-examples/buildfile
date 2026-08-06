@@ -20,4 +20,5 @@ if ($build.meta_operation != 'dist')
   ./: 01-cubes/
   ./: 02-metaballs/
   ./: 03-raymarch/
+  ./: 05-instancing/
 }
