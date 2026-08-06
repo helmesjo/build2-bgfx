@@ -1,0 +1,23 @@
+import libs = libbgfx%lib{bgfx}
+import libs += libbimg%lib{bimg}
+
+include ../common/
+
+exe{occlusion}: \
+  {hxx cxx}{**} \
+  ../common/cxx{camera} \
+  ../common/libue{example-load-program} \
+  ../common/libue{example-common} \
+  $libs
+{
+  test = false
+
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$src_root/common" \
+    "-I$src_root/common/3rdparty" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+exe{occlusion}: ../common/hxx{common args bgfx_utils camera}: include = adhoc
