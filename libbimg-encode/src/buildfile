@@ -1,6 +1,8 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+import intf_libs += libbimg%lib{bimg}
+import impl_libs += libastcenc%lib{astcenc}
 
 # Public headers.
 #
@@ -10,11 +12,32 @@ include $pub
 
 pub_hdrs = $($pub/ pub_hdrs)
 
-lib{bimg-encode}: $pub/{$pub_hdrs}
-
-# Private headers and sources as well as dependencies.
+# Automatic DLL symbol exporting (bdep new auto-symexport pattern).
 #
-lib{bimg-encode}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{bimg-encode}: libul{bimg-encode}: $pub/{$pub_hdrs}
+
+# Encode implementation, private headers, and vendored encoder third-parties
+# (matches upstream bimg_encode sources). C sources are iqa.
+#
+libul{bimg-encode}: {hxx cxx c}{** -3rdparty/**} \
+                    3rdparty/libsquish/{hxx cxx}{**} \
+                    3rdparty/edtaa3/{hxx cxx}{**} \
+                    3rdparty/etc1/{hxx cxx}{**} \
+                    3rdparty/etcpak/cxx{**} \
+                    3rdparty/nvtt/cxx{**} \
+                    3rdparty/pvrtc/{hxx cxx}{**} \
+                    3rdparty/iqa/source/c{**} \
+                    $impl_libs $intf_libs
+
+# Headers under 3rdparty that are only #included (including .hpp).
+#
+libul{bimg-encode}: 3rdparty/etcpak/file{*.hpp}: include = adhoc
+libul{bimg-encode}: 3rdparty/nvtt/hxx{**}: include = adhoc
+libul{bimg-encode}: 3rdparty/iqa/include/hxx{**}: include = adhoc
+libul{bimg-encode}: 3rdparty/stb/hxx{**}: include = adhoc
+
+libs{bimg-encode}: def{bimg-encode}: include = ($cxx.target.system == 'win32-msvc')
+def{bimg-encode}: libul{bimg-encode}
 
 # Build options.
 #
@@ -23,13 +46,31 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
+# Match upstream bimg_encode includedirs (3rdparty root, iqa, nvtt).
+#
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-                "-I$out_pfx_inc" "-I$src_pfx_inc"
+                "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                "-I$src_pfx_src/3rdparty" \
+                "-I$src_pfx_src/3rdparty/iqa/include" \
+                "-I$src_pfx_src/3rdparty/nvtt"
 
-#obja{*}: cxx.poptions += -DBIMG_STATIC_BUILD
-#objs{*}: cxx.poptions += -DBIMG_SHARED_BUILD
+c.poptions =+   "-I$src_pfx_src/3rdparty/iqa/include"
 
-# Export options.
+if ($cxx.target.system == 'mingw32')
+  cxx.loptions += -Wl,--export-all-symbols
+
+# Upstream Genie relaxes several warnings on the encode third-parties.
+#
+if ($cxx.class != 'msvc')
+{
+  cxx.coptions += -Wno-implicit-fallthrough -Wno-shadow \
+                  -Wno-shift-negative-value -Wno-undef \
+                  -Wno-deprecated-copy
+  c.coptions += -Wno-implicit-fallthrough -Wno-shadow \
+                -Wno-shift-negative-value -Wno-undef
+}
+
+# Export options: consumers get encode.h from libbimg (interface dep).
 #
 lib{bimg-encode}:
 {
@@ -39,13 +80,6 @@ lib{bimg-encode}:
   cxx.pkgconfig.include = include/ include/bimg/
 }
 
-#liba{bimg-encode}: cxx.export.poptions += -DBIMG_STATIC
-#libs{bimg-encode}: cxx.export.poptions += -DBIMG_SHARED
-
-# For pre-releases use the complete version to make sure they cannot
-# be used in place of another pre-release or the final version. See
-# the version module for details on the version.* variable values.
-#
 if $version.pre_release
   lib{bimg-encode}: bin.lib.version = "-$version.project_id"
 else
