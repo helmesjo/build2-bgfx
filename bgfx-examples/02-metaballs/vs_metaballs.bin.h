@@ -1,0 +1,1 @@
+../../upstream/bgfx/examples/02-metaballs/vs_metaballs.bin.h
