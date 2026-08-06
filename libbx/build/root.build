@@ -9,6 +9,14 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
+# Public bx headers require the MSVC conforming preprocessor
+# (see bx/platform.h). build2 already enables /Zc:__cplusplus.
+# /EHs-c- matches upstream NoExceptions (required for SEH __try in
+# thread.cpp under MSVC).
+#
+if ($cxx.target.system == 'win32-msvc')
+  cxx.coptions += /Zc:preprocessor /EHs-c-
+
 # BX_CONFIG_DEBUG is required by public headers. Default false (release).
 #
 config [bool] config.libbx.debug ?= false
