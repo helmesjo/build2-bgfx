@@ -13,9 +13,10 @@ common/: install = false
 #
 shaders/: install = false
 
-# Resource-backed examples (need shaders/). Not source-distributed.
-# Use a meta-operation guard rather than include=: include= still keeps the
-# target in the dist graph (see config-independent-build-graph HOWTO).
+# Extra examples: monorepo/build-only (not source-distributed).
 #
 if ($build.meta_operation != 'dist')
+{
   ./: 01-cubes/
+  ./: 02-metaballs/
+}
