@@ -18,4 +18,5 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbx == $
 depends: libbimg == $
+depends: libmetal-cpp ^381.0.0- ? ($cxx.target.class == 'macos')
 examples: bgfx-examples == $
