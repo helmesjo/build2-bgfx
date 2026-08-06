@@ -1,0 +1,5 @@
+bgfx-examples
+
+# Testscript output directory (can be symlink).
+#
+test-bgfx-examples
