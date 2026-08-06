@@ -53,12 +53,19 @@ else
 
 cxx.poptions += $debug_def
 
-# System libraries / frameworks.
+# System libraries / frameworks (not importable targets: use *.libs).
+# Prefer -pthread over -lpthread (HOWTO/link-pthread). -ldl for bx::dlopen
+# on non-Apple *nix. Apple folds both into libSystem.
 #
+if ($cxx.target.system != 'win32-msvc')
+  sys_libs = -pthread
+else
+  sys_libs = [null]
+
 if ($cxx.target.class == 'macos')
-  cxx.libs += -framework Foundation -framework CoreFoundation
+  sys_libs += -framework Foundation -framework CoreFoundation
 elif ($cxx.target.class != 'windows')
-  cxx.libs += -lpthread
+  sys_libs += -ldl
 
 # Export options.
 #
@@ -71,10 +78,11 @@ lib{bx}:
 if ($compat_inc != [dir_path])
   lib{bx}: cxx.export.poptions =+ "-I$compat_inc"
 
-if ($cxx.target.class == 'macos')
-  lib{bx}: cxx.export.libs += -framework Foundation -framework CoreFoundation
-elif ($cxx.target.class != 'windows')
-  lib{bx}: cxx.export.libs += -lpthread
+if ($sys_libs != [null])
+{
+  cxx.libs += $sys_libs
+  lib{bx}: cxx.export.libs += $sys_libs
+}
 
 # For pre-releases use the complete version to make sure they cannot
 # be used in place of another pre-release or the final version. See

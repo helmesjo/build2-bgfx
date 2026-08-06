@@ -9,7 +9,7 @@ if ($cxx.target.class == 'macos')
   platform_entry = ../common/mm{entry/entry_osx entry/dialog_darwin}
 elif ($cxx.target.class == 'windows')
   platform_entry = ../common/cxx{entry/entry_windows}
-elif ($cxx.target.class == 'linux')
+else
   platform_entry = ../common/cxx{entry/entry_x11}
 
 # Executable named after the primary source (helloworld.cpp). Directory
@@ -58,5 +58,7 @@ elif ($cxx.target.class == 'windows')
   else
     exe{helloworld}: cxx.libs += user32.lib gdi32.lib shell32.lib xinput.lib
 }
-elif ($cxx.target.class == 'linux')
-  exe{helloworld}: cxx.libs += -lX11 -lpthread -ldl
+else
+  # entry_x11 (and similar *nix native entries).
+  #
+  exe{helloworld}: cxx.libs += -lX11
