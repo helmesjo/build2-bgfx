@@ -12,3 +12,6 @@ location: bgfx-examples/
 
 :
 location: libbx-tests/
+
+:
+location: libbimg-encode/
