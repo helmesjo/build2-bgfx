@@ -1,0 +1,1 @@
+../../upstream/bgfx/examples/35-dynamic/dynamic.cpp
