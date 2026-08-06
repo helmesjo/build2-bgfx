@@ -1,45 +1,39 @@
-# bgfx-examples - An executable
+# bgfx-examples package
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-executable. It is a <SUMMARY-OF-FUNCTIONALITY>.
+Interactive demos for [bgfx](https://github.com/bkaradzic/bgfx). This package
+ships a **subset** of upstream examples and grows over time.
 
-Note that the `bgfx-examples` executable in this package provides `build2` metadata.
+## Included (v1)
 
+| Executable | Upstream | Notes |
+|------------|----------|--------|
+| `helloworld` | `examples/00-helloworld/helloworld.cpp` | Window, clear colour, debug-text logo |
 
-## Usage
+Not automated tests. Run the executable by hand.
 
-To start using `bgfx-examples` in your project, add the following build-time
-`depends` value to your `manifest`, adjusting the version constraint as
-appropriate:
+## Build and run
 
-```
-depends: * bgfx-examples ^<VERSION>
-```
-
-Then import the executable in your `buildfile`:
+From the multi-package repository after `bdep init` / `bdep update`:
 
 ```
-import! [metadata] <TARGET> = bgfx-examples%exe{<TARGET>}
+bdep update
+# path depends on your configuration out tree, for example:
+../bgfx-apple/bgfx-examples/00-helloworld/helloworld
 ```
 
+Optional args (see upstream `Args`): `--vk`, `--mtl`, `--noop`, etc.
 
-## Importable targets
+## Windowing
 
-This package provides the following importable targets:
+Native entry only (no SDL/GLFW in this cut):
 
-```
-exe{<TARGET>}
-```
+- macOS: Cocoa (`entry_osx.mm`)
+- Windows: Win32
+- Linux: X11
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+## Rendering backends
 
-
-## Configuration variables
-
-This package provides the following configuration variables:
-
-```
-[bool] config.bgfx_examples.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+Backends come from `libbgfx`. That package enables Vulkan (and Noop) on all
+platforms and Metal on macOS. Vulkan is loaded at runtime (`libvulkan.so.1`,
+`vulkan-1.dll`, or MoltenVK as `libMoltenVK.dylib` if you use Vulkan on
+Apple). Install a loader / ICD for your OS when using Vulkan.

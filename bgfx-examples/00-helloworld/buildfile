@@ -1,0 +1,62 @@
+import libs = libbgfx%lib{bgfx}
+import libs += libbimg%lib{bimg}
+
+common = [dir_path] $src_root/common/
+dear   = [dir_path] $src_root/common/3rdparty/
+
+platform_entry =
+if ($cxx.target.class == 'macos')
+  platform_entry = ../common/mm{entry/entry_osx entry/dialog_darwin}
+elif ($cxx.target.class == 'windows')
+  platform_entry = ../common/cxx{entry/entry_windows}
+elif ($cxx.target.class == 'linux')
+  platform_entry = ../common/cxx{entry/entry_x11}
+
+# Executable named after the primary source (helloworld.cpp). Directory
+# follows upstream examples/00-helloworld/.
+#
+exe{helloworld}: \
+  {hxx cxx}{**} \
+  ../common/cxx{example-glue} \
+  ../common/cxx{entry/entry entry/cmd entry/input entry/dialog} \
+  $platform_entry \
+  ../common/cxx{imgui/imgui} \
+  ../common/3rdparty/dear-imgui/cxx{imgui imgui_draw imgui_tables imgui_widgets} \
+  $libs
+{
+  test = false
+
+  # Target-specific so options apply to all object prerequisites, including
+  # those under common/.
+  #
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$common" \
+    "-I$dear" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+exe{helloworld}: ../common/imgui/file{**.bin.h **.ttf.h}: include = adhoc
+exe{helloworld}: ../common/3rdparty/dear-imgui/hxx{**} \
+  ../common/3rdparty/dear-imgui/file{**.inl}: include = adhoc
+exe{helloworld}: ../common/entry/hxx{**} ../common/imgui/hxx{**}: include = adhoc
+exe{helloworld}: ../common/hxx{common args bgfx_utils}: include = adhoc
+
+if ($cxx.target.class == 'macos')
+{
+  exe{helloworld}: cxx.libs += \
+    -framework Cocoa \
+    -framework QuartzCore \
+    -framework Metal \
+    -framework IOKit
+}
+elif ($cxx.target.class == 'windows')
+{
+  if ($cxx.target.system == 'mingw32')
+    exe{helloworld}: cxx.libs += -luser32 -lgdi32 -lshell32 -lxinput
+  else
+    exe{helloworld}: cxx.libs += user32.lib gdi32.lib shell32.lib xinput.lib
+}
+elif ($cxx.target.class == 'linux')
+  exe{helloworld}: cxx.libs += -lX11 -lpthread -ldl

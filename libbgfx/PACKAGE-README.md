@@ -4,8 +4,12 @@ Cross-platform rendering library (bgfx) packaged for build2.
 
 ## Backends
 
-This package build enables **Vulkan** and **Noop** only. Other backends
-(Metal, D3D, OpenGL, WebGPU) are compiled out.
+This package build enables:
+
+- **Vulkan** and **Noop** on all platforms (Vulkan is dlopen'd at runtime)
+- **Metal** on macOS (via upstream `metal-cpp`)
+
+Other backends (D3D, OpenGL, WebGPU) are compiled out.
 
 ## Usage
 

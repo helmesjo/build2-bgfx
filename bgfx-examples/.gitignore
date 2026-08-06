@@ -30,3 +30,7 @@
 # Compilation database.
 #
 compile_commands.json
+
+# Build system forward symlink of the exe into src tree.
+#
+00-helloworld/helloworld

@@ -6,3 +6,6 @@ location: libbimg/
 
 :
 location: libbgfx/
+
+:
+location: bgfx-examples/

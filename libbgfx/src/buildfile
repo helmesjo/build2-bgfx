@@ -43,6 +43,7 @@ lib{bgfx}: file{**.idl.inl}: include = adhoc
 #
 lib{bgfx}: 3rdparty/renderdoc/hxx{renderdoc_app}: include = adhoc
 lib{bgfx}: 3rdparty/h264/hxx{h264}: include = adhoc
+lib{bgfx}: 3rdparty/metal-cpp/file{**}: include = adhoc
 lib{bgfx}: vulkan-local/hxx{**}: include = adhoc
 
 # Build options.
@@ -56,14 +57,16 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
                 "-I$src_pfx_src/3rdparty"
 
-# Initial backend set: Vulkan + Noop only. Defining any BGFX_CONFIG_RENDERER_*
-# skips the platform-default block in config.h, then we zero the rest.
+# Desktop backends: Vulkan everywhere, Metal on Apple. Defining any
+# BGFX_CONFIG_RENDERER_* skips the platform-default block in config.h.
 #
+metal = ($cxx.target.class == 'macos' ? 1 : 0)
+
 cxx.poptions += \
   -DBGFX_CONFIG_RENDERER_VULKAN=1 \
   -DBGFX_CONFIG_RENDERER_DIRECT3D11=0 \
   -DBGFX_CONFIG_RENDERER_DIRECT3D12=0 \
-  -DBGFX_CONFIG_RENDERER_METAL=0 \
+  "-DBGFX_CONFIG_RENDERER_METAL=$metal" \
   -DBGFX_CONFIG_RENDERER_OPENGL=0 \
   -DBGFX_CONFIG_RENDERER_OPENGLES=0 \
   -DBGFX_CONFIG_RENDERER_WEBGPU=0 \
@@ -72,13 +75,14 @@ cxx.poptions += \
   -DBGFX_CONFIG_RENDERER_NVN=0 \
   -DBGFX_CONFIG_VIDEO=0
 
-# macOS: Metal/Cocoa frameworks for MoltenVK surface interop in renderer_vk.mm.
+# macOS: Cocoa/Metal/IOKit for Metal renderer and Vulkan surface interop.
 #
 if ($cxx.target.class == 'macos')
 {
   cxx.libs += \
     -framework Cocoa \
     -framework Metal \
+    -framework MetalKit \
     -framework QuartzCore \
     -framework IOKit
 }

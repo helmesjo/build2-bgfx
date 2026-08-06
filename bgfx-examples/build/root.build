@@ -1,16 +1,17 @@
-# Uncomment to suppress warnings coming from external libraries.
+# Match libbgfx: C++20 avoids Apple SDK + C++26 Objective-C++ issues.
 #
-#cxx.internal.scope = current
-
-cxx.std = latest
+cxx.std = c++20
 
 using cxx
+using cxx.objcxx
 
-hxx{*}: extension = hpp
+hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
-# The test target for cross-testing (running tests under Wine, etc).
+# Suppress warnings from third-party dear-imgui / example glue.
 #
+cxx.internal.scope = current
+
 test.target = $cxx.target

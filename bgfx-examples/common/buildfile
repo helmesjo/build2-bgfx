@@ -1,0 +1,5 @@
+# Placeholder directory for shared example sources (symlinks). Built as part of
+# each example executable for now (see helloworld/buildfile). Expand later
+# into liba{example-common} when multiple exes share it.
+#
+./:
