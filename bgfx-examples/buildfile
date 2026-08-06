@@ -1,5 +1,7 @@
-./: {*/ -build/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
+./: {*/ -build/ -shaders/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
 
 # common/ is a private utility library, not installed as a product.
+# shaders/ holds prebuilt runtime bins (not a build subdirectory).
 #
 common/: install = false
+shaders/: install = false
