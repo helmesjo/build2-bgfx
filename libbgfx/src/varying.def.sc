@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/varying.def.sc

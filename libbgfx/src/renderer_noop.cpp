@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/renderer_noop.cpp

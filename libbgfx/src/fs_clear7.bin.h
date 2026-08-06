@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/fs_clear7.bin.h

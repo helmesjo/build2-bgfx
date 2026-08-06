@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/cs_mipgen_pow2.bin.h
