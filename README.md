@@ -12,6 +12,7 @@ packages in your `build2`-based project, then instead see the accompanying
 
 - [`libbx`](libbx/PACKAGE-README.md)
 - [`libbimg`](libbimg/PACKAGE-README.md)
+- [`libbimg-encode`](libbimg-encode/PACKAGE-README.md)
 - [`libbgfx`](libbgfx/PACKAGE-README.md)
 - [`bgfx-examples`](bgfx-examples/PACKAGE-README.md)
 - [`libbx-tests`](libbx-tests/PACKAGE-README.md)

@@ -1,0 +1,1 @@
+../../upstream/bimg/src/bimg_p.h
