@@ -1,0 +1,26 @@
+import libs = libbgfx%lib{bgfx}
+import libs += libbimg%lib{bimg}
+
+include ../common/
+
+# Executable named after the primary source (cubes.cpp). Geometry is inlined.
+# Prebuilt shader bins under $src_root/shaders/ (run with package-root CWD).
+#
+exe{cubes}: \
+  {hxx cxx}{**} \
+  ../common/cxx{load_program} \
+  ../common/libue{example-common} \
+  $libs
+{
+  test = false
+
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$src_root/common" \
+    "-I$src_root/common/3rdparty" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1 \
+    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$src_root/shaders\""
+}
+
+exe{cubes}: ../common/hxx{common args bgfx_utils}: include = adhoc
