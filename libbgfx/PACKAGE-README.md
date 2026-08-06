@@ -39,6 +39,11 @@ not linked. bgfx loads it dynamically (`libMoltenVK.dylib` on macOS,
 `libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows). Install a Vulkan loader
 or MoltenVK to use the Vulkan backend at runtime.
 
+On macOS the Metal backend depends on `libmetal-cpp` (header-only C++ Metal
+bindings). Until published on cppget, resolve it from the git prerequisite
+`https://github.com/helmesjo/build2-metal-cpp.git` declared in this project's
+`repositories.manifest`.
+
 
 ## Configuration variables
 

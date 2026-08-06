@@ -4,6 +4,12 @@ impl_libs = # Implementation dependencies.
 import intf_libs += libbx%lib{bx}
 import impl_libs += libbimg%lib{bimg}
 
+# Metal backend (macOS) uses the packaged metal-cpp multi-header layout via a
+# path shim under 3rdparty/metal-cpp/ (bgfx includes <metal-cpp/metal.hpp>).
+#
+if ($cxx.target.class == 'macos')
+  import impl_libs += libmetal-cpp%lib{metal-cpp}
+
 # Vulkan is loaded at runtime via dlopen (libMoltenVK.dylib / libvulkan.so.1 /
 # vulkan-1.dll). Headers come from upstream 3rdparty/khronos/vulkan-local
 # (cppget Vulkan-Headers 1.3.216 is older than this bgfx pin requires).
