@@ -1,38 +1,46 @@
-# libbgfx package
+# libbgfx - Cross-platform rendering library
 
-Cross-platform rendering library (bgfx) packaged for build2.
+This is a `build2` package for the [bgfx](https://github.com/bkaradzic/bgfx) C++
+library. It provides a cross-platform rendering API.
 
-## Backends
-
-This package build enables:
-
-- **Vulkan** and **Noop** on all platforms (Vulkan is dlopen'd at runtime)
-- **Metal** on macOS (via upstream `metal-cpp`)
-
-Other backends (D3D, OpenGL, WebGPU) are compiled out.
 
 ## Usage
 
+To start using `libbgfx` in your project, add the following `depends`
+value to your `manifest`, adjusting the version constraint as appropriate:
+
+```
+depends: libbgfx ^1.153.0
+```
+
+Then import the library in your `buildfile`:
+
 ```
 import libs = libbgfx%lib{bgfx}
-exe{hello}: cxx{**} $libs
 ```
 
 Public headers use the `<bgfx/...>` include style. `libbx` is an interface
 dependency (for example `bx::AllocatorI` and `<bgfx/embedded_shader.h>`).
 
-Shared libraries use automatic DLL symbol exporting on Windows (generated
-`.def` on MSVC, `--export-all-symbols` on MinGW).
 
-## Dependencies
+## Importable targets
 
-- `libbx`, `libbimg` (co-located packages in this repository)
+This package provides the following importable targets:
 
-Vulkan API headers are taken from upstream `3rdparty/khronos/vulkan-local`
-for this pin. A newer `Vulkan-Headers` package on cppget can replace that
-once it is new enough for this bgfx revision.
+```
+lib{bgfx}
+```
 
-The Vulkan runtime is **not** linked. bgfx loads it dynamically
-(`libMoltenVK.dylib` on macOS, `libvulkan.so.1` on Linux, `vulkan-1.dll` on
-Windows). Install a Vulkan loader / MoltenVK to use the Vulkan backend at
-runtime.
+The rendering library. Depends on `libbx` and `libbimg`.
+
+This build enables Vulkan and Noop on all platforms, and Metal on macOS.
+Other backends (D3D, OpenGL, WebGPU) are compiled out. The Vulkan runtime is
+not linked. bgfx loads it dynamically (`libMoltenVK.dylib` on macOS,
+`libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows). Install a Vulkan loader
+or MoltenVK to use the Vulkan backend at runtime.
+
+
+## Configuration variables
+
+This package provides no configuration variables. Debug behaviour follows
+`config.libbx.debug` from the `libbx` dependency.

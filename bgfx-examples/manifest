@@ -16,6 +16,8 @@ package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbgfx == $
+depends: stb_truetype ^1.26.0
+depends: stb_rect_pack ^1.1.0
 
 # entry_x11 needs X11 development packages. Drop bare Linux bots and use
 # named sys configurations that install them (CI uses --sys-no-stub:
