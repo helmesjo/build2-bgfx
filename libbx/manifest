@@ -13,5 +13,6 @@ doc-url: https://github.com/bkaradzic/bx
 src-url: https://github.com/bkaradzic/bx
 package-url: https://github.com/build2-packaging/bgfx
 package-email: packaging@build2.org
+tests: libbx-tests == $
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0

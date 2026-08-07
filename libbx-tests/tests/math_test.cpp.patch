@@ -1,0 +1,24 @@
+--- math_test.cpp.orig	2026-08-06 01:49:49
++++ math_test.cpp	2026-08-06 12:15:02
+@@ -8,6 +8,7 @@
+ #include <bx/file.h>
+ 
+ #include <math.h>
++#include <cmath>
+ #include <stdint.h> // intXX_t
+ #include <limits.h> // UCHAR_*
+ 
+@@ -23,9 +24,10 @@
+ 		BX_UNUSED(u);
+ 
+ #if BX_PLATFORM_OSX || BX_PLATFORM_IOS
+-		REQUIRE(::__isnanf(u.f)    == bx::isNan(u.f) );
+-		REQUIRE(::__isfinitef(u.f) == bx::isFinite(u.f) );
+-		REQUIRE(::__isinff(u.f)    == bx::isInfinite(u.f) );
++		// build2: modern Apple SDK does not expose ::__isnanf/__isfinitef/__isinff for C++.
++		REQUIRE(std::isnan(u.f)    == bx::isNan(u.f) );
++		REQUIRE(std::isfinite(u.f) == bx::isFinite(u.f) );
++		REQUIRE(std::isinf(u.f)    == bx::isInfinite(u.f) );
+ #elif BX_COMPILER_MSVC
+ 		REQUIRE(!!::isnan(u.f)    == bx::isNan(u.f) );
+ 		REQUIRE(!!::isfinite(u.f) == bx::isFinite(u.f) );
