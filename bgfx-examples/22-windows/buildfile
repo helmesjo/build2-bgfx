@@ -1,0 +1,27 @@
+# Static libs: see ../common/buildfile (auto-symexport data caveat on MSVC).
+#
+import libs = libbgfx%liba{bgfx}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
+
+include ../common/
+
+# Reuses vs_cubes/fs_cubes shaders (no example-specific shader symlinks needed).
+#
+exe{windows}: \
+  {hxx cxx}{**} \
+  ../common/libue{example-load-program} \
+  ../common/libue{example-common} \
+  $libs
+{
+  test = false
+
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$src_root/common" \
+    "-I$src_root/common/3rdparty" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+exe{windows}: ../common/hxx{common args bgfx_utils}: include = adhoc
