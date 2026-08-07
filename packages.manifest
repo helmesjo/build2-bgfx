@@ -9,3 +9,6 @@ location: libbgfx/
 
 :
 location: bgfx-examples/
+
+:
+location: libbx-tests/
