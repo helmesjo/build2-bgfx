@@ -1,6 +1,19 @@
-libs =
-#import libs += libhello%lib{hello}
+import libs  = libbx%lib{bx} \
+               catch2%lib{catch2}
 
-exe{libbx-tests}: {hxx ixx txx cxx}{**} $libs testscript
+# Benches ship their own main() and are not part of the unit suite.
+#
+exe{bx-tests}: cxx{* -handle_bench -math_bench -simd_bench} \
+               $libs testscript
 
-cxx.poptions =+ "-I$out_root" "-I$src_root"
+exe{bx-tests}:
+{
+  test = true
+  cxx.poptions =+ "-I$out_base" "-I$src_base"
+}
+
+# test.h redefines BX_ASSERT to throw for REQUIRE_ASSERTS. That trips
+# -Wexceptions in noexcept destructors in public bx headers (error.inl).
+#
+if ($cxx.class == 'gcc' || $cxx.class == 'clang')
+  exe{bx-tests}: cxx.coptions += -Wno-exceptions
