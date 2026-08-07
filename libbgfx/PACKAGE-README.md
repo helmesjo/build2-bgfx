@@ -33,16 +33,24 @@ lib{bgfx}
 
 The rendering library. Depends on `libbx` and `libbimg`.
 
-This build enables Vulkan and Noop on all platforms, and Metal on macOS.
-Other backends (D3D, OpenGL, WebGPU) are compiled out. The Vulkan runtime is
-not linked. bgfx loads it dynamically (`libMoltenVK.dylib` on macOS,
-`libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows). Install a Vulkan loader
-or MoltenVK to use the Vulkan backend at runtime.
+This build enables Vulkan and Noop on all platforms, Metal on macOS, and
+Direct3D 11 and 12 on Windows. OpenGL and WebGPU are compiled out. The Vulkan
+and D3D runtimes are not linked. bgfx loads them dynamically (`libMoltenVK.dylib`
+on macOS, `libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows, `d3d11.dll` and
+`d3d12.dll` on Windows). Install a Vulkan loader or MoltenVK to use the Vulkan
+backend at runtime.
 
 On macOS the Metal backend depends on `libmetal-cpp` (header-only C++ Metal
 bindings). Until published on cppget, resolve it from the git prerequisite
 `https://github.com/helmesjo/build2-metal-cpp.git` declared in this project's
 `repositories.manifest`.
+
+On Windows the D3D11 and D3D12 backends depend on `libdirectx-headers`
+(Microsoft DirectX-Headers, providing D3D12 and D3DX12 headers). D3D11 and
+DXGI headers are supplied by the Windows SDK (MSVC) or MinGW-w64. Until
+published on cppget, resolve `libdirectx-headers` from the git prerequisite
+`https://github.com/helmesjo/build2-DirectX-Headers.git` declared in this
+project's `repositories.manifest`.
 
 
 ## Configuration variables

@@ -10,6 +10,13 @@ import impl_libs += libbimg%lib{bimg}
 if ($cxx.target.class == 'macos')
   import impl_libs += libmetal-cpp%lib{metal-cpp}
 
+# D3D11/D3D12 backends (Windows) rely on libdirectx-headers for the D3D12 and
+# D3DX12 headers. D3D11 and DXGI headers come from the Windows SDK (MSVC) or
+# MinGW-w64. D3D runtimes are dlopen'd at runtime; no import libs are linked.
+#
+if ($cxx.target.class == 'windows')
+  import impl_libs += libdirectx-headers%liba{directx-headers}
+
 # Vulkan is loaded at runtime via dlopen (libMoltenVK.dylib / libvulkan.so.1 /
 # vulkan-1.dll). Headers come from upstream 3rdparty/khronos/vulkan-local
 # (cppget Vulkan-Headers 1.3.216 is older than this bgfx pin requires).
@@ -68,15 +75,16 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
                 "-I$src_pfx_src/3rdparty"
 
-# Desktop backends: Vulkan everywhere, Metal on Apple. Defining any
-# BGFX_CONFIG_RENDERER_* skips the platform-default block in config.h.
+# Desktop backends: Vulkan everywhere, Metal on Apple, D3D11+D3D12 on Windows.
+# Defining any BGFX_CONFIG_RENDERER_* skips the platform-default block in config.h.
 #
-metal = ($cxx.target.class == 'macos' ? 1 : 0)
+d3d   = ($cxx.target.class == 'windows' ? 1 : 0)
+metal = ($cxx.target.class == 'macos'   ? 1 : 0)
 
 cxx.poptions += \
   -DBGFX_CONFIG_RENDERER_VULKAN=1 \
-  -DBGFX_CONFIG_RENDERER_DIRECT3D11=0 \
-  -DBGFX_CONFIG_RENDERER_DIRECT3D12=0 \
+  "-DBGFX_CONFIG_RENDERER_DIRECT3D11=$d3d" \
+  "-DBGFX_CONFIG_RENDERER_DIRECT3D12=$d3d" \
   "-DBGFX_CONFIG_RENDERER_METAL=$metal" \
   -DBGFX_CONFIG_RENDERER_OPENGL=0 \
   -DBGFX_CONFIG_RENDERER_OPENGLES=0 \
