@@ -1,4 +1,3 @@
-src/3rdparty/libsquish symlink=dir
 src/3rdparty/edtaa3 symlink=dir
 src/3rdparty/etc1 symlink=dir
 src/3rdparty/etcpak symlink=dir
