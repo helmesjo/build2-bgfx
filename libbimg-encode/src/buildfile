@@ -2,7 +2,8 @@ intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
 
 import intf_libs += libbimg%lib{bimg}
-import impl_libs += libastcenc%lib{astcenc}
+import impl_libs += libastcenc%lib{astcenc} \
+                    libsquish%lib{squish}
 
 # Public headers (encode.h only, not installed, see include/buildfile).
 #
@@ -20,7 +21,6 @@ lib{bimg-encode}: libul{bimg-encode}: $pub/{$pub_hdrs}
 # (matches upstream bimg_encode sources). C sources are iqa.
 #
 libul{bimg-encode}: {hxx cxx c}{** -3rdparty/**} \
-                    3rdparty/libsquish/{hxx cxx}{**} \
                     3rdparty/edtaa3/{hxx cxx}{**} \
                     3rdparty/etc1/{hxx cxx}{**} \
                     3rdparty/etcpak/cxx{**} \

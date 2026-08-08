@@ -17,3 +17,7 @@ location: https://github.com/helmesjo/build2-metal-cpp.git#main
 role: prerequisite
 type: git
 location: https://github.com/helmesjo/build2-DirectX-Headers.git#main
+:
+role: prerequisite
+type: git
+location: https://github.com/helmesjo/build2-libsquish.git#main

@@ -6,7 +6,7 @@
 #include <bimg/encode.h>
 #include "bimg_p.h"
 
-#include <libsquish/squish.h>
+#include <squish/squish.h>
 #include <etc1/etc1.h>
 #include <etcpak/ProcessRGB.hpp>
 #include <nvtt/nvtt.h>
