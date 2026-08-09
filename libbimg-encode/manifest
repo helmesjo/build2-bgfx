@@ -18,3 +18,4 @@ depends: * bpkg >= 0.18.0
 depends: libbimg == $
 depends: libastcenc ^5.7.0-
 depends: libsquish ^1.15.104-
+depends: stb_image_resize2 ^2.18.0
