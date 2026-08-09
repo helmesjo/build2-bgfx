@@ -3,7 +3,8 @@ impl_libs = # Implementation dependencies.
 
 import intf_libs += libbimg%lib{bimg}
 import impl_libs += libastcenc%lib{astcenc} \
-                    libsquish%lib{squish}
+                    libsquish%lib{squish} \
+                    stb_image_resize2%lib{stb_image_resize2}
 
 # Public headers.
 #
