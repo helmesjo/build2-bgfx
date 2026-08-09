@@ -1,0 +1,11 @@
+--- video_vk.h.orig	2026-08-06 01:50:08
++++ video_vk.h	2026-08-09 12:46:40
+@@ -6,7 +6,7 @@
+ #ifndef BGFX_VIDEO_VK_H_HEADER_GUARD
+ #define BGFX_VIDEO_VK_H_HEADER_GUARD
+ 
+-#include <vulkan-local/vulkan.h>
++#include <vulkan/vulkan.h>
+ 
+ namespace bgfx { namespace vk
+ {
