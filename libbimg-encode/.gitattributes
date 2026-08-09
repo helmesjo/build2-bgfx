@@ -5,4 +5,3 @@ src/3rdparty/etcpak symlink=dir
 src/3rdparty/nvtt symlink=dir
 src/3rdparty/pvrtc symlink=dir
 src/3rdparty/iqa symlink=dir
-src/3rdparty/stb symlink=dir

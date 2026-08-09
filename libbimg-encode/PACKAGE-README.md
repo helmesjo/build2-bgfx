@@ -32,7 +32,8 @@ This package provides the following importable targets:
 lib{bimg-encode}
 ```
 
-The encode library. Depends on `libbimg`, `libastcenc`, and `libsquish`.
+The encode library. Depends on `libbimg`, `libastcenc`, `libsquish`, and
+`stb_image_resize2`.
 
 
 ## Configuration variables
