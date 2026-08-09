@@ -25,3 +25,7 @@ location: https://github.com/helmesjo/build2-libsquish.git#main
 role: prerequisite
 type: git
 location: https://github.com/build2-packaging/stb.git
+:
+role: prerequisite
+type: git
+location: https://github.com/helmesjo/build2-Vulkan-Headers.git#main

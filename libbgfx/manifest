@@ -18,6 +18,7 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbx == $
 depends: libbimg == $
+depends: libvulkan-headers ^1.4.359-
 depends: libmetal-cpp ^381.0.0- ? ($cxx.target.class == 'macos')
 depends: libdirectx-headers ^1.619.5- ? ($cxx.target.class == 'windows')
 examples: bgfx-examples == $
