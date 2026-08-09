@@ -1,4 +1,3 @@
 include/bgfx symlink=dir
 src/3rdparty/h264 symlink=dir
 src/3rdparty/renderdoc symlink=dir
-src/vulkan-local symlink=dir

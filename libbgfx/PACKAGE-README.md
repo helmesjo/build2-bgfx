@@ -31,7 +31,7 @@ This package provides the following importable targets:
 lib{bgfx}
 ```
 
-The rendering library. Depends on `libbx` and `libbimg`.
+The rendering library. Depends on `libbx`, `libbimg`, and `libvulkan-headers`.
 
 This build enables Vulkan and Noop on all platforms, Metal on macOS, and
 Direct3D 11 and 12 on Windows. OpenGL and WebGPU are compiled out. The Vulkan
@@ -39,6 +39,12 @@ and D3D runtimes are not linked. bgfx loads them dynamically (`libMoltenVK.dylib
 on macOS, `libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows, `d3d11.dll` and
 `d3d12.dll` on Windows). Install a Vulkan loader or MoltenVK to use the Vulkan
 backend at runtime.
+
+The Vulkan backend depends on `libvulkan-headers` (Khronos Vulkan-Headers,
+header-only) for the API declarations used to resolve function pointers.
+Until published on cppget, resolve it from the git prerequisite
+`https://github.com/helmesjo/build2-Vulkan-Headers.git` declared in this
+project's `repositories.manifest`.
 
 On macOS the Metal backend depends on `libmetal-cpp` (header-only C++ Metal
 bindings). Until published on cppget, resolve it from the git prerequisite
