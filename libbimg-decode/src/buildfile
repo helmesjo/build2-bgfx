@@ -1,6 +1,10 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
-#import xxxx_libs += libhello%lib{hello}
+
+import intf_libs += libbimg%lib{bimg}
+import impl_libs += liblodepng%lib{lodepng} \
+                    stb_image%lib{stb_image} \
+                    libtinyexr%lib{tinyexr}
 
 # Public headers.
 #
@@ -10,11 +14,23 @@ include $pub
 
 pub_hdrs = $($pub/ pub_hdrs)
 
-lib{bimg-decode}: $pub/{$pub_hdrs}
-
-# Private headers and sources as well as dependencies.
+# Automatic DLL symbol exporting (bdep new auto-symexport pattern).
 #
-lib{bimg-decode}: {hxx ixx txx cxx}{**} $impl_libs $intf_libs
+lib{bimg-decode}: libul{bimg-decode}: $pub/{$pub_hdrs}
+
+# Decode implementation and private headers. simplewebp lives beside this
+# buildfile as file-level symlinks, not a 3rdparty dir mount.
+#
+libul{bimg-decode}: {hxx cxx}{** -simplewebp/**} $impl_libs $intf_libs
+
+# Single-header WebP decoder. Not a standalone package. The src/ include
+# path makes #include <simplewebp/simplewebp.h> work.
+#
+libul{bimg-decode}: simplewebp/hxx{simplewebp}: include = adhoc
+libul{bimg-decode}: simplewebp/legal{LICENSE.md}
+
+libs{bimg-decode}: def{bimg-decode}: include = ($cxx.target.system == 'win32-msvc')
+def{bimg-decode}: libul{bimg-decode}
 
 # Build options.
 #
@@ -23,27 +39,27 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
+# $src_pfx_src is the parent of simplewebp/ so sources can
+# #include <simplewebp/simplewebp.h>.
+#
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 
-#obja{*}: cxx.poptions += -DBIMG_STATIC_BUILD
-#objs{*}: cxx.poptions += -DBIMG_SHARED_BUILD
+cxx.poptions += -DBIMG_CONFIG_PARSE_AVIF=0
+
+if ($cxx.target.system == 'mingw32')
+  cxx.loptions += -Wl,--export-all-symbols
 
 # Export options.
 #
 lib{bimg-decode}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                        "-I$out_pfx_inc/bimg" "-I$src_pfx_inc/bimg"
   cxx.export.libs = $intf_libs
+  cxx.pkgconfig.include = include/ include/bimg/
 }
 
-#liba{bimg-decode}: cxx.export.poptions += -DBIMG_STATIC
-#libs{bimg-decode}: cxx.export.poptions += -DBIMG_SHARED
-
-# For pre-releases use the complete version to make sure they cannot
-# be used in place of another pre-release or the final version. See
-# the version module for details on the version.* variable values.
-#
 if $version.pre_release
   lib{bimg-decode}: bin.lib.version = "-$version.project_id"
 else
