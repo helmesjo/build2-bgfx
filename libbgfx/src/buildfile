@@ -39,13 +39,12 @@ lib{bgfx}: libul{bgfx}: $pub/{$pub_hdrs}
 # On macOS, renderer_vk.cpp is compiled as renderer_vk.mm (Objective-C++ for
 # Cocoa/Metal surface interop). Elsewhere the plain .cpp is used.
 #
-if ($cxx.target.class == 'macos')
-  libul{bgfx}: {hxx cxx}{** -amalgamated -renderer_vk -3rdparty/**} \
-               mm{renderer_vk} \
-               $impl_libs $intf_libs
-else
-  libul{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/**} \
-               $impl_libs $intf_libs
+libul{bgfx}: {hxx cxx}{** -amalgamated -renderer_vk -3rdparty/** -h264/**} \
+             mm{renderer_vk} $impl_libs $intf_libs: \
+               include = ($cxx.target.class == 'macos')
+libul{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/** -h264/**} \
+             $impl_libs $intf_libs: \
+               include = ($cxx.target.class != 'macos')
 
 # Embedded shader binaries and shader sources are included from C++ headers.
 #
@@ -54,11 +53,16 @@ libul{bgfx}: file{**.sc}: include = adhoc
 libul{bgfx}: file{**.sh}: include = adhoc
 libul{bgfx}: file{**.idl.inl}: include = adhoc
 
-# RenderDoc, h264, and metal-cpp thunks (not installed).
+# RenderDoc and metal-cpp thunks (not installed).
 #
 libul{bgfx}: 3rdparty/renderdoc/hxx{renderdoc_app}: include = adhoc
-libul{bgfx}: 3rdparty/h264/hxx{h264}: include = adhoc
 libul{bgfx}: 3rdparty/metal-cpp/file{**}: include = adhoc
+
+# Wicked Engine H.264 parser, vendored as a single header. Not a standalone
+# package. The src/ include path makes #include <h264/h264.h> work.
+#
+h264/libul{WickedEngine-h264}: h{h264/*} legal{h264/LICENSE.txt}
+libul{bgfx}: h264/libul{WickedEngine-h264}
 
 libs{bgfx}: def{bgfx}: include = ($cxx.target.system == 'win32-msvc')
 def{bgfx}: libul{bgfx}
@@ -70,6 +74,9 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
+# $src_pfx_src is the parent of h264/ so sources can #include <h264/h264.h>.
+# $src_pfx_src/3rdparty is for RenderDoc (<renderdoc/renderdoc_app.h>).
+#
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
                 "-I$src_pfx_src/3rdparty"

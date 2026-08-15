@@ -1,0 +1,1 @@
+../../../upstream/bgfx/3rdparty/h264/h264.h
