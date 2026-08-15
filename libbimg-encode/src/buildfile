@@ -4,6 +4,7 @@ impl_libs = # Implementation dependencies.
 import intf_libs += libbimg%lib{bimg}
 import impl_libs += libastcenc%lib{astcenc} \
                     libsquish%lib{squish} \
+                    libetcpak%lib{etcpak} \
                     stb_image_resize2%lib{stb_image_resize2}
 
 # Public headers (encode.h only, not installed, see include/buildfile).
@@ -24,7 +25,6 @@ lib{bimg-encode}: libul{bimg-encode}: $pub/{$pub_hdrs}
 #
 libul{bimg-encode}: {hxx cxx c}{** -3rdparty/** -edtaa3/**} \
                     3rdparty/etc1/{hxx cxx}{**} \
-                    3rdparty/etcpak/cxx{**} \
                     3rdparty/nvtt/cxx{**} \
                     3rdparty/pvrtc/{hxx cxx}{**} \
                     3rdparty/iqa/source/c{**} \
@@ -38,7 +38,6 @@ libul{bimg-encode}: edtaa3/libul{edtaa3}
 
 # Headers under 3rdparty that are only #included (including .hpp).
 #
-libul{bimg-encode}: 3rdparty/etcpak/file{*.hpp}: include = adhoc
 libul{bimg-encode}: 3rdparty/nvtt/hxx{**}: include = adhoc
 libul{bimg-encode}: 3rdparty/iqa/include/hxx{**}: include = adhoc
 libul{bimg-encode}: 3rdparty/stb/hxx{**}: include = adhoc
