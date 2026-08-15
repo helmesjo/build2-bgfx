@@ -69,6 +69,22 @@ local **shim** to packaged `libmetal-cpp`, not a vendored copy.
 
 No remaining required in-tree third-party. Depends on packaged `libastcenc`.
 
+### `libbimg-decode`
+
+Image parsers. Unbundled `liblodepng`, `stb_image`, and `libtinyexr` (pulls
+`libminiz`). Still in-tree:
+
+| Item | Upstream path | Role | Notes |
+|---|---|---|---|
+| **simplewebp** | `bimg/3rdparty/simplewebp` | WebP decode | Single header. File-level symlinks in `src/simplewebp/`. |
+
+Compiled out until packaged:
+
+| Item | Role |
+|---|---|
+| **dav1d** + **libavif** | AVIF (`BIMG_CONFIG_PARSE_AVIF=0`) |
+| **libheif** | HEIF (upstream default off, LGPL) |
+
 ---
 
 ## 2. Required for examples (consumer demos, not core API)
@@ -106,12 +122,10 @@ are added.
 
 ### Not packaged yet (upstream has them, no local package consumes them)
 
-Would become missing-package work only when adding decode/tools packages.
-`stb_image` is already packaged and can be depended on when wiring decode.
+Would become missing-package work only when adding tools packages.
 
 | Future package surface | Upstream third-party (still missing) |
 |---|---|
-| **libbimg-decode** (or similar) | lodepng, tinyexr (+ miniz), simplewebp, dav1d, libavif |
 | **shaderc** / tools | fcpp, glsl-optimizer, glslang, spirv-cross, spirv-headers, spirv-tools, dawn/tint, d3d4linux |
 | **geometryc** | meshoptimizer |
 | **texturev** | l-smash |
@@ -150,9 +164,10 @@ leave in-tree or compile out until something explicitly needs them.
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
+| `libbimg-decode` | simplewebp (in-tree), dav1d/libavif (compiled out) | Done for v1 |
 | `bgfx-examples` | dear-imgui, iconfontheaders | Medium (demos only) |
 | `libbx-tests` | — (`catch2` packaged) | Done |
-| *(future)* decode / shaderc / tools | see section 3 | Deferred |
+| *(future)* shaderc / tools | see section 3 | Deferred |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
 
 ---
@@ -162,8 +177,8 @@ leave in-tree or compile out until something explicitly needs them.
 1. **Modern encode vendors** (**etcpak**, then **nvtt**)
    Unlocks ETC2/EAC and BC6H/BC7 on top of already-packaged BC1–5 and ASTC.
 
-2. **Decode stack starters** (**lodepng**, then wire packaged **stb_image**,
-   then **tinyexr**) when adding `libbimg-decode`.
+2. **Decode leftovers** (**simplewebp**, then **dav1d** / **libavif**) if WebP
+   should be an external package or AVIF should be compiled in.
 
 3. **Encode utilities** (**edtaa3**, **iqa**) if SDF / quality tooling matters.
 
@@ -177,5 +192,4 @@ leave in-tree or compile out until something explicitly needs them.
 
 7. **Legacy encode** (**etc1**, **pvrtc**) last, or leave vendored / disabled.
 
-8. **Remaining decode / tool stacks** (webp, avif, shaderc, …) when those
-   packages are added.
+8. **Tool stacks** (shaderc, …) when those packages are added.
