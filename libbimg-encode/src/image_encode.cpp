@@ -9,7 +9,6 @@
 #include <squish/squish.h>
 #include <etc1/etc1.h>
 #include <etcpak/ProcessRGB.hpp>
-#include <nvtt/nvtt.h>
 #include <pvrtc/PvrTcEncoder.h>
 #include <edtaa3/edtaa3func.h>
 #include <astcenc.h>
@@ -327,11 +326,8 @@ namespace bimg
 		switch (_dstFormat)
 		{
 		case TextureFormat::BC6H:
-			nvtt::compressBC6H(src, _width, _height, _width*16, _dst);
-			break;
-
 		case TextureFormat::BC7:
-			nvtt::compressBC7(src, _width, _height, _width*16, _dst);
+			BX_ERROR_SET(_err, BIMG_ERROR, "Unable to convert between input/output formats!");
 			break;
 
 		default:
