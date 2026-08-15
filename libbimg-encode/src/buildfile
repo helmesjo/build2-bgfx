@@ -38,7 +38,6 @@ libul{bimg-encode}: edtaa3/libul{edtaa3}
 # Headers under 3rdparty that are only #included (including .hpp).
 #
 libul{bimg-encode}: 3rdparty/iqa/include/hxx{**}: include = adhoc
-libul{bimg-encode}: 3rdparty/stb/hxx{**}: include = adhoc
 
 libs{bimg-encode}: def{bimg-encode}: include = ($cxx.target.system == 'win32-msvc')
 def{bimg-encode}: libul{bimg-encode}
