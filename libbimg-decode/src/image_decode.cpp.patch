@@ -1,0 +1,82 @@
+--- libbimg-decode/src/image_decode.cpp.orig	2026-08-06 01:49:50
++++ libbimg-decode/src/image_decode.cpp	2026-08-16 00:19:36
+@@ -17,45 +17,15 @@
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4100) // error C4100: '' : unreferenced formal parameter
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4245) // warning C4245: 'return': conversion from 'int' to 'size_t', signed/unsigned mismatch
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4389) // warning C4389 : '==' : signed / unsigned mismatch
+-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505) // warning C4505: 'tinyexr::miniz::def_realloc_func': unreferenced local function has been removed
++BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505) // warning C4505: unreferenced local function has been removed
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4702) // warning C4702: unreachable code
+-#define MINIZ_NO_ARCHIVE_APIS
+-#define MINIZ_NO_ARCHIVE_WRITING_APIS
+-#define MINIZ_NO_STDIO
+-#define MINIZ_NO_ZLIB_COMPATIBLE_NAMES
+ #define TINYEXR_IMPLEMENTATION
+-#include <miniz/miniz.c>
+-#include <tinyexr/tinyexr.h>
++#include <tinyexr.h>
+ BX_PRAGMA_DIAGNOSTIC_POP()
+ #endif // BIMG_CONFIG_PARSE_EXR
+ 
+ #if BIMG_CONFIG_PARSE_PNG
+-BX_PRAGMA_DIAGNOSTIC_PUSH();
+-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4127) // warning C4127: conditional expression is constant
+-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4267) // warning C4267: '=' : conversion from 'size_t' to 'unsigned short', possible loss of data
+-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4334) // warning C4334: '<<' : result of 32 - bit shift implicitly converted to 64 bits(was 64 - bit shift intended ? )
+-#define LODEPNG_NO_COMPILE_ENCODER
+-#define LODEPNG_NO_COMPILE_DISK
+-#define LODEPNG_NO_COMPILE_ANCILLARY_CHUNKS
+-#define LODEPNG_NO_COMPILE_ALLOCATORS
+-#define LODEPNG_NO_COMPILE_CPP
+-#include <lodepng/lodepng.cpp>
+-BX_PRAGMA_DIAGNOSTIC_POP();
+-
+-void* lodepng_malloc(size_t _size)
+-{
+-	return ::malloc(_size);
+-}
+-
+-void* lodepng_realloc(void* _ptr, size_t _size)
+-{
+-	return ::realloc(_ptr, _size);
+-}
+-
+-void lodepng_free(void* _ptr)
+-{
+-	::free(_ptr);
+-}
++#include <lodepng.h>
+ #endif // BIMG_CONFIG_PARSE_PNG
+ 
+ #if BIMG_CONFIG_PARSE_HEIF
+@@ -112,9 +82,9 @@
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_GCC("-Wshift-negative-value");
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_GCC("-Wimplicit-fallthrough");
+ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505); // unreferenced function with internal linkage has been removed
+-#define STBI_MALLOC(_size)        lodepng_malloc(_size)
+-#define STBI_REALLOC(_ptr, _size) lodepng_realloc(_ptr, _size)
+-#define STBI_FREE(_ptr)           lodepng_free(_ptr)
++#define STBI_MALLOC(_size)        malloc(_size)
++#define STBI_REALLOC(_ptr, _size) realloc(_ptr, _size)
++#define STBI_FREE(_ptr)           free(_ptr)
+ #define STB_IMAGE_IMPLEMENTATION
+ #define STB_IMAGE_STATIC
+ #define STBI_NO_PNG // supported via LODEPNG
+@@ -155,7 +125,7 @@
+ #	define STBI_NO_PNM
+ #endif // !BIMG_CONFIG_PARSE_PNM
+ 
+-#include <stb/stb_image.h>
++#include <stb_image.h>
+ BX_PRAGMA_DIAGNOSTIC_POP();
+ #endif // BIMG_USE_STB_IMAGE
+ 
+@@ -525,7 +495,7 @@
+ 		}
+ 
+ 		lodepng_state_cleanup(&state);
+-		lodepng_free(data);
++		free(data);
+ 
+ 		if (NULL != output)
+ 		{
