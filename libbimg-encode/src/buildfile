@@ -19,16 +19,22 @@ pub_hdrs = $($pub/ pub_hdrs)
 lib{bimg-encode}: libul{bimg-encode}: $pub/{$pub_hdrs}
 
 # Encode implementation, private headers, and vendored encoder third-parties
-# (matches upstream bimg_encode sources). C sources are iqa.
+# (matches upstream bimg_encode sources). C sources are iqa. edtaa3 lives
+# beside this buildfile as file-level symlinks, not a 3rdparty dir mount.
 #
-libul{bimg-encode}: {hxx cxx c}{** -3rdparty/**} \
-                    3rdparty/edtaa3/{hxx cxx}{**} \
+libul{bimg-encode}: {hxx cxx c}{** -3rdparty/** -edtaa3/**} \
                     3rdparty/etc1/{hxx cxx}{**} \
                     3rdparty/etcpak/cxx{**} \
                     3rdparty/nvtt/cxx{**} \
                     3rdparty/pvrtc/{hxx cxx}{**} \
                     3rdparty/iqa/source/c{**} \
                     $impl_libs $intf_libs
+
+# Euclidean distance transform (SDF). Not a standalone package. The src/
+# include path makes #include <edtaa3/edtaa3func.h> work.
+#
+edtaa3/libul{edtaa3}: {hxx cxx}{edtaa3/*} legal{edtaa3/LICENSE.md}
+libul{bimg-encode}: edtaa3/libul{edtaa3}
 
 # Headers under 3rdparty that are only #included (including .hpp).
 #
@@ -47,7 +53,9 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
-# Match upstream bimg_encode includedirs (3rdparty root, iqa, nvtt).
+# $src_pfx_src is the parent of edtaa3/ so sources can
+# #include <edtaa3/edtaa3func.h>. 3rdparty root, iqa, and nvtt match
+# upstream bimg_encode includedirs for the remaining vendors.
 #
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
