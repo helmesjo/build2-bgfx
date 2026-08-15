@@ -1,34 +1,43 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <bimg/bimg-decode.hpp>
+#include <bimg/decode.h>
+#include <bimg/bimg.h>
+#include <bx/allocator.h>
+#include <bx/error.h>
 
 #undef NDEBUG
 #include <cassert>
+#include <cstdint>
+#include <cstddef>
 
 int main ()
 {
-  using namespace std;
-  using namespace bimg_decode;
-
-  // Basics.
+  // 1x1 RGBA red PNG.
   //
+  static const uint8_t png[] =
   {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
+    0x0d, 0x49, 0x44, 0x41, 0x54, 0x78, 0xda, 0x63, 0xf8, 0xcf, 0xc0, 0xf0,
+    0x1f, 0x00, 0x05, 0x00, 0x01, 0xff, 0x56, 0xc7, 0x2f, 0x0d, 0x00, 0x00,
+    0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
+  };
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  bx::DefaultAllocator allocator;
+  bx::Error err;
+
+  bimg::ImageContainer* image = bimg::imageParse (
+    &allocator,
+    png,
+    uint32_t (sizeof (png)),
+    bimg::TextureFormat::Count,
+    &err);
+
+  assert (err.isOk ());
+  assert (image != nullptr);
+  assert (image->m_width == 1);
+  assert (image->m_height == 1);
+
+  bimg::imageFree (image);
+
+  return 0;
 }
