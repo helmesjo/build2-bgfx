@@ -17,7 +17,6 @@ exe{instancing}: \
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
     "-I$src_root/common" \
-    "-I$src_root/common/3rdparty" \
     -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
     -DUSE_ENTRY=1
 }

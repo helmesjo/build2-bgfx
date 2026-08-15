@@ -89,16 +89,17 @@ Compiled out until packaged:
 
 ## 2. Required for examples (consumer demos, not core API)
 
-Needed to build `bgfx-examples` / `libue{example-common}` as currently wired.
+Needed to restore the example overlay / settings UI. Compiled out today.
 
 ### `bgfx-examples`
 
 | Missing package (candidate) | Upstream path | Role |
 |---|---|---|
-| **dear-imgui** | `bgfx/3rdparty/dear-imgui` | Dear ImGui sources compiled into example-common |
-| **iconfontheaders** | `bgfx/3rdparty/iconfontheaders` | Icon codepoint headers (`icons_kenney.h`, `icons_font_awesome.h`) included from example imgui |
+| **dear-imgui** | `bgfx/3rdparty/dear-imgui` | Overlay and settings widgets. Compiled out. |
+| **iconfontheaders** | `bgfx/3rdparty/iconfontheaders` | Icon codepoints used by the overlay. Compiled out. |
 
-Already packaged and used here: `stb_truetype`, `stb_rect_pack`.
+`stb_truetype` / `stb_rect_pack` were only pulled in to compile Dear ImGui
+fonts. They are not example dependencies while imgui is compiled out.
 
 Not required by the reduced example-common build (upstream uses them more
 widely): `meshoptimizer`, full nanovg/font stacks, `cgltf`, `sdf`,
@@ -138,7 +139,7 @@ and may help if/when shaderc is packaged.
 | Item | Where | Note |
 |---|---|---|
 | Dead `3rdparty/stb` adhoc rule | `libbimg-encode/src/buildfile` | Symlink removed after unbundling `stb_image_resize2` |
-| `stb_textedit.h` symlink | `bgfx-examples/common/include/stb/` | Unused by current examples (Dear ImGui ships `imstb_*`) |
+| Example imgui overlay | `bgfx-examples/common/imgui/` | No-op stub until dear-imgui is packaged |
 | `catch_amalgamated.hpp` stub | `libbx-tests/tests/catch/` | Tests use packaged `catch2` |
 
 ---
@@ -165,7 +166,7 @@ leave in-tree or compile out until something explicitly needs them.
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
 | `libbimg-decode` | simplewebp (in-tree), dav1d/libavif (compiled out) | Done for v1 |
-| `bgfx-examples` | dear-imgui, iconfontheaders | Medium (demos only) |
+| `bgfx-examples` | dear-imgui, iconfontheaders (compiled out) | Medium (demos only) |
 | `libbx-tests` | — (`catch2` packaged) | Done |
 | *(future)* shaderc / tools | see section 3 | Deferred |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
