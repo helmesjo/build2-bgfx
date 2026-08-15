@@ -1,6 +1,6 @@
 --- image_encode.cpp.orig	2026-08-06 01:49:50
-+++ image_encode.cpp	2026-08-09 11:47:44
-@@ -6,7 +6,7 @@
++++ image_encode.cpp	2026-08-15 23:06:26
+@@ -6,10 +6,9 @@
  #include <bimg/encode.h>
  #include "bimg_p.h"
  
@@ -8,8 +8,11 @@
 +#include <squish/squish.h>
  #include <etc1/etc1.h>
  #include <etcpak/ProcessRGB.hpp>
- #include <nvtt/nvtt.h>
-@@ -19,7 +19,7 @@
+-#include <nvtt/nvtt.h>
+ #include <pvrtc/PvrTcEncoder.h>
+ #include <edtaa3/edtaa3func.h>
+ #include <astcenc.h>
+@@ -19,7 +18,7 @@
  BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4702) // warning C4702: unreachable code
  BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-parameter") // warning: unused parameter ‘alloc_context’ [-Wunused-parameter]
  #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -18,7 +21,7 @@
  BX_PRAGMA_DIAGNOSTIC_POP();
  
  extern "C" {
-@@ -243,7 +243,7 @@
+@@ -243,7 +242,7 @@
  					}
  
  					astcenc_context* context;
@@ -27,3 +30,16 @@
  
  					if (status != ASTCENC_SUCCESS)
  					{
+@@ -327,11 +326,8 @@
+ 		switch (_dstFormat)
+ 		{
+ 		case TextureFormat::BC6H:
+-			nvtt::compressBC6H(src, _width, _height, _width*16, _dst);
+-			break;
+-
+ 		case TextureFormat::BC7:
+-			nvtt::compressBC7(src, _width, _height, _width*16, _dst);
++			BX_ERROR_SET(_err, BIMG_ERROR, "Unable to convert between input/output formats!");
+ 			break;
+ 
+ 		default:
