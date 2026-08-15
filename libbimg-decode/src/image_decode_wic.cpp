@@ -1,0 +1,1 @@
+../../upstream/bimg/src/image_decode_wic.cpp
