@@ -3,6 +3,7 @@
 #
 cxx.std = c++20
 
+using c
 using cxx
 using cxx.objcxx
 
