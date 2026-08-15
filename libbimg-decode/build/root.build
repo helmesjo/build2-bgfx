@@ -1,16 +1,18 @@
-# Uncomment to suppress warnings coming from external libraries.
-#
-#cxx.internal.scope = current
-
 cxx.std = latest
 
 using cxx
 
-hxx{*}: extension = hpp
+hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
-# The test target for cross-testing (running tests under Wine, etc).
+# Required when including libbx public headers under MSVC.
 #
+if ($cxx.target.system == 'win32-msvc')
+  cxx.coptions += /Zc:preprocessor
+
+# Propagate BX_CONFIG_DEBUG via libbx (through libbimg). No extra package
+# config for v1.
+
 test.target = $cxx.target
