@@ -15,3 +15,6 @@ location: libbx-tests/
 
 :
 location: libbimg-encode/
+
+:
+location: libbimg-decode/
