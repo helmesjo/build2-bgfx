@@ -1,0 +1,1 @@
+../../../upstream/bimg/3rdparty/simplewebp/LICENSE.md
