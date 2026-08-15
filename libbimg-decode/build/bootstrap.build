@@ -1,0 +1,7 @@
+project = libbimg-decode
+
+using version
+using config
+using test
+using install
+using dist

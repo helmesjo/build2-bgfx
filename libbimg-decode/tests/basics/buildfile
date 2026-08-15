@@ -1,0 +1,3 @@
+import libs = libbimg-decode%lib{bimg-decode}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
