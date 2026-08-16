@@ -17,6 +17,7 @@ packaged). Legacy GPU formats are listed at the bottom.
 | `libsquish` | `helmesjo/build2-libsquish` |
 | `libvulkan-headers` | `helmesjo/build2-Vulkan-Headers` |
 | `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
+| `libiqa` | `build2-packaging/iqa` |
 | `catch2` | cppget stable |
 
 ---
@@ -37,17 +38,16 @@ Texture compression / encode path. Still compiles and links these from
 | **etcpak** | `bimg/3rdparty/etcpak` | ETC2 / EAC encode (mobile / GLES) |
 | **nvtt** (NVIDIA Texture Tools subset) | `bimg/3rdparty/nvtt` | BC6H / BC7 encode (desktop) |
 | **edtaa3** | `bimg/3rdparty/edtaa3` | Euclidean distance transform (SDF), small |
-| **iqa** | `bimg/3rdparty/iqa` | Image quality assessment (SSIM), C |
 
 Already packaged for encode: `libsquish` (BC1–5), `libastcenc` (ASTC),
-`stb_image_resize2`.
+`stb_image_resize2`, `libetcpak`, `libiqa`.
 
 Legacy encode vendors (**etc1**, **pvrtc**) are listed in [section 4](#4-legacy-hardware-formats).
 
-Include layout today assumes a `3rdparty` root (`<etcpak/...>`,
-`<nvtt/nvtt.h>`, `<edtaa3/...>`, `<iqa.h>`, plus legacy `<etc1/...>`,
-`<pvrtc/...>`). External packages would need either matching include paths
-or small include patches (as done for `libsquish` / `stb_image_resize2`).
+Include layout today assumes a `3rdparty` root (`<edtaa3/...>`, plus
+legacy `<etc1/...>`, `<pvrtc/...>`). External packages would need either
+matching include paths or small include patches (as done for `libsquish` /
+`stb_image_resize2` / `libiqa`).
 
 ### `libbgfx`
 
@@ -161,7 +161,7 @@ leave in-tree or compile out until something explicitly needs them.
 
 | Local package | Still needs (not packaged) | Priority |
 |---|---|---|
-| `libbimg-encode` | etcpak, nvtt, edtaa3, iqa (+ legacy etc1, pvrtc) | Highest (modern encode) |
+| `libbimg-encode` | edtaa3 (+ legacy etc1, pvrtc). nvtt compiled out | Highest leftover encode |
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
@@ -181,7 +181,7 @@ leave in-tree or compile out until something explicitly needs them.
 2. **Decode leftovers** (**simplewebp**, then **dav1d** / **libavif**) if WebP
    should be an external package or AVIF should be compiled in.
 
-3. **Encode utilities** (**edtaa3**, **iqa**) if SDF / quality tooling matters.
+3. **Encode utilities** (**edtaa3**) if SDF tooling matters.
 
 4. **dear-imgui** (+ **iconfontheaders** if kept separate)
    Only required for examples, but large and widely reusable.

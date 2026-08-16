@@ -5,7 +5,8 @@ import intf_libs += libbimg%lib{bimg}
 import impl_libs += libastcenc%lib{astcenc} \
                     libsquish%lib{squish} \
                     libetcpak%lib{etcpak} \
-                    stb_image_resize2%lib{stb_image_resize2}
+                    stb_image_resize2%lib{stb_image_resize2} \
+                    libiqa%lib{iqa}
 
 # Public headers.
 #
@@ -19,14 +20,13 @@ pub_hdrs = $($pub/ pub_hdrs)
 #
 lib{bimg-encode}: libul{bimg-encode}: $pub/{$pub_hdrs}
 
-# Encode implementation, private headers, and vendored encoder third-parties
-# (matches upstream bimg_encode sources). C sources are iqa. edtaa3 lives
-# beside this buildfile as file-level symlinks, not a 3rdparty dir mount.
+# Encode implementation, private headers, and leftover encoder third-parties
+# (matches upstream bimg_encode sources). edtaa3 lives beside this buildfile
+# as file-level symlinks, not a 3rdparty dir mount.
 #
-libul{bimg-encode}: {hxx cxx c}{** -3rdparty/** -edtaa3/**} \
+libul{bimg-encode}: {hxx cxx}{** -3rdparty/** -edtaa3/**} \
                     3rdparty/etc1/{hxx cxx}{**} \
                     3rdparty/pvrtc/{hxx cxx}{**} \
-                    3rdparty/iqa/source/c{**} \
                     $impl_libs $intf_libs
 
 # Euclidean distance transform (SDF). Not a standalone package. The src/
@@ -34,10 +34,6 @@ libul{bimg-encode}: {hxx cxx c}{** -3rdparty/** -edtaa3/**} \
 #
 edtaa3/libul{edtaa3}: {hxx cxx}{edtaa3/*} legal{edtaa3/LICENSE.md}
 libul{bimg-encode}: edtaa3/libul{edtaa3}
-
-# Headers under 3rdparty that are only #included (including .hpp).
-#
-libul{bimg-encode}: 3rdparty/iqa/include/hxx{**}: include = adhoc
 
 libs{bimg-encode}: def{bimg-encode}: include = ($cxx.target.system == 'win32-msvc')
 def{bimg-encode}: libul{bimg-encode}
@@ -50,15 +46,12 @@ out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
 # $src_pfx_src is the parent of edtaa3/ so sources can
-# #include <edtaa3/edtaa3func.h>. 3rdparty root and iqa match upstream
+# #include <edtaa3/edtaa3func.h>. 3rdparty root matches upstream
 # bimg_encode includedirs for the remaining vendors.
 #
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
-                "-I$src_pfx_src/3rdparty" \
-                "-I$src_pfx_src/3rdparty/iqa/include"
-
-c.poptions =+   "-I$src_pfx_src/3rdparty/iqa/include"
+                "-I$src_pfx_src/3rdparty"
 
 if ($cxx.target.system == 'mingw32')
   cxx.loptions += -Wl,--export-all-symbols
@@ -70,8 +63,6 @@ if ($cxx.class != 'msvc')
   cxx.coptions += -Wno-implicit-fallthrough -Wno-shadow \
                   -Wno-shift-negative-value -Wno-undef \
                   -Wno-deprecated-copy
-  c.coptions += -Wno-implicit-fallthrough -Wno-shadow \
-                -Wno-shift-negative-value -Wno-undef
 }
 
 # Export options.

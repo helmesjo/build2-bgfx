@@ -1,13 +1,11 @@
 cxx.std = latest
 
-using c
 using cxx
 
 hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
-c{*}: extension = c
 
 # Required when including libbx public headers under MSVC.
 # /wd4828: vendored nvtt (and similar) sources contain non-UTF-8 bytes.

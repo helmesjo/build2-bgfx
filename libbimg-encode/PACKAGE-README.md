@@ -36,7 +36,7 @@ lib{bimg-encode}
 ```
 
 The encode library. Depends on `libbimg`, `libastcenc`, `libsquish`,
-`libetcpak`, and `stb_image_resize2`.
+`libetcpak`, `stb_image_resize2`, and `libiqa`.
 
 
 ## Configuration variables
