@@ -19,3 +19,4 @@ depends: libbimg == $
 depends: liblodepng == 2026.1.19
 depends: stb_image ^2.30.0
 depends: libtinyexr ^1.0.8
+depends: libsimplewebp == 2026.7.18

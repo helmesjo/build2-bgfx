@@ -35,8 +35,9 @@ This package provides the following importable targets:
 lib{bimg-decode}
 ```
 
-The decode library. Depends on `libbimg`, `liblodepng`, `stb_image`, and
-`libtinyexr`. AVIF is compiled out until `dav1d` and `libavif` are packaged.
+The decode library. Depends on `libbimg`, `liblodepng`, `stb_image`,
+`libtinyexr`, and `libsimplewebp`. AVIF is compiled out until `dav1d` and
+`libavif` are packaged.
 
 
 ## Configuration variables

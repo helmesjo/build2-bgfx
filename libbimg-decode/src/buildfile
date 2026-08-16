@@ -4,7 +4,8 @@ impl_libs = # Implementation dependencies.
 import intf_libs += libbimg%lib{bimg}
 import impl_libs += liblodepng%lib{lodepng} \
                     stb_image%lib{stb_image} \
-                    libtinyexr%lib{tinyexr}
+                    libtinyexr%lib{tinyexr} \
+                    libsimplewebp%lib{simplewebp}
 
 # Public headers.
 #
@@ -18,16 +19,9 @@ pub_hdrs = $($pub/ pub_hdrs)
 #
 lib{bimg-decode}: libul{bimg-decode}: $pub/{$pub_hdrs}
 
-# Decode implementation and private headers. simplewebp lives beside this
-# buildfile as file-level symlinks, not a 3rdparty dir mount.
+# Decode implementation and private headers.
 #
-libul{bimg-decode}: {hxx cxx}{** -simplewebp/**} $impl_libs $intf_libs
-
-# Single-header WebP decoder. Not a standalone package. The src/ include
-# path makes #include <simplewebp/simplewebp.h> work.
-#
-libul{bimg-decode}: simplewebp/hxx{simplewebp}: include = adhoc
-libul{bimg-decode}: simplewebp/legal{LICENSE.md}
+libul{bimg-decode}: {hxx cxx}{**} $impl_libs $intf_libs
 
 libs{bimg-decode}: def{bimg-decode}: include = ($cxx.target.system == 'win32-msvc')
 def{bimg-decode}: libul{bimg-decode}
@@ -39,9 +33,6 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
-# $src_pfx_src is the parent of simplewebp/ so sources can
-# #include <simplewebp/simplewebp.h>.
-#
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
 

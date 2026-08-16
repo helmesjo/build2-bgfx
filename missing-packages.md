@@ -20,6 +20,7 @@ BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 | `libiqa` | `build2-packaging/iqa` |
 | `liblodepng` | `build2-packaging/lodepng` |
 | `libtinyexr` | decode `depends` (`^1.0.8`) |
+| `libsimplewebp` | `build2-packaging/simplewebp` |
 | `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
 | `catch2` | cppget stable |
 
@@ -75,12 +76,8 @@ No remaining required in-tree third-party. Depends on packaged `libastcenc`.
 
 ### `libbimg-decode`
 
-Image parsers. Unbundled `liblodepng`, `stb_image`, and `libtinyexr` (pulls
-`libminiz`). Still in-tree:
-
-| Item | Upstream path | Role | Notes |
-|---|---|---|---|
-| **simplewebp** | `bimg/3rdparty/simplewebp` | WebP decode | Single header. File-level symlinks in `src/simplewebp/`. |
+Image parsers. Unbundled `liblodepng`, `stb_image`, `libtinyexr` (pulls
+`libminiz`), and `libsimplewebp`.
 
 Compiled out until packaged:
 
@@ -168,7 +165,7 @@ leave in-tree or compile out until something explicitly needs them.
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
-| `libbimg-decode` | simplewebp (in-tree), dav1d/libavif (compiled out) | Done for v1 |
+| `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
 | `bgfx-examples` | dear-imgui, iconfontheaders (compiled out) | Medium (demos only) |
 | `libbx-tests` | — (`catch2` packaged) | Done |
 | *(future)* shaderc / tools | see section 3 | Deferred |
@@ -181,8 +178,8 @@ leave in-tree or compile out until something explicitly needs them.
 1. **Encode leftover** (**edtaa3**) if SDF tooling should be an external
    package. **nvtt** only if BC6H/BC7 encode should be compiled back in.
 
-2. **Decode leftovers** (**simplewebp**, then **dav1d** / **libavif**) if WebP
-   should be an external package or AVIF should be compiled in.
+2. **Decode leftovers** (**dav1d** / **libavif**) if AVIF should be compiled
+   in.
 
 3. **dear-imgui** (+ **iconfontheaders** if kept separate)
    Only required for examples, but large and widely reusable.

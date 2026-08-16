@@ -37,27 +37,8 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 #endif // BIMG_CONFIG_PARSE_AVIF
 
 #if BIMG_CONFIG_PARSE_WEBP
-BX_PRAGMA_DIAGNOSTIC_PUSH();
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-function")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-parameter")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-variable")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wsign-compare")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wshadow")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wmissing-field-initializers")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wparentheses")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wimplicit-fallthrough")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_GCC("-Wtype-limits")
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4100) // warning C4100: unreferenced formal parameter
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4127) // warning C4127: conditional expression is constant
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4244) // warning C4244: conversion from 'X' to 'Y', possible loss of data
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4245) // warning C4245: conversion from 'X' to 'Y', signed/unsigned mismatch
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4267) // warning C4267: conversion from 'size_t' to 'X', possible loss of data
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505) // warning C4505: unreferenced function with internal linkage has been removed
-BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4701) // warning C4701: potentially uninitialized local variable used
-#define SIMPLEWEBP_IMPLEMENTATION
 #define SIMPLEWEBP_DISABLE_STDIO
 #include <simplewebp/simplewebp.h>
-BX_PRAGMA_DIAGNOSTIC_POP();
 #endif // BIMG_CONFIG_PARSE_WEBP
 
 #define BIMG_USE_STB_IMAGE 0   \
