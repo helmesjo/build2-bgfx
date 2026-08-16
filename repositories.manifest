@@ -37,3 +37,15 @@ location: https://github.com/helmesjo/build2-etcpak.git#review
 role: prerequisite
 type: git
 location: https://github.com/build2-packaging/lodepng.git
+:
+role: prerequisite
+type: git
+location: https://github.com/build2-packaging/iqa.git#main
+:
+role: prerequisite
+type: git
+location: https://github.com/build2-packaging/simplewebp.git#review
+:
+role: prerequisite
+type: git
+location: https://github.com/helmesjo/build2-IconFontCppHeaders.git#review
