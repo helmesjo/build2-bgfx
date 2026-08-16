@@ -4,8 +4,8 @@ Inventory of in-tree third-party dependencies that current packages still
 require, but that are **not** yet available as separate `build2` packages
 (import/`depends`). Already unbundled packages are listed only for context.
 
-Focus is **modern hardware** support (BC6H/BC7, ETC2/EAC, ASTC already
-packaged). Legacy GPU formats are listed at the bottom.
+Focus is **modern hardware** support (ETC2/EAC and ASTC already packaged,
+BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 
 **Already external** (see `repositories.manifest` + cppget stable):
 
@@ -16,8 +16,11 @@ packaged). Legacy GPU formats are listed at the bottom.
 | `libdirectx-headers` | `helmesjo/build2-DirectX-Headers` |
 | `libsquish` | `helmesjo/build2-libsquish` |
 | `libvulkan-headers` | `helmesjo/build2-Vulkan-Headers` |
-| `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
+| `libetcpak` | `helmesjo/build2-etcpak` |
 | `libiqa` | `build2-packaging/iqa` |
+| `liblodepng` | `build2-packaging/lodepng` |
+| `libtinyexr` | decode `depends` (`^1.0.8`) |
+| `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
 | `catch2` | cppget stable |
 
 ---
@@ -30,24 +33,25 @@ what stays vendored in this repo.
 
 ### `libbimg-encode`
 
-Texture compression / encode path. Still compiles and links these from
-`src/3rdparty/` (upstream `bimg/3rdparty`):
+Texture compression / encode path. Still in-tree:
 
-| Missing package (candidate) | Upstream path | Role |
-|---|---|---|
-| **etcpak** | `bimg/3rdparty/etcpak` | ETC2 / EAC encode (mobile / GLES) |
-| **nvtt** (NVIDIA Texture Tools subset) | `bimg/3rdparty/nvtt` | BC6H / BC7 encode (desktop) |
-| **edtaa3** | `bimg/3rdparty/edtaa3` | Euclidean distance transform (SDF), small |
+| Item | Upstream path | Role | Notes |
+|---|---|---|---|
+| **edtaa3** | `bimg/3rdparty/edtaa3` | Euclidean distance transform (SDF) | File-level symlinks in `src/edtaa3/`. Not a standalone product. |
+
+Compiled out until packaged:
+
+| Item | Role |
+|---|---|
+| **nvtt** (NVIDIA Texture Tools subset) | BC6H / BC7 encode (`imageEncodeFromRgba32f` errors, same as the RGBA8 path) |
 
 Already packaged for encode: `libsquish` (BC1–5), `libastcenc` (ASTC),
-`stb_image_resize2`, `libetcpak`, `libiqa`.
+`libetcpak` (ETC2/EAC), `stb_image_resize2`, `libiqa`.
 
 Legacy encode vendors (**etc1**, **pvrtc**) are listed in [section 4](#4-legacy-hardware-formats).
 
-Include layout today assumes a `3rdparty` root (`<edtaa3/...>`, plus
-legacy `<etc1/...>`, `<pvrtc/...>`). External packages would need either
-matching include paths or small include patches (as done for `libsquish` /
-`stb_image_resize2` / `libiqa`).
+Include layout for leftovers uses `<edtaa3/...>` via the `src/` include path,
+plus `<etc1/...>` and `<pvrtc/...>` via the `3rdparty` root.
 
 ### `libbgfx`
 
@@ -138,7 +142,6 @@ and may help if/when shaderc is packaged.
 
 | Item | Where | Note |
 |---|---|---|
-| Dead `3rdparty/stb` adhoc rule | `libbimg-encode/src/buildfile` | Symlink removed after unbundling `stb_image_resize2` |
 | Example imgui overlay | `bgfx-examples/common/imgui/` | No-op stub until dear-imgui is packaged |
 | `catch_amalgamated.hpp` stub | `libbx-tests/tests/catch/` | Tests use packaged `catch2` |
 
@@ -161,7 +164,7 @@ leave in-tree or compile out until something explicitly needs them.
 
 | Local package | Still needs (not packaged) | Priority |
 |---|---|---|
-| `libbimg-encode` | edtaa3 (+ legacy etc1, pvrtc). nvtt compiled out | Highest leftover encode |
+| `libbimg-encode` | edtaa3 (in-tree), nvtt (compiled out), legacy etc1/pvrtc | Low / leftover encode |
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
@@ -175,22 +178,20 @@ leave in-tree or compile out until something explicitly needs them.
 
 ## Suggested unbundle order
 
-1. **Modern encode vendors** (**etcpak**, then **nvtt**)
-   Unlocks ETC2/EAC and BC6H/BC7 on top of already-packaged BC1–5 and ASTC.
+1. **Encode leftover** (**edtaa3**) if SDF tooling should be an external
+   package. **nvtt** only if BC6H/BC7 encode should be compiled back in.
 
 2. **Decode leftovers** (**simplewebp**, then **dav1d** / **libavif**) if WebP
    should be an external package or AVIF should be compiled in.
 
-3. **Encode utilities** (**edtaa3**) if SDF tooling matters.
-
-4. **dear-imgui** (+ **iconfontheaders** if kept separate)
+3. **dear-imgui** (+ **iconfontheaders** if kept separate)
    Only required for examples, but large and widely reusable.
 
-5. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
+4. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
    tree" policy demands it. Otherwise fine as single-header adhoc includes.
 
-6. **tinystl** only if there is a clear multi-package consumer beyond bx.
+5. **tinystl** only if there is a clear multi-package consumer beyond bx.
 
-7. **Legacy encode** (**etc1**, **pvrtc**) last, or leave vendored / disabled.
+6. **Legacy encode** (**etc1**, **pvrtc**) last, or leave vendored / disabled.
 
-8. **Tool stacks** (shaderc, …) when those packages are added.
+7. **Tool stacks** (shaderc, …) when those packages are added.
