@@ -20,14 +20,10 @@ pub_hdrs = $($pub/ pub_hdrs)
 #
 lib{bimg-encode}: libul{bimg-encode}: $pub/{$pub_hdrs}
 
-# Encode implementation, private headers, and leftover encoder third-parties
-# (matches upstream bimg_encode sources). edtaa3 lives beside this buildfile
-# as file-level symlinks, not a 3rdparty dir mount.
+# Encode implementation and private headers. edtaa3 lives beside this
+# buildfile as file-level symlinks, not a 3rdparty dir mount.
 #
-libul{bimg-encode}: {hxx cxx}{** -3rdparty/** -edtaa3/**} \
-                    3rdparty/etc1/{hxx cxx}{**} \
-                    3rdparty/pvrtc/{hxx cxx}{**} \
-                    $impl_libs $intf_libs
+libul{bimg-encode}: {hxx cxx}{** -edtaa3/**} $impl_libs $intf_libs
 
 # Euclidean distance transform (SDF). Not a standalone package. The src/
 # include path makes #include <edtaa3/edtaa3func.h> work.
@@ -46,12 +42,10 @@ out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
 # $src_pfx_src is the parent of edtaa3/ so sources can
-# #include <edtaa3/edtaa3func.h>. 3rdparty root matches upstream
-# bimg_encode includedirs for the remaining vendors.
+# #include <edtaa3/edtaa3func.h>.
 #
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-                "-I$out_pfx_inc" "-I$src_pfx_inc" \
-                "-I$src_pfx_src/3rdparty"
+                "-I$out_pfx_inc" "-I$src_pfx_inc"
 
 if ($cxx.target.system == 'mingw32')
   cxx.loptions += -Wl,--export-all-symbols
