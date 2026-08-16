@@ -7,9 +7,7 @@
 #include "bimg_p.h"
 
 #include <squish/squish.h>
-#include <etc1/etc1.h>
 #include <etcpak/ProcessRGB.hpp>
-#include <pvrtc/PvrTcEncoder.h>
 #include <edtaa3/edtaa3func.h>
 #include <astcenc.h>
 
@@ -135,7 +133,7 @@ namespace bimg
 				break;
 
 			case TextureFormat::ETC1:
-				etc1_encode_image(src, _width, _height, 4, _width*4, dst);
+				BX_ERROR_SET(_err, BIMG_ERROR, "Unable to convert between input/output formats!");
 				break;
 
 			case TextureFormat::ETC2:
@@ -175,27 +173,8 @@ namespace bimg
 				break;
 
 			case TextureFormat::PTC14:
-				{
-					using namespace Javelin;
-					RgbaBitmap bmp;
-					bmp.width  = _width;
-					bmp.height = _height;
-					bmp.data   = const_cast<uint8_t*>(src);
-					PvrTcEncoder::EncodeRgb4Bpp(dst, bmp);
-					bmp.data = NULL;
-				}
-				break;
-
 			case TextureFormat::PTC14A:
-				{
-					using namespace Javelin;
-					RgbaBitmap bmp;
-					bmp.width  = _width;
-					bmp.height = _height;
-					bmp.data   = const_cast<uint8_t*>(src);
-					PvrTcEncoder::EncodeRgba4Bpp(dst, bmp);
-					bmp.data = NULL;
-				}
+				BX_ERROR_SET(_err, BIMG_ERROR, "Unable to convert between input/output formats!");
 				break;
 
 			case TextureFormat::ASTC4x4:

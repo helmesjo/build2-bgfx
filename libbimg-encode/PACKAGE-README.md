@@ -2,7 +2,8 @@
 
 This is a `build2` package for the [bimg](https://github.com/bkaradzic/bimg)
 texture encoding library (`bimg_encode` upstream). It compresses images into
-GPU formats (BC/DXT, ETC, PVRTC, ASTC, and related helpers).
+GPU formats (BC1–5, ETC2/EAC, ASTC, and related helpers). ETC1, PVRTC, and
+BC6H/BC7 encode are compiled out.
 
 
 ## Usage

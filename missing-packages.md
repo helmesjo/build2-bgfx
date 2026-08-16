@@ -45,14 +45,16 @@ Compiled out until packaged:
 | Item | Role |
 |---|---|
 | **nvtt** (NVIDIA Texture Tools subset) | BC6H / BC7 encode (`imageEncodeFromRgba32f` errors, same as the RGBA8 path) |
+| **etc1** | ETC1 encode |
+| **pvrtc** | PVRTC (PTC14 / PTC14A) encode |
 
 Already packaged for encode: `libsquish` (BC1–5), `libastcenc` (ASTC),
 `libetcpak` (ETC2/EAC), `stb_image_resize2`, `libiqa`.
 
-Legacy encode vendors (**etc1**, **pvrtc**) are listed in [section 4](#4-legacy-hardware-formats).
+Compiled out with nvtt: **etc1** (ETC1) and **pvrtc** (PTC14 / PTC14A).
+See [section 4](#4-legacy-hardware-formats).
 
-Include layout for leftovers uses `<edtaa3/...>` via the `src/` include path,
-plus `<etc1/...>` and `<pvrtc/...>` via the `3rdparty` root.
+Include layout for leftovers uses `<edtaa3/...>` via the `src/` include path.
 
 ### `libbgfx`
 
@@ -146,14 +148,14 @@ and may help if/when shaderc is packaged.
 
 ## 4. Legacy hardware formats
 
-Still compiled into upstream `bimg_encode`, but low priority for modern
-targets (ASTC / ETC2 / BC6H–7 cover current desktop and mobile). Safe to
-leave in-tree or compile out until something explicitly needs them.
+Compiled out of `libbimg-encode`. Low priority for modern targets (ASTC /
+ETC2 cover current desktop and mobile). Runtime sampling of already-compressed
+ETC1/PVRTC is unchanged.
 
-| Missing package (candidate) | Upstream path | Role | Why legacy |
+| Item | Upstream path | Role | Why legacy |
 |---|---|---|---|
-| **etc1** | `bimg/3rdparty/etc1` | ETC1 encoder only | Superseded by ETC2/EAC (`etcpak`) on modern GLES/Vulkan mobile |
-| **pvrtc** | `bimg/3rdparty/pvrtc` | PVRTC (PTC14 / PTC14A) | Old PowerVR / iOS path. Apple platforms use ASTC now |
+| **etc1** | `bimg/3rdparty/etc1` | ETC1 encoder only | Superseded by ETC2/EAC (`libetcpak`) |
+| **pvrtc** | `bimg/3rdparty/pvrtc` | PVRTC (PTC14 / PTC14A) | Old PowerVR / iOS path. Apple platforms use ASTC |
 
 ---
 
@@ -161,7 +163,7 @@ leave in-tree or compile out until something explicitly needs them.
 
 | Local package | Still needs (not packaged) | Priority |
 |---|---|---|
-| `libbimg-encode` | edtaa3 (in-tree), nvtt (compiled out), legacy etc1/pvrtc | Low / leftover encode |
+| `libbimg-encode` | edtaa3 (in-tree). nvtt/etc1/pvrtc compiled out | Low / leftover encode |
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
@@ -189,6 +191,7 @@ leave in-tree or compile out until something explicitly needs them.
 
 5. **tinystl** only if there is a clear multi-package consumer beyond bx.
 
-6. **Legacy encode** (**etc1**, **pvrtc**) last, or leave vendored / disabled.
+6. **Legacy encode** (**etc1**, **pvrtc**) already compiled out. Re-enable
+   only if something explicitly needs them.
 
 7. **Tool stacks** (shaderc, …) when those packages are added.
