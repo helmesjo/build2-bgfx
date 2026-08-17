@@ -17,6 +17,7 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbgfx == $
 depends: libiconfontcppheaders >= 2026.6.5-
+depends: libtinystl ^0.0.1-
 
 # entry_x11 needs X11 development packages. Drop bare Linux bots and use
 # named sys configurations that install them (CI uses --sys-no-stub:

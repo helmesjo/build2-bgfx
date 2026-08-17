@@ -18,3 +18,4 @@ depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: catch2 ^3.5.0
 depends: libbx == $
+depends: libtinystl ^0.0.1-

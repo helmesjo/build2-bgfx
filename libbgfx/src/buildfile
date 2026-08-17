@@ -5,6 +5,10 @@ import intf_libs += libbx%lib{bx}
 import impl_libs += libbimg%lib{bimg}
 import impl_libs += libvulkan-headers%lib{vulkan-headers}
 
+# Private bgfx_p.h includes <tinystl/...>.
+#
+import impl_libs += libtinystl%lib{tinystl}
+
 # Metal backend (macOS) uses the packaged metal-cpp multi-header layout via a
 # path shim under 3rdparty/metal-cpp/ (bgfx includes <metal-cpp/metal.hpp>).
 #
