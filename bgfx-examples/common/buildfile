@@ -18,6 +18,10 @@ import intf_libs += libiconfontcppheaders%lib{iconfontcppheaders}
 #
 import intf_libs += libtinystl%lib{tinystl}
 
+# Overlay public header includes <imgui.h>. Static, same as liba{bgfx}.
+#
+import intf_libs += libimgui%liba{imgui}
+
 platform_entry =
 if ($cxx.target.class == 'macos')
   platform_entry = mm{entry/entry_osx entry/dialog_darwin}
@@ -26,8 +30,7 @@ elif ($cxx.target.class == 'windows')
 else
   platform_entry = cxx{entry/entry_x11}
 
-# Shared example glue (entry). Overlay compiled out until dear-imgui is a
-# package. imgui/ is a no-op stub so example sources still compile.
+# Shared example glue (entry + overlay). Overlay draws through libimgui.
 #
 ./: libue{example-common}
 
@@ -51,9 +54,10 @@ libue{example-load-program}: hxx{common bgfx_utils}: include = adhoc
 libue{example-load-program}: entry/hxx{**}: include = adhoc
 
 libue{example-common}: \
+  cxx{example-glue} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
   $platform_entry \
-  cxx{imgui/imgui} \
+  cxx{imgui/imgui imgui/widgets/widgets} \
   $impl_libs $intf_libs
 
 libue{example-common}:
@@ -61,11 +65,13 @@ libue{example-common}:
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
     -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
-    -DUSE_ENTRY=1
+    -DUSE_ENTRY=1 \
+    -DUSE_LOCAL_STB=0
 
   cxx.export.libs = $intf_libs
 }
 
+libue{example-common}: imgui/file{**.bin.h **.ttf.h **.inl}: include = adhoc
 libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc
 libue{example-common}: hxx{common args bgfx_utils}: include = adhoc
 

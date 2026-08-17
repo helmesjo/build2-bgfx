@@ -23,6 +23,7 @@ BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 | `libsimplewebp` | `build2-packaging/simplewebp` |
 | `libiconfontcppheaders` | `helmesjo/build2-IconFontCppHeaders` |
 | `libtinystl` | `helmesjo/build2-tinystl` |
+| `libimgui` | cppget testing (`^1.92.3`) |
 | `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
 | `catch2` | cppget stable |
 
@@ -36,11 +37,12 @@ what stays vendored in this repo.
 
 ### `libbimg-encode`
 
-Texture compression / encode path. Still in-tree:
+Texture compression / encode path.
 
-| Item | Upstream path | Role | Notes |
-|---|---|---|---|
-| **edtaa3** | `bimg/3rdparty/edtaa3` | Euclidean distance transform (SDF) | File-level symlinks in `src/edtaa3/`. Not a standalone product. |
+**edtaa3** stays in-tree. It is a small educational distance-transform
+snippet (Stefan Gustavson), not a product to package. File-level
+symlinks live in `src/edtaa3/` with their own `LICENSE.md` and
+`edtaa3/libul{edtaa3}` target. Include is `<edtaa3/edtaa3func.h>`.
 
 Compiled out until packaged:
 
@@ -55,8 +57,6 @@ Already packaged for encode: `libsquish` (BC1–5), `libastcenc` (ASTC),
 
 Compiled out with nvtt: **etc1** (ETC1) and **pvrtc** (PTC14 / PTC14A).
 See [section 4](#4-legacy-hardware-formats).
-
-Include layout for leftovers uses `<edtaa3/...>` via the `src/` include path.
 
 ### `libbgfx`
 
@@ -95,22 +95,22 @@ Compiled out until packaged:
 
 ## 2. Required for examples (consumer demos, not core API)
 
-Needed to restore the example overlay / settings UI. Compiled out today.
+Overlay restored via packaged `libimgui`. First-party draw path, shaders,
+fonts, and `example-glue.cpp` stay in `bgfx-examples`.
 
 ### `bgfx-examples`
 
-| Missing package (candidate) | Upstream path | Role |
-|---|---|---|
-| **dear-imgui** | `bgfx/3rdparty/dear-imgui` | Overlay and settings widgets. Compiled out. |
+No remaining required in-tree third-party. Depends on `libimgui` (core
+only), `libiconfontcppheaders`, and `libtinystl`.
 
-`libiconfontcppheaders` is already a `bgfx-examples` dependency. The stub
-`imgui.h` includes `<iconfontcppheaders/IconsKenney.h>` and
-`<iconfontcppheaders/IconsFontAwesome4.h>` (FA4, matching upstream's
-`icons_font_awesome.h`). `example-glue.cpp` stays dropped until dear-imgui
-is packaged.
+Dock and gizmo stay as first-party overlay extras (file-level
+symlinks under `common/imgui/widgets/`). They lived next to vendored
+dear-imgui and are not part of packaged `libimgui`. Other 3rdparty
+widgets (markdown, color wheel, ...) are unused by this example
+subset and are not compiled.
 
-`stb_truetype` / `stb_rect_pack` were only pulled in to compile Dear ImGui
-fonts. They are not example dependencies while imgui is compiled out.
+`stb_truetype` / `stb_rect_pack` are not example dependencies. Packaged
+imgui ships `imstb_*`. Overlay is built with `USE_LOCAL_STB=0`.
 
 Not required by the reduced example-common build (upstream uses them more
 widely): `meshoptimizer`, full nanovg/font stacks, `cgltf`, `sdf`,
@@ -149,7 +149,7 @@ and may help if/when shaderc is packaged.
 
 | Item | Where | Note |
 |---|---|---|
-| Example imgui overlay | `bgfx-examples/common/imgui/` | No-op stub until dear-imgui is packaged |
+| **edtaa3** | `libbimg-encode/src/edtaa3/` | Keep. File-level symlinks, own license and `libul` |
 | `catch_amalgamated.hpp` stub | `libbx-tests/tests/catch/` | Tests use packaged `catch2` |
 
 ---
@@ -171,12 +171,12 @@ ETC1/PVRTC is unchanged.
 
 | Local package | Still needs (not packaged) | Priority |
 |---|---|---|
-| `libbimg-encode` | edtaa3 (in-tree). nvtt/etc1/pvrtc compiled out | Low / leftover encode |
+| `libbimg-encode` | edtaa3 stays in-tree. nvtt/etc1/pvrtc compiled out | Leftover encode compiled out |
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
 | `libbx` | — | Done |
 | `libbimg` | — | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
-| `bgfx-examples` | dear-imgui (compiled out) | Medium (demos only) |
+| `bgfx-examples` | — | Done |
 | `libbx-tests` | — (`catch2` packaged) | Done |
 | *(future)* shaderc / tools | see section 3 | Deferred |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
@@ -185,20 +185,13 @@ ETC1/PVRTC is unchanged.
 
 ## Suggested unbundle order
 
-1. **Encode leftover** (**edtaa3**) if SDF tooling should be an external
-   package. **nvtt** only if BC6H/BC7 encode should be compiled back in.
-
-2. **Decode leftovers** (**dav1d** / **libavif**) if AVIF should be compiled
+1. **Decode leftovers** (**dav1d** / **libavif**) if AVIF should be compiled
    in.
 
-3. **dear-imgui**
-   Only required for examples, but large and widely reusable.
-   Icon codepoints already come from packaged `libiconfontcppheaders`.
-
-4. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
+2. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
    tree" policy demands it. Otherwise fine as single-header adhoc includes.
 
-5. **Legacy encode** (**etc1**, **pvrtc**) already compiled out. Re-enable
-   only if something explicitly needs them.
+3. **Legacy encode** (**etc1**, **pvrtc**, **nvtt**) already compiled out.
+   Re-enable only if something explicitly needs them.
 
-6. **Tool stacks** (shaderc, …) when those packages are added.
+4. **Tool stacks** (shaderc, …) when those packages are added.

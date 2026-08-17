@@ -1,0 +1,43 @@
+--- imgui.h.orig	2026-08-16 01:43:24
++++ imgui.h	2026-08-17 18:24:01
+@@ -8,9 +8,9 @@
+ 
+ #include <bgfx/bgfx.h>
+ #include <bx/bx.h>
+-#include <dear-imgui/imgui.h>
+-#include <iconfontheaders/icons_kenney.h>
+-#include <iconfontheaders/icons_font_awesome.h>
++#include <imgui.h>
++#include <iconfontcppheaders/IconsKenney.h>
++#include <iconfontcppheaders/IconsFontAwesome4.h>
+ 
+ #define IMGUI_MBUT_LEFT   0x01
+ #define IMGUI_MBUT_RIGHT  0x02
+@@ -39,6 +39,19 @@
+ 
+ namespace ImGui
+ {
++	struct Font
++	{
++		enum Enum
++		{
++			Regular,
++			Mono,
++
++			Count
++		};
++	};
++
++	void PushFont(Font::Enum _font, float _fontSizeBaseUnscaled = 0.0f);
++
+ #define IMGUI_FLAGS_NONE        UINT8_C(0x00)
+ #define IMGUI_FLAGS_ALPHA_BLEND UINT8_C(0x01)
+ 
+@@ -135,4 +148,7 @@
+ 
+ } // namespace ImGui
+ 
++#include "widgets/dock.h"
++#include "widgets/gizmo.h"
++
+ #endif // IMGUI_H_HEADER_GUARD
