@@ -2,7 +2,7 @@ pub_hdrs = hxx{**} file{**.inl}
 
 ./: $pub_hdrs
 
-# Install recreating subdirectories (bx/, tinystl/, compat/).
+# Install recreating subdirectories (bx/, compat/).
 #
 hxx{*}:
 {

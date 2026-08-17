@@ -14,6 +14,10 @@ import intf_libs += libbx%liba{bx}
 #
 import intf_libs += libiconfontcppheaders%lib{iconfontcppheaders}
 
+# Header-only mini-STL. bgfx_utils.h includes <tinystl/...>.
+#
+import intf_libs += libtinystl%lib{tinystl}
+
 platform_entry =
 if ($cxx.target.class == 'macos')
   platform_entry = mm{entry/entry_osx entry/dialog_darwin}

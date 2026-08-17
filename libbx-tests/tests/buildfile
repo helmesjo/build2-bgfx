@@ -1,5 +1,6 @@
 import libs  = libbx%lib{bx} \
-               catch2%lib{catch2}
+               catch2%lib{catch2} \
+               libtinystl%lib{tinystl}
 
 # Benches ship their own main() and are not part of the unit suite.
 #

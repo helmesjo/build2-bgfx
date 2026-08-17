@@ -1,7 +1,7 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
 
-# Public headers (bx/, tinystl/, compat/).
+# Public headers (bx/, compat/).
 #
 pub = [dir_path] ../include/
 

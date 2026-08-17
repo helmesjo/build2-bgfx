@@ -22,6 +22,7 @@ BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 | `libtinyexr` | decode `depends` (`^1.0.8`) |
 | `libsimplewebp` | `build2-packaging/simplewebp` |
 | `libiconfontcppheaders` | `helmesjo/build2-IconFontCppHeaders` |
+| `libtinystl` | `helmesjo/build2-tinystl` |
 | `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
 | `catch2` | cppget stable |
 
@@ -69,9 +70,10 @@ local **shim** to packaged `libmetal-cpp`, not a vendored copy.
 
 ### `libbx`
 
-| Missing package (candidate) | Location | Role | Notes |
-|---|---|---|---|
-| **tinystl** | `include/tinystl/` (upstream bx) | Header-only mini-STL | Public part of bx's API. Usually left with `libbx` unless a shared package is wanted. |
+No remaining required in-tree third-party. `libtinystl` is a package.
+`libbgfx` (private `bgfx_p.h`), `bgfx-examples`, and `libbx-tests`
+depend on it for `<tinystl/...>`. `libbx` itself does not include those
+headers.
 
 ### `libbimg`
 
@@ -171,7 +173,7 @@ ETC1/PVRTC is unchanged.
 |---|---|---|
 | `libbimg-encode` | edtaa3 (in-tree). nvtt/etc1/pvrtc compiled out | Low / leftover encode |
 | `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
-| `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
+| `libbx` | — | Done |
 | `libbimg` | — | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
 | `bgfx-examples` | dear-imgui (compiled out) | Medium (demos only) |
@@ -196,9 +198,7 @@ ETC1/PVRTC is unchanged.
 4. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
    tree" policy demands it. Otherwise fine as single-header adhoc includes.
 
-5. **tinystl** only if there is a clear multi-package consumer beyond bx.
-
-6. **Legacy encode** (**etc1**, **pvrtc**) already compiled out. Re-enable
+5. **Legacy encode** (**etc1**, **pvrtc**) already compiled out. Re-enable
    only if something explicitly needs them.
 
-7. **Tool stacks** (shaderc, …) when those packages are added.
+6. **Tool stacks** (shaderc, …) when those packages are added.
