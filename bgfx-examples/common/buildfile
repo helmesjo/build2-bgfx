@@ -3,13 +3,16 @@
 # Public bx inlines (e.g. toSeconds) reference Ticks::s_kInvFreq, which fails
 # to resolve against the shared import library on MSVC.
 #
-import libs = libbgfx%liba{bgfx}
-import libs += libbimg%liba{bimg}
-import libs += libbx%liba{bx}
+intf_libs = # Interface dependencies.
+impl_libs = # Implementation dependencies.
 
-# Header-only icon codepoints. Stub imgui.h includes the package headers.
+import intf_libs += libbgfx%liba{bgfx}
+import intf_libs += libbimg%liba{bimg}
+import intf_libs += libbx%liba{bx}
+
+# Header-only icon codepoints. Public stub imgui.h includes the headers.
 #
-import icon_libs = libiconfontcppheaders%lib{iconfontcppheaders}
+import intf_libs += libiconfontcppheaders%lib{iconfontcppheaders}
 
 platform_entry =
 if ($cxx.target.class == 'macos')
@@ -33,7 +36,7 @@ if ($build.meta_operation != 'dist')
 #
 shaders_dir = $path.posix_string($src_root/shaders)
 
-libue{example-load-program}: cxx{load_program} $libs
+libue{example-load-program}: cxx{load_program} $impl_libs $intf_libs
 {
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
@@ -47,7 +50,7 @@ libue{example-common}: \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
   $platform_entry \
   cxx{imgui/imgui} \
-  $libs $icon_libs
+  $impl_libs $intf_libs
 
 libue{example-common}:
 {
@@ -56,9 +59,7 @@ libue{example-common}:
     -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
     -DUSE_ENTRY=1
 
-  # Stub imgui.h includes the icon headers. Example TUs include that stub.
-  #
-  cxx.export.libs =+ $icon_libs
+  cxx.export.libs = $intf_libs
 }
 
 libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc
