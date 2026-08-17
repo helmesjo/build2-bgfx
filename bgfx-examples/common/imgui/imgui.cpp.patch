@@ -1,0 +1,13 @@
+--- imgui.cpp.orig	2026-08-16 01:43:24
++++ imgui.cpp	2026-08-17 18:17:39
+@@ -8,8 +8,8 @@
+ #include <bx/allocator.h>
+ #include <bx/math.h>
+ #include <bx/timer.h>
+-#include <dear-imgui/imgui.h>
+-#include <dear-imgui/imgui_internal.h>
++#include <imgui.h>
++#include <imgui_internal.h>
+ 
+ #include "imgui.h"
+ #include "../bgfx_utils.h"
