@@ -7,6 +7,10 @@ location: https://pkg.cppget.org/1/stable
 trust: 70:64:FE:E4:E0:F3:60:F1:B4:51:E1:FA:12:5C:E0:B3:DB:DF:96:33:39:B9:2E:E5:C2:68:63:4C:A6:47:39:43
 :
 role: prerequisite
+location: https://pkg.cppget.org/1/queue/alpha
+trust: 70:64:FE:E4:E0:F3:60:F1:B4:51:E1:FA:12:5C:E0:B3:DB:DF:96:33:39:B9:2E:E5:C2:68:63:4C:A6:47:39:43
+:
+role: prerequisite
 type: git
 location: https://github.com/helmesjo/build2-astc-encoder.git#review
 :
@@ -20,32 +24,8 @@ location: https://github.com/helmesjo/build2-DirectX-Headers.git#review
 :
 role: prerequisite
 type: git
-location: https://github.com/helmesjo/build2-libsquish.git#main
-:
-role: prerequisite
-type: git
-location: https://github.com/build2-packaging/stb.git#master
-:
-role: prerequisite
-type: git
 location: https://github.com/helmesjo/build2-Vulkan-Headers.git#review
 :
 role: prerequisite
 type: git
 location: https://github.com/helmesjo/build2-etcpak.git#review
-:
-role: prerequisite
-type: git
-location: https://github.com/build2-packaging/lodepng.git
-:
-role: prerequisite
-type: git
-location: https://github.com/build2-packaging/iqa.git#review
-:
-role: prerequisite
-type: git
-location: https://github.com/build2-packaging/simplewebp.git#review
-:
-role: prerequisite
-type: git
-location: https://github.com/build2-packaging/IconFontCppHeaders.git#review
