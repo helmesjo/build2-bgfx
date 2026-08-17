@@ -7,6 +7,10 @@ import libs = libbgfx%liba{bgfx}
 import libs += libbimg%liba{bimg}
 import libs += libbx%liba{bx}
 
+# Header-only icon codepoints. Stub imgui.h includes the package headers.
+#
+import icon_libs = libiconfontcppheaders%lib{iconfontcppheaders}
+
 platform_entry =
 if ($cxx.target.class == 'macos')
   platform_entry = mm{entry/entry_osx entry/dialog_darwin}
@@ -43,7 +47,7 @@ libue{example-common}: \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
   $platform_entry \
   cxx{imgui/imgui} \
-  $libs
+  $libs $icon_libs
 
 libue{example-common}:
 {
@@ -51,6 +55,10 @@ libue{example-common}:
     "-I$out_base" "-I$src_base" \
     -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
     -DUSE_ENTRY=1
+
+  # Stub imgui.h includes the icon headers. Example TUs include that stub.
+  #
+  cxx.export.libs =+ $icon_libs
 }
 
 libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc

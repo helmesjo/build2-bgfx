@@ -21,6 +21,7 @@ BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 | `liblodepng` | `build2-packaging/lodepng` |
 | `libtinyexr` | decode `depends` (`^1.0.8`) |
 | `libsimplewebp` | `build2-packaging/simplewebp` |
+| `libiconfontcppheaders` | `helmesjo/build2-IconFontCppHeaders` |
 | `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
 | `catch2` | cppget stable |
 
@@ -99,7 +100,12 @@ Needed to restore the example overlay / settings UI. Compiled out today.
 | Missing package (candidate) | Upstream path | Role |
 |---|---|---|
 | **dear-imgui** | `bgfx/3rdparty/dear-imgui` | Overlay and settings widgets. Compiled out. |
-| **iconfontheaders** | `bgfx/3rdparty/iconfontheaders` | Icon codepoints used by the overlay. Compiled out. |
+
+`libiconfontcppheaders` is already a `bgfx-examples` dependency. The stub
+`imgui.h` includes `<iconfontcppheaders/IconsKenney.h>` and
+`<iconfontcppheaders/IconsFontAwesome4.h>` (FA4, matching upstream's
+`icons_font_awesome.h`). `example-glue.cpp` stays dropped until dear-imgui
+is packaged.
 
 `stb_truetype` / `stb_rect_pack` were only pulled in to compile Dear ImGui
 fonts. They are not example dependencies while imgui is compiled out.
@@ -168,7 +174,7 @@ ETC1/PVRTC is unchanged.
 | `libbx` | tinystl (optional unbundle) | Low (API-integrated) |
 | `libbimg` | — | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
-| `bgfx-examples` | dear-imgui, iconfontheaders (compiled out) | Medium (demos only) |
+| `bgfx-examples` | dear-imgui (compiled out) | Medium (demos only) |
 | `libbx-tests` | — (`catch2` packaged) | Done |
 | *(future)* shaderc / tools | see section 3 | Deferred |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
@@ -183,8 +189,9 @@ ETC1/PVRTC is unchanged.
 2. **Decode leftovers** (**dav1d** / **libavif**) if AVIF should be compiled
    in.
 
-3. **dear-imgui** (+ **iconfontheaders** if kept separate)
+3. **dear-imgui**
    Only required for examples, but large and widely reusable.
+   Icon codepoints already come from packaged `libiconfontcppheaders`.
 
 4. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
    tree" policy demands it. Otherwise fine as single-header adhoc includes.
