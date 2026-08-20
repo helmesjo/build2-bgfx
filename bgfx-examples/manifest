@@ -19,6 +19,7 @@ depends: libbgfx == $
 depends: libiconfontcppheaders >= 2026.6.5-
 depends: libtinystl ^0.0.1-
 depends: libimgui ^1.92.3
+depends: libimguizmo ^1.10.0-
 
 # entry_x11 needs X11 development packages. Drop bare Linux bots and use
 # named sys configurations that install them (CI uses --sys-no-stub:

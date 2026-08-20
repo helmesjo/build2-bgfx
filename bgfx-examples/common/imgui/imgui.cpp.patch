@@ -1,5 +1,5 @@
 --- imgui.cpp.orig	2026-08-16 01:43:24
-+++ imgui.cpp	2026-08-17 18:17:39
++++ imgui.cpp	2026-08-21 00:54:45
 @@ -8,8 +8,8 @@
  #include <bx/allocator.h>
  #include <bx/math.h>
@@ -11,3 +11,19 @@
  
  #include "imgui.h"
  #include "../bgfx_utils.h"
+@@ -454,15 +454,11 @@
+ 			}
+ 		}
+ 
+-		ImGuizmo::Create();
+-
+ 		ImGui::InitDockContext();
+ 	}
+ 
+ 	void destroy()
+ 	{
+-		ImGuizmo::Destroy();
+-
+ 		for (ImTextureData* texData : ImGui::GetPlatformIO().Textures)
+ 		{
+ 			if (1 == texData->RefCount)

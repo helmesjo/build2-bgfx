@@ -10,5 +10,4 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-#include "gizmo.inl"
 #include "dock.inl"

@@ -149,6 +149,6 @@ namespace ImGui
 } // namespace ImGui
 
 #include "widgets/dock.h"
-#include "widgets/gizmo.h"
+#include <imguizmo/ImGuizmo.h>
 
 #endif // IMGUI_H_HEADER_GUARD

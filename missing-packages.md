@@ -24,6 +24,7 @@ BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 | `libiconfontcppheaders` | `helmesjo/build2-IconFontCppHeaders` |
 | `libtinystl` | `helmesjo/build2-tinystl` |
 | `libimgui` | cppget testing (`^1.92.3`) |
+| `libimguizmo` | `helmesjo/build2-imguizmo` |
 | `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
 | `catch2` | cppget stable |
 
@@ -101,13 +102,12 @@ fonts, and `example-glue.cpp` stay in `bgfx-examples`.
 ### `bgfx-examples`
 
 No remaining required in-tree third-party. Depends on `libimgui` (core
-only), `libiconfontcppheaders`, and `libtinystl`.
+only), `libimguizmo`, `libiconfontcppheaders`, and `libtinystl`.
 
-Dock and gizmo stay as first-party overlay extras (file-level
-symlinks under `common/imgui/widgets/`). They lived next to vendored
-dear-imgui and are not part of packaged `libimgui`. Other 3rdparty
-widgets (markdown, color wheel, ...) are unused by this example
-subset and are not compiled.
+Dock stays as a first-party overlay extra (file-level symlinks under
+`common/imgui/widgets/`). It is vassvik `imgui_docking_minimal`, not
+packaged `libimgui-docking`. Other 3rdparty widgets (markdown, color
+wheel, ...) are unused by this example subset and are not compiled.
 
 `stb_truetype` / `stb_rect_pack` are not example dependencies. Packaged
 imgui ships `imstb_*`. Overlay is built with `USE_LOCAL_STB=0`.
