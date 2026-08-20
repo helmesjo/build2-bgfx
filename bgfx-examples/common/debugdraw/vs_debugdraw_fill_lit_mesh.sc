@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/debugdraw/vs_debugdraw_fill_lit_mesh.sc

@@ -1,7 +1,8 @@
 # Auto-include non-example dirs (common/, etc.). Numbered example dirs are
-# excluded from the wildcard and added explicitly.
+# excluded from the wildcard and added explicitly. shaders/ and textures/
+# are large runtime fixtures, not build scopes.
 #
-./: {*/ -build/ -shaders/ -[0-9]*-*/} \
+./: {*/ -build/ -shaders/ -textures/ -[0-9]*-*/} \
   00-helloworld/ \
   doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
 
@@ -9,23 +10,39 @@
 #
 common/: install = false
 
-# Prebuilt runtime assets (shader bins, etc.): monorepo only.
+# Prebuilt runtime assets. install does not affect dist.
 #
 shaders/: install = false
+textures/: install = false
 
-# Extra examples: monorepo/build-only (not source-distributed).
+# Large git-only fixtures. include = false keeps the unpacked dist archive
+# from trying to update files that were never copied. dist = false is
+# target-specific (own declaration) so collect() actually drops them.
 #
-if ($build.meta_operation != 'dist')
+./: file{shaders/** textures/**}:
 {
-  ./: 01-cubes/
-  ./: 02-metaballs/
-  ./: 03-raymarch/
-  ./: 05-instancing/
-  ./: 07-callback/
-  ./: 17-drawstress/
-  ./: 19-oit/
-  ./: 22-windows/
-  ./: 26-occlusion/
-  ./: 34-mvs/
-  ./: 35-dynamic/
+  include = false
+}
+
+file{shaders/** textures/**}:
+{
+  dist = false
+}
+
+# Extra examples: git-only. Prerequisite-specific include, not an if around
+# the declaration (that is a dist warning, not an exclusion).
+#
+extras = 01-cubes 02-metaballs 03-raymarch 05-instancing 07-callback \
+         17-drawstress 19-oit 22-windows 26-occlusion 34-mvs 35-dynamic \
+         06-bump 08-update 21-deferred 23-vectordisplay 24-nbody 27-terrain \
+         29-debugdraw 33-pom 37-gpudrivenrendering 38-bloom 40-svt 41-tess \
+         47-pixelformats 48-drawindirect 49-hextile 50-headless 52-layered \
+         53-sky2
+
+for d: $extras
+{
+  ./: $d/:
+  {
+    include = ($build.meta_operation != 'dist')
+  }
 }
