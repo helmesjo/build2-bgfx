@@ -1,0 +1,1 @@
+../../upstream/bgfx/examples/38-bloom/bloom.cpp

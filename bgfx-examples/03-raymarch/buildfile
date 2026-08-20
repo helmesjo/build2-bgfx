@@ -22,3 +22,11 @@ exe{raymarch}: \
 }
 
 exe{raymarch}: ../common/hxx{common args bgfx_utils}: include = adhoc
+
+# Extra example sources stay in git. Target-specific dist so collect()
+# drops them even if dist_include rewrites include=false to adhoc.
+#
+{hxx cxx file testscript}{*}:
+{
+  dist = false
+}

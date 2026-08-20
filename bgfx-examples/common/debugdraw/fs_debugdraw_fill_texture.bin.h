@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/debugdraw/fs_debugdraw_fill_texture.bin.h

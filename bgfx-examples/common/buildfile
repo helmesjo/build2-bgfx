@@ -26,6 +26,10 @@ import intf_libs += libimgui%liba{imgui}
 #
 import intf_libs += libimguizmo%liba{imguizmo}
 
+# loadTexture / imageLoad. Private to example-load-program.
+#
+import impl_libs += libbimg-decode%liba{bimg-decode}
+
 platform_entry =
 if ($cxx.target.class == 'macos')
   platform_entry = mm{entry/entry_osx entry/dialog_darwin}
@@ -38,27 +42,61 @@ else
 #
 ./: libue{example-common}
 
-# loadProgram for monorepo examples that use runtime shaders/ (not distributed).
+# loadProgram for monorepo extras that use shaders/ and textures/ (not
+# distributed). Prerequisite-specific include, not an if around the
+# declaration.
 #
-if ($build.meta_operation != 'dist')
-  ./: libue{example-load-program}
+./: libue{example-load-program}:
+{
+  include = ($build.meta_operation != 'dist')
+}
 
 # POSIX separators so the string literal is valid on Windows (no \U, \h, ...).
 #
 shaders_dir = $path.posix_string($src_root/shaders)
+runtime_dir = $path.posix_string($src_root)
 
 libue{example-load-program}: cxx{load_program} $impl_libs $intf_libs
 {
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
-    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$shaders_dir\""
+    "-DBGFX_EXAMPLES_SHADERS_DIR=\"$shaders_dir\"" \
+    "-DBGFX_EXAMPLES_RUNTIME_DIR=\"$runtime_dir\""
 }
 
 libue{example-load-program}: hxx{common bgfx_utils}: include = adhoc
 libue{example-load-program}: entry/hxx{**}: include = adhoc
 
+# Source-tree runtime data. Tracked, not compiled. Headless testscript ln's
+# shaders/ into $~.
+#
+libue{example-load-program}: ../shaders/file{**}:
+{
+  include = adhoc
+}
+
+libue{example-load-program}: ../textures/file{**}:
+{
+  include = adhoc
+}
+
+# First-party debug draw (embedded shaders). Only 29-debugdraw links this.
+#
+libue{example-debugdraw}: cxx{debugdraw/debugdraw} $impl_libs $intf_libs
+{
+  cxx.poptions =+ "-I$out_base" "-I$src_base"
+}
+
+libue{example-debugdraw}: debugdraw/file{**.bin.h}: include = adhoc
+libue{example-debugdraw}: debugdraw/hxx{*}: include = adhoc
+
+debugdraw/{hxx cxx file}{*}:
+{
+  dist = false
+}
+
 libue{example-common}: \
-  cxx{example-glue} \
+  cxx{example-glue camera} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
   $platform_entry \
   cxx{imgui/imgui imgui/widgets/widgets} \
@@ -77,7 +115,7 @@ libue{example-common}:
 
 libue{example-common}: imgui/file{**.bin.h **.ttf.h **.inl}: include = adhoc
 libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc
-libue{example-common}: hxx{common args bgfx_utils}: include = adhoc
+libue{example-common}: hxx{common args bgfx_utils camera packrect}: include = adhoc
 
 if ($cxx.target.class == 'macos')
 {

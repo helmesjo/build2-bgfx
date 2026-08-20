@@ -8,7 +8,6 @@ include ../common/
 
 exe{occlusion}: \
   {hxx cxx}{**} \
-  ../common/cxx{camera} \
   ../common/libue{example-load-program} \
   ../common/libue{example-common} \
   $libs
@@ -23,3 +22,11 @@ exe{occlusion}: \
 }
 
 exe{occlusion}: ../common/hxx{common args bgfx_utils camera}: include = adhoc
+
+# Extra example sources stay in git. Target-specific dist so collect()
+# drops them even if dist_include rewrites include=false to adhoc.
+#
+{hxx cxx file testscript}{*}:
+{
+  dist = false
+}

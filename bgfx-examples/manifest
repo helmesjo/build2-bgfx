@@ -16,6 +16,7 @@ package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbgfx == $
+depends: libbimg-decode == $
 depends: libiconfontcppheaders >= 2026.6.5-
 depends: libtinystl ^0.0.1-
 depends: libimgui ^1.92.3

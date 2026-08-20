@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/debugdraw/vs_debugdraw_lines_stipple.bin.h
