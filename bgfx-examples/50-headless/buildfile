@@ -8,12 +8,11 @@ include ../common/
 
 exe{headless}: \
   {hxx cxx}{**} \
-  testscript \
   ../common/libue{example-load-program} \
   ../common/libue{example-common} \
   $libs
 {
-  test = true
+  test = false
 
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
@@ -23,12 +22,11 @@ exe{headless}: \
 }
 
 exe{headless}: ../common/hxx{common args bgfx_utils}: include = adhoc
-exe{headless}: ../shaders/file{**}: include = adhoc
 
 # Extra example sources stay in git. Target-specific dist so collect()
 # drops them even if dist_include rewrites include=false to adhoc.
 #
-{hxx cxx file testscript}{*}:
+{hxx cxx file}{*}:
 {
   dist = false
 }

@@ -67,8 +67,7 @@ libue{example-load-program}: cxx{load_program} $impl_libs $intf_libs
 libue{example-load-program}: hxx{common bgfx_utils}: include = adhoc
 libue{example-load-program}: entry/hxx{**}: include = adhoc
 
-# Source-tree runtime data. Tracked, not compiled. Headless testscript ln's
-# shaders/ into $~.
+# Source-tree runtime data. Tracked, not compiled.
 #
 libue{example-load-program}: ../shaders/file{**}:
 {
