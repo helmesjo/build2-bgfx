@@ -1,5 +1,5 @@
 --- imgui.h.orig	2026-08-16 01:43:24
-+++ imgui.h	2026-08-17 18:24:01
++++ imgui.h	2026-08-21 00:54:45
 @@ -8,9 +8,9 @@
  
  #include <bgfx/bgfx.h>
@@ -38,6 +38,6 @@
  } // namespace ImGui
  
 +#include "widgets/dock.h"
-+#include "widgets/gizmo.h"
++#include <imguizmo/ImGuizmo.h>
 +
  #endif // IMGUI_H_HEADER_GUARD

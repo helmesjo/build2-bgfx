@@ -22,6 +22,10 @@ import intf_libs += libtinystl%lib{tinystl}
 #
 import intf_libs += libimgui%liba{imgui}
 
+# Overlay public header includes <imguizmo/ImGuizmo.h>. Static, same as imgui.
+#
+import intf_libs += libimguizmo%liba{imguizmo}
+
 platform_entry =
 if ($cxx.target.class == 'macos')
   platform_entry = mm{entry/entry_osx entry/dialog_darwin}
