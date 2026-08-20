@@ -1,4 +1,0 @@
-{
-  ln -s $src_root/shaders/ shaders
-  $* 1>!
-}
