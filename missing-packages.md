@@ -1,40 +1,67 @@
 # Missing third-party packages
 
-Inventory of in-tree third-party dependencies that current packages still
-require, but that are **not** yet available as separate `build2` packages
+Inventory of third-party dependencies that current packages still require
+but that are **not** yet available as separate `build2` packages
 (import/`depends`). Already unbundled packages are listed only for context.
+
+After the unbundle stretch, the only remaining **in-tree third-party product**
+in the local packages is the RenderDoc header. Snippets (edtaa3, h264,
+vassvik dock) stay in-tree on purpose. Compiled-out and future-tool vendors
+live in the upstream submodule only.
 
 Focus is **modern hardware** support (ETC2/EAC and ASTC already packaged,
 BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 
-**Already external** (see `repositories.manifest` + cppget stable):
+**Already external** (git prereqs in `repositories.manifest`, cppget
+queue/testing/stable, or `build2-packaging` GitHub):
 
 | Package | Source |
 |---|---|
-| `libastcenc` | `helmesjo/build2-astc-encoder` |
-| `libmetal-cpp` | `helmesjo/build2-metal-cpp` |
-| `libdirectx-headers` | `helmesjo/build2-DirectX-Headers` |
-| `libsquish` | `helmesjo/build2-libsquish` |
-| `libvulkan-headers` | `helmesjo/build2-Vulkan-Headers` |
-| `libetcpak` | `helmesjo/build2-etcpak` |
-| `libiqa` | `build2-packaging/iqa` |
-| `liblodepng` | `build2-packaging/lodepng` |
-| `libtinyexr` | decode `depends` (`^1.0.8`) |
-| `libsimplewebp` | `build2-packaging/simplewebp` |
-| `libiconfontcppheaders` | `helmesjo/build2-IconFontCppHeaders` |
-| `libtinystl` | `helmesjo/build2-tinystl` |
-| `libimgui` | cppget testing (`^1.92.3`) |
-| `libimguizmo` | `helmesjo/build2-imguizmo` |
-| `stb_image_resize2`, `stb_truetype`, `stb_rect_pack`, `stb_image` | `build2-packaging/stb` |
+| `libastcenc` | git `helmesjo/build2-astc-encoder#review` |
+| `libmetal-cpp` | git `helmesjo/build2-metal-cpp#review` |
+| `libdirectx-headers` | git `helmesjo/build2-DirectX-Headers#review` |
+| `libvulkan-headers` | git `helmesjo/build2-Vulkan-Headers#review` |
+| `libetcpak` | git `helmesjo/build2-etcpak#review` |
+| `libimguizmo` | git `helmesjo/build2-imguizmo#review` |
+| `libsquish` | cppget queue (`^1.15.104-`) |
+| `libiqa` | cppget queue (`^1.1.2-`) |
+| `liblodepng` | cppget queue (`== 2026.1.19`) |
+| `libsimplewebp` | cppget queue (`== 2026.7.18`) |
+| `libtinyexr` | cppget (`^1.0.8`, pulls `libminiz`) |
+| `libiconfontcppheaders` | cppget testing (`>= 2026.6.5-`), `build2-packaging/IconFontCppHeaders` |
+| `libtinystl` | `build2-packaging/tinystl` (`^0.0.1-`) |
+| `libimgui` | cppget testing (`^1.92.3`, core only) |
+| `stb_image_resize2`, `stb_image`, `stb_truetype`, `stb_rect_pack` | cppget (`build2-packaging/stb`) |
 | `catch2` | cppget stable |
+
+Official `libimgui-docking` is also on cppget. This repo does not use it.
+
+---
+
+## Currently vendored in this repo
+
+These are the only third-party leftovers **inside the local packages**
+(not merely under `upstream/`).
+
+| Item | Path | Compiled today | Package it? |
+|---|---|---|---|
+| **renderdoc** (`renderdoc_app.h`) | `libbgfx/src/3rdparty/renderdoc` (symlink) | Yes, on Windows/Linux via `debug_renderdoc.cpp`. Runtime `dlopen`. | **Yes, if any remaining in-tree product should become a package.** Real RenderDoc in-process API (Baldur Karlsson, MIT). No `build2-packaging/renderdoc` yet. |
+| **h264** | `libbgfx/src/h264/` (file-level symlink plus local `LICENSE.txt`) | Wired as `h264/libul{WickedEngine-h264}`, inactive (`BGFX_CONFIG_VIDEO=0`) | **No.** Wicked Engine one-off MIT header. See `libbgfx/DEV-README.md`. |
+| **edtaa3** | `libbimg-encode/src/edtaa3/` | Yes (`bimg::imageMakeDist` / SDF) | **No.** Educational Stefan Gustavson snippet. See `libbimg-encode/DEV-README.md`. |
+| **vassvik dock** | `bgfx-examples/common/imgui/widgets/dock.{h,inl}` | Yes, in `libue{example-common}` | **No.** Public-domain `imgui_docking_minimal`. Not packaged `libimgui-docking`. |
+| metal-cpp shim | `libbgfx/src/3rdparty/metal-cpp/metal.hpp` | macOS only | Not vendored product code. Path shim onto packaged `libmetal-cpp`. |
+| catch stub | `libbx-tests/tests/catch/catch_amalgamated.hpp` | Tests include it | Not vendored product code. Redirects to packaged `catch2`. |
+
+No other in-tree third-party mounts remain under `libbx`, `libbimg`,
+`libbimg-encode`, `libbimg-decode`, `libbgfx`, `bgfx-examples`, or
+`libbx-tests`.
 
 ---
 
 ## 1. Required for consumer library features (modern)
 
 These are needed to build and use the primary libraries as shipped today
-(encode path, runtime library). Unbundling them improves reuse and shrinks
-what stays vendored in this repo.
+(encode path, runtime library).
 
 ### `libbimg-encode`
 
@@ -53,7 +80,7 @@ Compiled out until packaged:
 | **etc1** | ETC1 encode |
 | **pvrtc** | PVRTC (PTC14 / PTC14A) encode |
 
-Already packaged for encode: `libsquish` (BC1–5), `libastcenc` (ASTC),
+Already packaged for encode: `libsquish` (BC1-5), `libastcenc` (ASTC),
 `libetcpak` (ETC2/EAC), `stb_image_resize2`, `libiqa`.
 
 Compiled out with nvtt: **etc1** (ETC1) and **pvrtc** (PTC14 / PTC14A).
@@ -61,10 +88,14 @@ See [section 4](#4-legacy-hardware-formats).
 
 ### `libbgfx`
 
+**h264** stays in-tree. It is a Wicked Engine one-off MIT header, not a
+product to package. File-level symlink lives in `src/h264/` with a local
+`LICENSE.txt` and `h264/libul{WickedEngine-h264}` target. Include is
+`<h264/h264.h>`. Video is compiled out (`BGFX_CONFIG_VIDEO=0`).
+
 | Missing package (candidate) | Upstream path | Role | Notes |
 |---|---|---|---|
-| **renderdoc** (header-only) | `bgfx/3rdparty/renderdoc/renderdoc_app.h` | RenderDoc in-process API | Still required on Windows/Linux for `debug_renderdoc.cpp`. Single header. |
-| **h264** (header-only) | `bgfx/3rdparty/h264/h264.h` | H.264 bitstream parser | Present and wired, but **inactive**: build sets `BGFX_CONFIG_VIDEO=0`. Required only if video decode is enabled later. |
+| **renderdoc** (header-only) | `bgfx/3rdparty/renderdoc/renderdoc_app.h` | RenderDoc in-process API | Still required on Windows/Linux for `debug_renderdoc.cpp`. Single header. Last in-tree third-party **product**. |
 
 Not missing as third-party product code: the `3rdparty/metal-cpp/` path is a
 local **shim** to packaged `libmetal-cpp`, not a vendored copy.
@@ -97,12 +128,16 @@ Compiled out until packaged:
 ## 2. Required for examples (consumer demos, not core API)
 
 Overlay restored via packaged `libimgui`. First-party draw path, shaders,
-fonts, and `example-glue.cpp` stay in `bgfx-examples`.
+fonts, and `example-glue.cpp` stay in `bgfx-examples`. Git-only extras
+added in `9838c26` still avoid meshoptimizer and NanoVG.
+`load_program.cpp` is a subset of upstream `bgfx_utils.cpp` without
+`meshLoad`.
 
 ### `bgfx-examples`
 
-No remaining required in-tree third-party. Depends on `libimgui` (core
-only), `libimguizmo`, `libiconfontcppheaders`, and `libtinystl`.
+No remaining required in-tree third-party **product**. Depends on
+`libimgui` (core only), `libimguizmo`, `libiconfontcppheaders`, and
+`libtinystl`.
 
 Dock stays as a first-party overlay extra (file-level symlinks under
 `common/imgui/widgets/`). It is vassvik `imgui_docking_minimal`, not
@@ -112,9 +147,20 @@ wheel, ...) are unused by this example subset and are not compiled.
 `stb_truetype` / `stb_rect_pack` are not example dependencies. Packaged
 imgui ships `imstb_*`. Overlay is built with `USE_LOCAL_STB=0`.
 
-Not required by the reduced example-common build (upstream uses them more
-widely): `meshoptimizer`, full nanovg/font stacks, `cgltf`, `sdf`,
-`native_app_glue`.
+Not compiled by the current example-common build (upstream uses them more
+widely, none of them are vendored in the package trees today):
+
+| Missing package (candidate) | Would unlock | Notes |
+|---|---|---|
+| **meshoptimizer** | Remaining `meshLoad` examples (`04-mesh`, `09-hdr`, `12-lod`, `14-shadowvolumes`, `15-shadowmaps-simple`, `18-ibl`, `28-wireframe`, `30-picking`, `31-rsm`, `36-sky`, `39-assao`, `42-bunnylod`, `43-denoise`, `44-sss`, `45-bokeh`, `46-fsr`) plus `geometryc` | Needed by full `bgfx_utils.cpp` `meshLoad` |
+| **cgltf** | `geometryc` glTF path (with meshoptimizer) | Header-only. Not used by current extras |
+| **NanoVG** | `10-font`, `11-fontsdf`, `18-ibl`, `20-nanovg` | Lives under upstream `examples/common/nanovg/` with a bgfx backend |
+| **sdf** | Font SDF path (`font_manager.cpp`) | Mikko Mononen / Stefan Gustavson snippet, same class as edtaa3 |
+| **native_app_glue** | Android entry | NDK helper, not a product to package |
+
+Other skipped upstream examples (`13-stencil`, `16-shadowmaps`, `25-c99`,
+`32-particles`, `51-gpufont`, ...) are not necessarily waiting on a missing
+package.
 
 ---
 
@@ -128,18 +174,20 @@ are added.
 
 | Item | Package that would care | Why lower priority |
 |---|---|---|
-| **h264** | `libbgfx` | Video disabled (`BGFX_CONFIG_VIDEO=0`) |
+| **h264** | `libbgfx` | Video disabled (`BGFX_CONFIG_VIDEO=0`). Keep as snippet |
 | **khronos** GL/EGL/GLES headers | `libbgfx` if OpenGL/ES enabled | OpenGL/ES compiled out today |
-| **renderdoc** | `libbgfx` | Dev tooling header only, tiny, dlopen at runtime |
+| **renderdoc** | `libbgfx` | Last in-tree product, but tiny, `dlopen` at runtime. Fine as an adhoc include unless a no-3rdparty-in-tree policy demands a package |
 
 ### Not packaged yet (upstream has them, no local package consumes them)
 
-Would become missing-package work only when adding tools packages.
+Would become missing-package work only when adding tools packages or the
+remaining mesh/font examples.
 
 | Future package surface | Upstream third-party (still missing) |
 |---|---|
+| **remaining mesh examples** / **geometryc** | meshoptimizer, cgltf |
+| **font / nanovg examples** | NanoVG, sdf |
 | **shaderc** / tools | fcpp, glsl-optimizer, glslang, spirv-cross, spirv-headers, spirv-tools, dawn/tint, d3d4linux |
-| **geometryc** | meshoptimizer |
 | **texturev** | l-smash |
 
 A local `build2-SPIRV-Cross` tree already exists under the packaging workspace
@@ -150,6 +198,8 @@ and may help if/when shaderc is packaged.
 | Item | Where | Note |
 |---|---|---|
 | **edtaa3** | `libbimg-encode/src/edtaa3/` | Keep. File-level symlinks, own license and `libul` |
+| **h264** | `libbgfx/src/h264/` | Keep. File-level symlink, local license, `libul` |
+| **vassvik dock** | `bgfx-examples/common/imgui/widgets/` | Keep as overlay extra |
 | `catch_amalgamated.hpp` stub | `libbx-tests/tests/catch/` | Tests use packaged `catch2` |
 
 ---
@@ -172,12 +222,13 @@ ETC1/PVRTC is unchanged.
 | Local package | Still needs (not packaged) | Priority |
 |---|---|---|
 | `libbimg-encode` | edtaa3 stays in-tree. nvtt/etc1/pvrtc compiled out | Leftover encode compiled out |
-| `libbgfx` | renderdoc header, h264 header (video off) | Medium / low |
-| `libbx` | — | Done |
-| `libbimg` | — | Done |
+| `libbgfx` | renderdoc header (in-tree product). h264 stays, video off | Medium / low |
+| `libbx` | none | Done |
+| `libbimg` | none | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
-| `bgfx-examples` | — | Done |
-| `libbx-tests` | — (`catch2` packaged) | Done |
+| `bgfx-examples` | vassvik dock stays. meshoptimizer/NanoVG/cgltf/sdf not in the current extras | Done for current extras |
+| `libbx-tests` | none (`catch2` packaged) | Done |
+| *(future)* remaining mesh/font examples, geometryc | meshoptimizer, cgltf, NanoVG, sdf | Next if those ship |
 | *(future)* shaderc / tools | see section 3 | Deferred |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
 
@@ -185,13 +236,20 @@ ETC1/PVRTC is unchanged.
 
 ## Suggested unbundle order
 
-1. **Decode leftovers** (**dav1d** / **libavif**) if AVIF should be compiled
-   in.
+1. **meshoptimizer** (then **cgltf**) if remaining mesh examples or
+   `geometryc` should ship.
 
-2. **renderdoc** / **h264** headers only if video or stricter "no 3rdparty in
-   tree" policy demands it. Otherwise fine as single-header adhoc includes.
+2. **dav1d** / **libavif** if AVIF should be compiled in.
 
-3. **Legacy encode** (**etc1**, **pvrtc**, **nvtt**) already compiled out.
-   Re-enable only if something explicitly needs them.
+3. **renderdoc** header-only package only if a stricter "no 3rdparty in
+   tree" policy demands it. Otherwise fine as a single-header adhoc include.
 
-4. **Tool stacks** (shaderc, …) when those packages are added.
+4. **NanoVG** if font/nanovg examples should ship. **sdf** may stay in-tree
+   the way edtaa3 does (same class of snippet).
+
+5. **nvtt** only to restore BC6H/BC7 encode. Already compiled out.
+
+6. **Tool stacks** (shaderc, texturev / l-smash) when those packages are
+   added.
+
+7. **Legacy encode** (**etc1**, **pvrtc**) and **libheif** last.
