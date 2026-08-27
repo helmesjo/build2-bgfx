@@ -20,7 +20,7 @@ queue/testing/stable, or `build2-packaging` GitHub):
 | `libmetal-cpp` | git `helmesjo/build2-metal-cpp#review` |
 | `libdirectx-headers` | git `helmesjo/build2-DirectX-Headers#review` |
 | `libvulkan-headers` | git `helmesjo/build2-Vulkan-Headers#review` |
-| `libetcpak` | git `helmesjo/build2-etcpak#review` |
+| `libetcpak` | git `build2-packaging/etcpak#main` |
 | `libimguizmo` | git `helmesjo/build2-imguizmo#review` |
 | `librenderdoc-app` | dir `../build2-renderdoc` (`^1.45.0-`), in-application API header |
 | `libsquish` | cppget queue (`^1.15.104-`) |
