@@ -5,6 +5,12 @@ import intf_libs += libbx%lib{bx}
 import impl_libs += libbimg%lib{bimg}
 import impl_libs += libvulkan-headers%lib{vulkan-headers}
 
+# RenderDoc in-application API (debug_renderdoc.cpp on Windows/Linux).
+# Runtime dlopen of renderdoc.dll / librenderdoc.so. Header only, do not
+# link lib{renderdoc}.
+#
+import impl_libs += librenderdoc-app%lib{renderdoc-app}
+
 # Private bgfx_p.h includes <tinystl/...>.
 #
 import impl_libs += libtinystl%lib{tinystl}
@@ -57,7 +63,7 @@ libul{bgfx}: file{**.sc}: include = adhoc
 libul{bgfx}: file{**.sh}: include = adhoc
 libul{bgfx}: file{**.idl.inl}: include = adhoc
 
-# RenderDoc and metal-cpp thunks (not installed).
+# RenderDoc and metal-cpp path shims (not installed).
 #
 libul{bgfx}: 3rdparty/renderdoc/hxx{renderdoc_app}: include = adhoc
 libul{bgfx}: 3rdparty/metal-cpp/file{**}: include = adhoc
@@ -79,7 +85,8 @@ out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
 # $src_pfx_src is the parent of h264/ so sources can #include <h264/h264.h>.
-# $src_pfx_src/3rdparty is for RenderDoc (<renderdoc/renderdoc_app.h>).
+# $src_pfx_src/3rdparty is for the RenderDoc and metal-cpp path shims
+# (<renderdoc/renderdoc_app.h>, <metal-cpp/metal.hpp>).
 #
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
