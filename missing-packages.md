@@ -4,10 +4,9 @@ Inventory of third-party dependencies that current packages still require
 but that are **not** yet available as separate `build2` packages
 (import/`depends`). Already unbundled packages are listed only for context.
 
-After the unbundle stretch, the only remaining **in-tree third-party product**
-in the local packages is the RenderDoc header. Snippets (edtaa3, h264,
-vassvik dock) stay in-tree on purpose. Compiled-out and future-tool vendors
-live in the upstream submodule only.
+After the unbundle stretch, no in-tree third-party **product** remains in the
+local packages. Snippets (edtaa3, h264, vassvik dock) stay in-tree on purpose.
+Compiled-out and future-tool vendors live in the upstream submodule only.
 
 Focus is **modern hardware** support (ETC2/EAC and ASTC already packaged,
 BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
@@ -23,6 +22,7 @@ queue/testing/stable, or `build2-packaging` GitHub):
 | `libvulkan-headers` | git `helmesjo/build2-Vulkan-Headers#review` |
 | `libetcpak` | git `helmesjo/build2-etcpak#review` |
 | `libimguizmo` | git `helmesjo/build2-imguizmo#review` |
+| `librenderdoc-app` | dir `../build2-renderdoc` (`^1.45.0-`), in-application API header |
 | `libsquish` | cppget queue (`^1.15.104-`) |
 | `libiqa` | cppget queue (`^1.1.2-`) |
 | `liblodepng` | cppget queue (`== 2026.1.19`) |
@@ -45,11 +45,11 @@ These are the only third-party leftovers **inside the local packages**
 
 | Item | Path | Compiled today | Package it? |
 |---|---|---|---|
-| **renderdoc** (`renderdoc_app.h`) | `libbgfx/src/3rdparty/renderdoc` (symlink) | Yes, on Windows/Linux via `debug_renderdoc.cpp`. Runtime `dlopen`. | **Yes, if any remaining in-tree product should become a package.** Real RenderDoc in-process API (Baldur Karlsson, MIT). No `build2-packaging/renderdoc` yet. |
 | **h264** | `libbgfx/src/h264/` (file-level symlink plus local `LICENSE.txt`) | Wired as `h264/libul{WickedEngine-h264}`, inactive (`BGFX_CONFIG_VIDEO=0`) | **No.** Wicked Engine one-off MIT header. See `libbgfx/DEV-README.md`. |
 | **edtaa3** | `libbimg-encode/src/edtaa3/` | Yes (`bimg::imageMakeDist` / SDF) | **No.** Educational Stefan Gustavson snippet. See `libbimg-encode/DEV-README.md`. |
 | **vassvik dock** | `bgfx-examples/common/imgui/widgets/dock.{h,inl}` | Yes, in `libue{example-common}` | **No.** Public-domain `imgui_docking_minimal`. Not packaged `libimgui-docking`. |
 | metal-cpp shim | `libbgfx/src/3rdparty/metal-cpp/metal.hpp` | macOS only | Not vendored product code. Path shim onto packaged `libmetal-cpp`. |
+| renderdoc shim | `libbgfx/src/3rdparty/renderdoc/renderdoc_app.h` | Windows/Linux | Not vendored product code. Path shim onto packaged `librenderdoc-app`. |
 | catch stub | `libbx-tests/tests/catch/catch_amalgamated.hpp` | Tests include it | Not vendored product code. Redirects to packaged `catch2`. |
 
 No other in-tree third-party mounts remain under `libbx`, `libbimg`,
@@ -93,12 +93,13 @@ product to package. File-level symlink lives in `src/h264/` with a local
 `LICENSE.txt` and `h264/libul{WickedEngine-h264}` target. Include is
 `<h264/h264.h>`. Video is compiled out (`BGFX_CONFIG_VIDEO=0`).
 
-| Missing package (candidate) | Upstream path | Role | Notes |
-|---|---|---|---|
-| **renderdoc** (header-only) | `bgfx/3rdparty/renderdoc/renderdoc_app.h` | RenderDoc in-process API | Still required on Windows/Linux for `debug_renderdoc.cpp`. Single header. Last in-tree third-party **product**. |
+No remaining required in-tree third-party product. `librenderdoc-app` supplies
+`<renderdoc_app.h>` (shimmed as `<renderdoc/renderdoc_app.h>`). Runtime
+`dlopen` of the capture library is unchanged.
 
-Not missing as third-party product code: the `3rdparty/metal-cpp/` path is a
-local **shim** to packaged `libmetal-cpp`, not a vendored copy.
+Not missing as third-party product code: the `3rdparty/metal-cpp/` and
+`3rdparty/renderdoc/` paths are local **shims** to packaged `libmetal-cpp`
+and `librenderdoc-app`, not vendored copies.
 
 ### `libbx`
 
@@ -176,7 +177,6 @@ are added.
 |---|---|---|
 | **h264** | `libbgfx` | Video disabled (`BGFX_CONFIG_VIDEO=0`). Keep as snippet |
 | **khronos** GL/EGL/GLES headers | `libbgfx` if OpenGL/ES enabled | OpenGL/ES compiled out today |
-| **renderdoc** | `libbgfx` | Last in-tree product, but tiny, `dlopen` at runtime. Fine as an adhoc include unless a no-3rdparty-in-tree policy demands a package |
 
 ### Not packaged yet (upstream has them, no local package consumes them)
 
@@ -222,7 +222,7 @@ ETC1/PVRTC is unchanged.
 | Local package | Still needs (not packaged) | Priority |
 |---|---|---|
 | `libbimg-encode` | edtaa3 stays in-tree. nvtt/etc1/pvrtc compiled out | Leftover encode compiled out |
-| `libbgfx` | renderdoc header (in-tree product). h264 stays, video off | Medium / low |
+| `libbgfx` | h264 stays, video off | Done for v1 |
 | `libbx` | none | Done |
 | `libbimg` | none | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
@@ -241,15 +241,12 @@ ETC1/PVRTC is unchanged.
 
 2. **dav1d** / **libavif** if AVIF should be compiled in.
 
-3. **renderdoc** header-only package only if a stricter "no 3rdparty in
-   tree" policy demands it. Otherwise fine as a single-header adhoc include.
-
-4. **NanoVG** if font/nanovg examples should ship. **sdf** may stay in-tree
+3. **NanoVG** if font/nanovg examples should ship. **sdf** may stay in-tree
    the way edtaa3 does (same class of snippet).
 
-5. **nvtt** only to restore BC6H/BC7 encode. Already compiled out.
+4. **nvtt** only to restore BC6H/BC7 encode. Already compiled out.
 
-6. **Tool stacks** (shaderc, texturev / l-smash) when those packages are
+5. **Tool stacks** (shaderc, texturev / l-smash) when those packages are
    added.
 
-7. **Legacy encode** (**etc1**, **pvrtc**) and **libheif** last.
+6. **Legacy encode** (**etc1**, **pvrtc**) and **libheif** last.

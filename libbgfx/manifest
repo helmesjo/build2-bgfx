@@ -20,6 +20,7 @@ depends: libbx == $
 depends: libbimg == $
 depends: libtinystl ^0.0.1-
 depends: libvulkan-headers ^1.4.359-
+depends: librenderdoc-app ^1.45.0-
 depends: libmetal-cpp ^381.0.0- ? ($cxx.target.class == 'macos')
 depends: libdirectx-headers ^1.619.5- ? ($cxx.target.class == 'windows')
 examples: bgfx-examples == $

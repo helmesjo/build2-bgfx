@@ -31,7 +31,8 @@ This package provides the following importable targets:
 lib{bgfx}
 ```
 
-The rendering library. Depends on `libbx`, `libbimg`, and `libvulkan-headers`.
+The rendering library. Depends on `libbx`, `libbimg`, `libvulkan-headers`,
+and `librenderdoc-app`.
 
 This build enables Vulkan and Noop on all platforms, Metal on macOS, and
 Direct3D 11 and 12 on Windows. OpenGL and WebGPU are compiled out. The Vulkan
@@ -57,6 +58,12 @@ DXGI headers are supplied by the Windows SDK (MSVC) or MinGW-w64. Until
 published on cppget, resolve `libdirectx-headers` from the git prerequisite
 `https://github.com/helmesjo/build2-DirectX-Headers.git` declared in this
 project's `repositories.manifest`.
+
+`debug_renderdoc.cpp` (Windows and Linux) depends on `librenderdoc-app` for
+`<renderdoc_app.h>`. bgfx loads `renderdoc.dll` / `librenderdoc.so` at
+runtime and does not link the capture library. Until published on cppget,
+resolve `librenderdoc-app` from the dir prerequisite `../build2-renderdoc`
+declared in this project's `repositories.manifest`.
 
 
 ## Configuration variables

@@ -33,3 +33,7 @@ location: https://github.com/build2-packaging/etcpak.git#review
 role: prerequisite
 type: git
 location: https://github.com/helmesjo/build2-imguizmo.git#review
+:
+role: prerequisite
+type: dir
+location: ../build2-renderdoc
