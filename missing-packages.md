@@ -23,6 +23,7 @@ queue/testing/stable, or `build2-packaging` GitHub):
 | `libetcpak` | git `build2-packaging/etcpak#main` |
 | `libimguizmo` | git `helmesjo/build2-imguizmo#review` |
 | `librenderdoc-app` | dir `../build2-renderdoc` (`^1.45.0-`), in-application API header |
+| `libmeshoptimizer` | dir `../build2-meshoptimizer` (`^1.2.0-`), consumed by `bgfx_utils.cpp`'s `Mesh::load()`/`weldVertices()` via a path shim (`common/3rdparty/meshoptimizer/`, v1.2 exports `<meshoptimizer.h>` unqualified) |
 | `libsquish` | cppget queue (`^1.15.104-`) |
 | `libiqa` | cppget queue (`^1.1.2-`) |
 | `liblodepng` | cppget queue (`== 2026.1.19`) |
@@ -48,8 +49,10 @@ These are the only third-party leftovers **inside the local packages**
 | **h264** | `libbgfx/src/h264/` (file-level symlink plus local `LICENSE.txt`) | Wired as `h264/libul{WickedEngine-h264}`, inactive (`BGFX_CONFIG_VIDEO=0`) | **No.** Wicked Engine one-off MIT header. See `libbgfx/DEV-README.md`. |
 | **edtaa3** | `libbimg-encode/src/edtaa3/` | Yes (`bimg::imageMakeDist` / SDF) | **No.** Educational Stefan Gustavson snippet. See `libbimg-encode/DEV-README.md`. |
 | **vassvik dock** | `bgfx-examples/common/imgui/widgets/dock.{h,inl}` | Yes, in `libue{example-common}` | **No.** Public-domain `imgui_docking_minimal`. Not packaged `libimgui-docking`. |
+| **color wheel** | `bgfx-examples/common/imgui/widgets/color_wheel.{h,inl}` | Yes, in `libue{example-common}` (`28-wireframe` calls `ImGui::ColorWheel`) | **No.** Same `dear-imgui/widgets/` class as dock. Not packaged. |
 | metal-cpp shim | `libbgfx/src/3rdparty/metal-cpp/metal.hpp` | macOS only | Not vendored product code. Path shim onto packaged `libmetal-cpp`. |
 | renderdoc shim | `libbgfx/src/3rdparty/renderdoc/renderdoc_app.h` | Windows/Linux | Not vendored product code. Path shim onto packaged `librenderdoc-app`. |
+| meshoptimizer shim | `bgfx-examples/common/3rdparty/meshoptimizer/src/meshoptimizer.h` | `bgfx_utils.cpp` | Not vendored product code. Path shim onto packaged `libmeshoptimizer` (v1.2 exports `<meshoptimizer.h>` unqualified; bgfx code expects `<meshoptimizer/src/meshoptimizer.h>`). |
 | catch stub | `libbx-tests/tests/catch/catch_amalgamated.hpp` | Tests include it | Not vendored product code. Redirects to packaged `catch2`. |
 
 No other in-tree third-party mounts remain under `libbx`, `libbimg`,
@@ -129,35 +132,43 @@ Compiled out until packaged:
 ## 2. Required for examples (consumer demos, not core API)
 
 Overlay restored via packaged `libimgui`. First-party draw path, shaders,
-fonts, and `example-glue.cpp` stay in `bgfx-examples`. Git-only extras
-added in `9838c26` still avoid meshoptimizer and NanoVG.
-`load_program.cpp` is a subset of upstream `bgfx_utils.cpp` without
-`meshLoad`.
+fonts, and `example-glue.cpp` stay in `bgfx-examples`. `meshoptimizer` is now
+packaged and wired in: `bgfx_utils.cpp` (a patched local copy of upstream,
+not a symlink, so it keeps the CWD-independent `BGFX_EXAMPLES_*_DIR` path
+resolution `load_program.cpp` used to carry) replaced `load_program.cpp`,
+and the 15 `meshLoad`-gated examples plus their `meshes/` runtime assets
+were added as git-only extras. `18-ibl` and the remaining upstream examples
+still need NanoVG.
 
 ### `bgfx-examples`
 
 No remaining required in-tree third-party **product**. Depends on
-`libimgui` (core only), `libimguizmo`, `libiconfontcppheaders`, and
-`libtinystl`.
+`libimgui` (core only), `libimguizmo`, `libiconfontcppheaders`,
+`libtinystl`, and `libmeshoptimizer`.
 
-Dock stays as a first-party overlay extra (file-level symlinks under
-`common/imgui/widgets/`). It is vassvik `imgui_docking_minimal`, not
-packaged `libimgui-docking`. Other 3rdparty widgets (markdown, color
-wheel, ...) are unused by this example subset and are not compiled.
+Dock and color wheel stay as first-party overlay extras (file-level
+symlinks under `common/imgui/widgets/`). Both are `dear-imgui/widgets/`
+snippets (vassvik `imgui_docking_minimal`, upstream `color_wheel`), not
+packaged libraries. Other 3rdparty widgets (markdown, ...) are unused by
+this example subset and are not compiled.
 
 `stb_truetype` / `stb_rect_pack` are not example dependencies. Packaged
 imgui ships `imstb_*`. Overlay is built with `USE_LOCAL_STB=0`.
 
-Not compiled by the current example-common build (upstream uses them more
-widely, none of them are vendored in the package trees today):
+Still not compiled by the current example-common build (upstream uses them
+more widely, none of them are vendored in the package trees today):
 
 | Missing package (candidate) | Would unlock | Notes |
 |---|---|---|
-| **meshoptimizer** | Remaining `meshLoad` examples (`04-mesh`, `09-hdr`, `12-lod`, `14-shadowvolumes`, `15-shadowmaps-simple`, `18-ibl`, `28-wireframe`, `30-picking`, `31-rsm`, `36-sky`, `39-assao`, `42-bunnylod`, `43-denoise`, `44-sss`, `45-bokeh`, `46-fsr`) plus `geometryc` | Needed by full `bgfx_utils.cpp` `meshLoad` |
 | **cgltf** | `geometryc` glTF path (with meshoptimizer) | Header-only. Not used by current extras |
 | **NanoVG** | `10-font`, `11-fontsdf`, `18-ibl`, `20-nanovg` | Lives under upstream `examples/common/nanovg/` with a bgfx backend |
 | **sdf** | Font SDF path (`font_manager.cpp`) | Mikko Mononen / Stefan Gustavson snippet, same class as edtaa3 |
 | **native_app_glue** | Android entry | NDK helper, not a product to package |
+
+`geometryc` itself (the offline mesh-authoring tool, as opposed to the
+runtime decode path examples use) additionally needs `cgltf` and is still
+not part of any local package; it is a separate, optional consumer of
+`libmeshoptimizer`, not required for the examples above.
 
 Other skipped upstream examples (`13-stencil`, `16-shadowmaps`, `25-c99`,
 `32-particles`, `51-gpufont`, ...) are not necessarily waiting on a missing
@@ -226,9 +237,9 @@ ETC1/PVRTC is unchanged.
 | `libbx` | none | Done |
 | `libbimg` | none | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
-| `bgfx-examples` | vassvik dock stays. meshoptimizer/NanoVG/cgltf/sdf not in the current extras | Done for current extras |
+| `bgfx-examples` | vassvik dock and color wheel stay. NanoVG/cgltf/sdf not in the current extras | Done: meshoptimizer wired, 15 mesh examples added |
 | `libbx-tests` | none (`catch2` packaged) | Done |
-| *(future)* remaining mesh/font examples, geometryc | meshoptimizer, cgltf, NanoVG, sdf | Next if those ship |
+| *(future)* remaining font examples, geometryc | cgltf, NanoVG, sdf | Next if those ship |
 | *(future)* shaderc / tools | see section 3 | Deferred |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
 
@@ -236,17 +247,20 @@ ETC1/PVRTC is unchanged.
 
 ## Suggested unbundle order
 
-1. **meshoptimizer** (then **cgltf**) if remaining mesh examples or
-   `geometryc` should ship.
+1. ~~**meshoptimizer**~~ Done: packaged at `../build2-meshoptimizer`,
+   `meshLoad`/`weldVertices` restored in `bgfx_utils.cpp`, and the 15
+   unblocked mesh examples added. **cgltf** is still open, only needed for
+   `geometryc`'s glTF import path (not required by any current example).
 
 2. **dav1d** / **libavif** if AVIF should be compiled in.
 
-3. **NanoVG** if font/nanovg examples should ship. **sdf** may stay in-tree
-   the way edtaa3 does (same class of snippet).
+3. **NanoVG** if font/nanovg examples (`10-font`, `11-fontsdf`, `18-ibl`,
+   `20-nanovg`) should ship. **sdf** may stay in-tree the way edtaa3 does
+   (same class of snippet).
 
 4. **nvtt** only to restore BC6H/BC7 encode. Already compiled out.
 
-5. **Tool stacks** (shaderc, texturev / l-smash) when those packages are
-   added.
+5. **Tool stacks** (shaderc, texturev / l-smash, `geometryc`'s `cgltf` need)
+   when those packages are added.
 
 6. **Legacy encode** (**etc1**, **pvrtc**) and **libheif** last.
