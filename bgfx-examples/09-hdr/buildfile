@@ -1,0 +1,32 @@
+# Static libs: see ../common/buildfile (auto-symexport data caveat on MSVC).
+#
+import libs = libbgfx%liba{bgfx}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
+
+include ../common/
+
+exe{hdr}: \
+  {hxx cxx}{**} \
+  ../common/libue{example-load-program} \
+  ../common/libue{example-common} \
+  $libs
+{
+  test = false
+
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$src_root/common" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+exe{hdr}: ../common/hxx{common args bgfx_utils}: include = adhoc
+
+# Extra example sources stay in git. Target-specific dist so collect()
+# drops them even if dist_include rewrites include=false to adhoc.
+#
+{hxx cxx file}{*}:
+{
+  dist = false
+}
