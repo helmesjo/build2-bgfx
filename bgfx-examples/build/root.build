@@ -5,6 +5,10 @@ cxx.std = c++20
 using cxx
 using cxx.objcxx
 
+# 42-bunnylod/progmesh.c is plain C, called from bunnylod.cpp via extern "C".
+#
+using c
+
 hxx{*}: extension = h
 ixx{*}: extension = ipp
 txx{*}: extension = tpp

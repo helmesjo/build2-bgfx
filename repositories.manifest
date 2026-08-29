@@ -26,3 +26,7 @@ location: https://github.com/helmesjo/build2-imguizmo.git#review
 role: prerequisite
 type: git
 location: https://github.com/helmesjo/build2-renderdoc.git#review
+:
+role: prerequisite
+type: git
+location: https://github.com/helmesjo/build2-meshoptimizer.git#review
