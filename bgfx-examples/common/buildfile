@@ -30,6 +30,10 @@ import intf_libs += libimguizmo%liba{imguizmo}
 #
 import impl_libs += libbimg-decode%liba{bimg-decode}
 
+# Mesh::load / weldVertices decode path. Private to example-load-program.
+#
+import impl_libs += libmeshoptimizer%lib{meshoptimizer}
+
 platform_entry =
 if ($cxx.target.class == 'macos')
   platform_entry = mm{entry/entry_osx entry/dialog_darwin}
@@ -42,9 +46,9 @@ else
 #
 ./: libue{example-common}
 
-# loadProgram for monorepo extras that use shaders/ and textures/ (not
-# distributed). Prerequisite-specific include, not an if around the
-# declaration.
+# bgfx_utils (loadProgram, mesh/texture loading) for monorepo extras that
+# use shaders/, textures/, and meshes/ (not distributed). Prerequisite-
+# specific include, not an if around the declaration.
 #
 ./: libue{example-load-program}:
 {
@@ -56,10 +60,15 @@ else
 shaders_dir = $path.posix_string($src_root/shaders)
 runtime_dir = $path.posix_string($src_root)
 
-libue{example-load-program}: cxx{load_program} $impl_libs $intf_libs
+libue{example-load-program}: cxx{bgfx_utils} $impl_libs $intf_libs
 {
+  # meshoptimizer/src/meshoptimizer.h shim: bgfx sources include the path
+  # bgfx's own vendored copy uses; libmeshoptimizer exports <meshoptimizer.h>
+  # unqualified (upstream v1.2 layout).
+  #
   cxx.poptions =+ \
     "-I$out_base" "-I$src_base" \
+    "-I$src_base/3rdparty" \
     "-DBGFX_EXAMPLES_SHADERS_DIR=\"$shaders_dir\"" \
     "-DBGFX_EXAMPLES_RUNTIME_DIR=\"$runtime_dir\""
 }
@@ -75,6 +84,11 @@ libue{example-load-program}: ../shaders/file{**}:
 }
 
 libue{example-load-program}: ../textures/file{**}:
+{
+  include = adhoc
+}
+
+libue{example-load-program}: ../meshes/file{**}:
 {
   include = adhoc
 }

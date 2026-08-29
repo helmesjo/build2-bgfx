@@ -11,3 +11,4 @@
 #include <imgui_internal.h>
 
 #include "dock.inl"
+#include "color_wheel.inl"
