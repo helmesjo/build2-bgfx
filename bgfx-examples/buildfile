@@ -1,8 +1,8 @@
 # Auto-include non-example dirs (common/, etc.). Numbered example dirs are
-# excluded from the wildcard and added explicitly. shaders/ and textures/
-# are large runtime fixtures, not build scopes.
+# excluded from the wildcard and added explicitly. shaders/, textures/, and
+# meshes/ are large runtime fixtures, not build scopes.
 #
-./: {*/ -build/ -shaders/ -textures/ -[0-9]*-*/} \
+./: {*/ -build/ -shaders/ -textures/ -meshes/ -[0-9]*-*/} \
   00-helloworld/ \
   doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
 
@@ -14,17 +14,18 @@ common/: install = false
 #
 shaders/: install = false
 textures/: install = false
+meshes/: install = false
 
 # Large git-only fixtures. include = false keeps the unpacked dist archive
 # from trying to update files that were never copied. dist = false is
 # target-specific (own declaration) so collect() actually drops them.
 #
-./: file{shaders/** textures/**}:
+./: file{shaders/** textures/** meshes/**}:
 {
   include = false
 }
 
-file{shaders/** textures/**}:
+file{shaders/** textures/** meshes/**}:
 {
   dist = false
 }
@@ -37,7 +38,10 @@ extras = 01-cubes 02-metaballs 03-raymarch 05-instancing 07-callback \
          06-bump 08-update 21-deferred 23-vectordisplay 24-nbody 27-terrain \
          29-debugdraw 33-pom 37-gpudrivenrendering 38-bloom 40-svt 41-tess \
          47-pixelformats 48-drawindirect 49-hextile 50-headless 52-layered \
-         53-sky2
+         53-sky2 \
+         04-mesh 09-hdr 12-lod 14-shadowvolumes 15-shadowmaps-simple \
+         28-wireframe 30-picking 31-rsm 36-sky 39-assao 42-bunnylod \
+         43-denoise 44-sss 45-bokeh 46-fsr
 
 for d: $extras
 {
