@@ -30,33 +30,22 @@ file{shaders/** textures/** meshes/**}:
   dist = false
 }
 
-# Extra examples: git-only. Prerequisite-specific include, not an if around
-# the declaration (that is a dist warning, not an exclusion).
+# Extra examples: git-only. Every numbered dir except 00-helloworld (already
+# unconditionally included above), pattern-enumerated so nothing needs to be
+# listed by name. Prerequisite-specific include, not an if around the
+# declaration (that is a dist warning, not an exclusion).
 #
-extras = 01-cubes 02-metaballs 03-raymarch 05-instancing 07-callback \
-         17-drawstress 19-oit 22-windows 26-occlusion 34-mvs 35-dynamic \
-         06-bump 08-update 21-deferred 23-vectordisplay 24-nbody 27-terrain \
-         29-debugdraw 33-pom 37-gpudrivenrendering 38-bloom 40-svt 41-tess \
-         47-pixelformats 48-drawindirect 49-hextile 50-headless 52-layered \
-         53-sky2 \
-         04-mesh 09-hdr 12-lod 14-shadowvolumes 15-shadowmaps-simple \
-         28-wireframe 30-picking 31-rsm 36-sky 39-assao 42-bunnylod \
-         43-denoise 44-sss 45-bokeh 46-fsr
-
-for d: $extras
+./: {[0-9]*-*/ -00-helloworld/}:
 {
-  ./: $d/:
-  {
-    include = ($build.meta_operation != 'dist')
-  }
+  include = ($build.meta_operation != 'dist')
 }
 
 # Every example except 00-helloworld needs shaders/ (some also textures/ and
 # meshes/), all install = false above, so an installed exe could never find
 # its own assets. Type/pattern-specific, not enumerated: reaches the exe{}
-# built inside each matching dir/ regardless of what's in $extras. -pattern
-# exclusion is only performed in enumerated prerequisite lists, not here, so
-# override 00-helloworld back explicitly.
+# built inside each matching dir/. -pattern exclusion is only performed in
+# enumerated prerequisite lists, not here, so override 00-helloworld back
+# explicitly.
 #
 dir{[0-9]*-*}: install = false
 00-helloworld/: install = true
