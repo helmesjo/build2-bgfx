@@ -50,3 +50,13 @@ for d: $extras
     include = ($build.meta_operation != 'dist')
   }
 }
+
+# Every example except 00-helloworld needs shaders/ (some also textures/ and
+# meshes/), all install = false above, so an installed exe could never find
+# its own assets. Type/pattern-specific, not enumerated: reaches the exe{}
+# built inside each matching dir/ regardless of what's in $extras. -pattern
+# exclusion is only performed in enumerated prerequisite lists, not here, so
+# override 00-helloworld back explicitly.
+#
+dir{[0-9]*-*}: install = false
+00-helloworld/: install = true
