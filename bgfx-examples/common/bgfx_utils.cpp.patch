@@ -1,0 +1,110 @@
+--- bgfx_utils.cpp.orig	2026-08-06 01:50:07
++++ bgfx_utils.cpp	2026-08-29 02:39:29
+@@ -1,6 +1,14 @@
+ /*
+  * Copyright 2011-2026 Branimir Karadzic. All rights reserved.
+  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
++ *
++ * Local copy of upstream examples/common/bgfx_utils.cpp, not a symlink.
++ * Path resolution is patched: every entry point that opens a runtime asset
++ * (loadShader, load, meshLoad) prefixes the path with BGFX_EXAMPLES_*_DIR
++ * (baked in at compile time, see ../common/buildfile) instead of opening a
++ * path relative to the process CWD, so examples work regardless of the
++ * directory they are launched from. Diff against upstream to pick up
++ * changes; re-apply this patch on refresh.
+  */
+ 
+ #include "common.h"
+@@ -17,15 +25,27 @@
+ #include <bx/readerwriter.h>
+ #include <bx/string.h>
+ #include "entry/entry.h"
++#include "entry/dbg.h"
+ #include <meshoptimizer/src/meshoptimizer.h>
+ 
+ #include "bgfx_utils.h"
+ 
+ #include <bimg/decode.h>
+ 
++static bx::FilePath resolveRuntimePath(const bx::FilePath& _filePath)
++{
++#ifdef BGFX_EXAMPLES_RUNTIME_DIR
++	bx::FilePath filePath(BGFX_EXAMPLES_RUNTIME_DIR);
++	filePath.join(_filePath.getCPtr() );
++	return filePath;
++#else
++	return _filePath;
++#endif
++}
++
+ void* load(bx::FileReaderI* _reader, bx::AllocatorI* _allocator, const bx::FilePath& _filePath, uint32_t* _size)
+ {
+-	if (bx::open(_reader, _filePath) )
++	if (bx::open(_reader, resolveRuntimePath(_filePath) ) )
+ 	{
+ 		uint32_t size = (uint32_t)bx::getSize(_reader);
+ 		void* data = bx::alloc(_allocator, size);
+@@ -76,29 +96,15 @@
+ 	return NULL;
+ }
+ 
+-static void* loadMem(bx::FileReaderI* _reader, bx::AllocatorI* _allocator, const bx::FilePath& _filePath, uint32_t* _size)
+-{
+-	if (bx::open(_reader, _filePath) )
+-	{
+-		uint32_t size = (uint32_t)bx::getSize(_reader);
+-		void* data = bx::alloc(_allocator, size);
+-		bx::read(_reader, data, size, bx::ErrorAssert{});
+-		bx::close(_reader);
+-
+-		if (NULL != _size)
+-		{
+-			*_size = size;
+-		}
+-		return data;
+-	}
+-
+-	DBG("Failed to load %s.", _filePath.getCPtr() );
+-	return NULL;
+-}
+-
+ static bgfx::ShaderHandle loadShader(bx::FileReaderI* _reader, const bx::StringView& _name)
+ {
+-	bx::FilePath filePath("shaders/");
++	// Package-absolute path so CWD does not matter. Fallback matches
++	// upstream (run from the directory that contains shaders/).
++	//
++#ifndef BGFX_EXAMPLES_SHADERS_DIR
++#	define BGFX_EXAMPLES_SHADERS_DIR "shaders"
++#endif
++	bx::FilePath filePath(BGFX_EXAMPLES_SHADERS_DIR);
+ 
+ 	switch (bgfx::getRendererType() )
+ 	{
+@@ -268,7 +274,11 @@
+ bimg::ImageContainer* imageLoad(const bx::FilePath& _filePath, bgfx::TextureFormat::Enum _dstFormat)
+ {
+ 	uint32_t size = 0;
+-	void* data = loadMem(entry::getFileReader(), entry::getAllocator(), _filePath, &size);
++	void* data = load(_filePath, &size);
++	if (NULL == data)
++	{
++		return NULL;
++	}
+ 
+ 	return bimg::imageParse(entry::getAllocator(), data, size, bimg::TextureFormat::Enum(_dstFormat) );
+ }
+@@ -717,7 +727,7 @@
+ Mesh* meshLoad(const bx::FilePath& _filePath, bool _ramcopy)
+ {
+ 	bx::FileReaderI* reader = entry::getFileReader();
+-	if (bx::open(reader, _filePath) )
++	if (bx::open(reader, resolveRuntimePath(_filePath) ) )
+ 	{
+ 		Mesh* mesh = meshLoad(reader, _ramcopy);
+ 		bx::close(reader);
+@@ -799,4 +809,3 @@
+ 
+ 	return bgfx::RendererType::Count;
+ }
+-
