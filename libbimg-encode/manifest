@@ -16,8 +16,8 @@ package-email: packaging@build2.org
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
 depends: libbimg == $
-depends: libastcenc ^5.7.0-
-depends: libsquish ^1.15.104-
-depends: libetcpak ^2.1.0-
+depends: libastcenc ^5.7.0
+depends: libsquish ^1.15.104
+depends: libetcpak ^2.1.0
 depends: stb_image_resize2 ^2.18.0
-depends: libiqa ^1.1.2-
+depends: libiqa ^1.1.2
