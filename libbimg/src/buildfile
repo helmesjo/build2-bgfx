@@ -36,6 +36,11 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
 if ($cxx.target.system == 'mingw32')
   cxx.loptions += -Wl,--export-all-symbols
 
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /Zc:preprocessor
+
 # Export options (bimg is not in public headers of consumers of libbgfx as
 # interface, but libbimg consumers need bimg headers + libbx).
 #

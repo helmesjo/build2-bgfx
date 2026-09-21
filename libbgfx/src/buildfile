@@ -97,6 +97,11 @@ cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
                 "-I$src_pfx_src/3rdparty"
 
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /Zc:preprocessor
+
 # Desktop backends: Vulkan everywhere, Metal on Apple, D3D11+D3D12 on Windows.
 # Defining any BGFX_CONFIG_RENDERER_* skips the platform-default block in config.h.
 #

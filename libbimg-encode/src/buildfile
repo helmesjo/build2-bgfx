@@ -59,6 +59,15 @@ if ($cxx.class != 'msvc')
                   -Wno-deprecated-copy
 }
 
+# Required when including libbx public headers under MSVC.
+# edtaa3func.cpp contains a non-UTF-8 byte (C4828 under /utf-8).
+#
+if ($cxx.class == 'msvc')
+{
+  cxx.coptions += /Zc:preprocessor
+  edtaa3/libul{edtaa3}: cxx.coptions += /wd4828
+}
+
 # Export options.
 #
 lib{bimg-encode}:

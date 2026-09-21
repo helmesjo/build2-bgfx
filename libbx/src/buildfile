@@ -79,6 +79,14 @@ elif ($cxx.target.class != 'windows')
 if ($cxx.target.system == 'mingw32')
   cxx.loptions += -Wl,--export-all-symbols
 
+# Public bx headers require the MSVC conforming preprocessor
+# (see bx/platform.h). build2 already enables /Zc:__cplusplus.
+# /EHs-c- matches upstream NoExceptions (required for SEH __try in
+# thread.cpp under MSVC).
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /Zc:preprocessor /EHs-c-
+
 # Export options.
 #
 lib{bx}:

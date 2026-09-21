@@ -1,3 +1,8 @@
 import libs = libbimg-decode%lib{bimg-decode}
 
 exe{driver}: {hxx cxx}{**} $libs
+
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /Zc:preprocessor

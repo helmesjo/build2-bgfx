@@ -18,3 +18,8 @@ exe{bx-tests}:
 #
 if ($cxx.class == 'gcc' || $cxx.class == 'clang')
   exe{bx-tests}: cxx.coptions += -Wno-exceptions
+
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.class == 'msvc')
+  exe{bx-tests}: cxx.coptions += /Zc:preprocessor

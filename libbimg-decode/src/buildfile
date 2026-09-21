@@ -41,6 +41,11 @@ cxx.poptions += -DBIMG_CONFIG_PARSE_AVIF=0
 if ($cxx.target.system == 'mingw32')
   cxx.loptions += -Wl,--export-all-symbols
 
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /Zc:preprocessor
+
 # Export options.
 #
 lib{bimg-decode}:

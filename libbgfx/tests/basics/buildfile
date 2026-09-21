@@ -1,3 +1,8 @@
 import libs = libbgfx%lib{bgfx}
 
 exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
+
+# Required when including libbx public headers under MSVC.
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /Zc:preprocessor

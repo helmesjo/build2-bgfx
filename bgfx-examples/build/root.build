@@ -17,7 +17,7 @@ cxx{*}: extension = cpp
 
 # Required when including libbx public headers under MSVC.
 #
-if ($cxx.target.system == 'win32-msvc')
+if ($cxx.class == 'msvc')
   cc.coptions += /Zc:preprocessor
 
 test.target = $cxx.target
