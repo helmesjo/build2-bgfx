@@ -93,7 +93,17 @@ src_pfx_src = [dir_path] $src_root/src/
 # $src_pfx_src/3rdparty is for the RenderDoc and metal-cpp path shims
 # (<renderdoc/renderdoc_app.h>, <metal-cpp/metal.hpp>).
 #
-cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
+# Private src/dxgi.h has the same name as the system header. MinGW-w64
+# dxgi1_2.h includes <dxgi.h>, so search src/ after the system directories
+# on MinGW. -idirafter still resolves <h264/h264.h>. Quoted "dxgi.h" in the
+# D3D renderer sources still finds the private header beside those files.
+#
+if ($cxx.target.system == 'mingw32')
+  src_inc = "-idirafter$src_pfx_src"
+else
+  src_inc = "-I$src_pfx_src"
+
+cxx.poptions =+ "-I$out_pfx_src" $src_inc \
                 "-I$out_pfx_inc" "-I$src_pfx_inc" \
                 "-I$src_pfx_src/3rdparty"
 
