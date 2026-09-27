@@ -150,6 +150,7 @@ namespace ImGui
 
 #include "widgets/dock.h"
 #include "widgets/color_wheel.h"
+#include "widgets/range_slider.h"
 #include <imguizmo/ImGuizmo.h>
 
 #endif // IMGUI_H_HEADER_GUARD
