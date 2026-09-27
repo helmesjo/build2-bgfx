@@ -1,0 +1,1 @@
+../../../upstream/bgfx/tools/geometryv/fs_mesh.sc
