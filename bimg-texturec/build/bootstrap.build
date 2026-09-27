@@ -1,0 +1,7 @@
+project = bimg-texturec
+
+using version
+using config
+using test
+using install
+using dist
