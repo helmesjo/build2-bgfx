@@ -25,3 +25,13 @@ $* -f $in -o out.ktx -t ASTC4x4 &out.ktx
 : mips
 :
 $* -f $in -o out.dds -t BC3 -m &out.dds
+
+: build2-metadata
+:
+$* --build2-metadata=1 >>~/EOO/
+# build2 buildfile texturec
+export.metadata = 1 texturec
+texturec.name = [string] texturec
+/texturec.version = \[string\] .+/
+/texturec.checksum = \[string\] .+/
+EOO
