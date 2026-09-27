@@ -9,6 +9,10 @@ import libs += libbx%liba{bx}
 
 exe{texturec}: {hxx ixx txx cxx}{**} $libs testscript
 
+# Test input image.
+#
+exe{texturec}: file{msdf.png}: include = adhoc
+
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
