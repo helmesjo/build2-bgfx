@@ -16,3 +16,7 @@ package-email: packaging@build2.org
 upstream-version: d2633c6ac2cce448ab3a7ba7f5873ae677b385aa
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libbx == $
+depends: libtinystl ^0.0.1
+depends: libmeshoptimizer ^1.2.0
+depends: libcgltf ^1.15.0-
