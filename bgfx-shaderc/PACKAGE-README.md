@@ -1,9 +1,13 @@
-# bgfx-shaderc - An executable
+# bgfx-shaderc - Shader compiler for the bgfx rendering library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-executable. It is a <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package for the [`shaderc`](https://github.com/bkaradzic/bgfx)
+executable. It is the shader compiler for `bgfx`'s cross-platform shader
+language. This build outputs SPIR-V and Metal on all platforms, and HLSL
+(DXBC via D3DCompiler, and DXIL via DXC with the Windows SDK) on Windows.
+GLSL/ESSL output (glsl-optimizer) and WGSL output (Tint) are compiled out.
 
-Note that the `bgfx-shaderc` executable in this package provides `build2` metadata.
+Note that the `shaderc` executable in this package provides `build2`
+metadata.
 
 
 ## Usage
@@ -13,14 +17,17 @@ To start using `bgfx-shaderc` in your project, add the following build-time
 appropriate:
 
 ```
-depends: * bgfx-shaderc ^<VERSION>
+depends: * bgfx-shaderc ^1.153.0
 ```
 
 Then import the executable in your `buildfile`:
 
 ```
-import! [metadata] <TARGET> = bgfx-shaderc%exe{<TARGET>}
+import! [metadata] shaderc = bgfx-shaderc%exe{shaderc}
 ```
+
+Shaders include `<bgfx_shader.sh>` (and `bgfx_compute.sh`), which `libbgfx`
+installs into `include/bgfx/`. Pass that directory to `shaderc` with `-i`.
 
 
 ## Importable targets
@@ -28,18 +35,13 @@ import! [metadata] <TARGET> = bgfx-shaderc%exe{<TARGET>}
 This package provides the following importable targets:
 
 ```
-exe{<TARGET>}
+exe{shaderc}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+The shader compiler command line tool. See `shaderc --help` and the upstream
+[tools documentation](https://bkaradzic.github.io/bgfx/tools.html) for usage.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.bgfx_shaderc.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.
