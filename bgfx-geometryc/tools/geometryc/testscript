@@ -11,3 +11,13 @@ $* -f $src_base/cube.obj -o out.bin >- &out.bin
 : gltf
 :
 $* -f $src_base/triangle.gltf -o out.bin >- &out.bin
+
+: build2-metadata
+:
+$* --build2-metadata=1 >>~/EOO/
+# build2 buildfile geometryc
+export.metadata = 1 geometryc
+geometryc.name = [string] geometryc
+/geometryc.version = \[string\] .+/
+/geometryc.checksum = \[string\] .+/
+EOO
