@@ -1,0 +1,5 @@
+bgfx-shaderc
+
+# Testscript output directory (can be symlink).
+#
+test-bgfx-shaderc

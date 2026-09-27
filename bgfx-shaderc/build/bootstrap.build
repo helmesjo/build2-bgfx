@@ -1,0 +1,7 @@
+project = bgfx-shaderc
+
+using version
+using config
+using test
+using install
+using dist
