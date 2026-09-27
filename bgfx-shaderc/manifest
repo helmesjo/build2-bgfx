@@ -16,3 +16,61 @@ package-email: packaging@build2.org
 upstream-version: d2633c6ac2cce448ab3a7ba7f5873ae677b385aa
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libbx == $
+depends: libbimg == $
+depends: libtinystl ^0.0.1
+depends: libspirv-tools ^1.4.357+1
+
+# SPIR-V reflection and the MSL backend (which also needs the GLSL one).
+#
+depends:
+\
+libspirv-cross ^1.4.357+1
+{
+  require
+  {
+    config.libspirv_cross.glsl = true
+    config.libspirv_cross.msl = true
+    config.libspirv_cross.reflect = true
+  }
+}
+\
+
+# SPIR-V disassembly and optimization in glslang (SpirvToolsDisassemble() and
+# friends) need the SPIRV-Tools optimizer build.
+#
+depends:
+\
+libglslang ^16.5.0+1
+{
+  require
+  {
+    config.libglslang.opt = true
+  }
+}
+\
+
+# Buffer sizes bgfx builds fcpp with (scripts/shaderc.lua).
+#
+depends:
+\
+libfcpp ^0.0.1-
+{
+  prefer
+  {
+    config.libfcpp.nbuff = ($config.libfcpp.nbuff < 65536 \
+                            ? 65536                       \
+                            : $config.libfcpp.nbuff)
+    config.libfcpp.nwork = ($config.libfcpp.nwork < 65536 \
+                            ? 65536                       \
+                            : $config.libfcpp.nwork)
+    config.libfcpp.ninclude = ($config.libfcpp.ninclude < 64 \
+                               ? 64                          \
+                               : $config.libfcpp.ninclude)
+  }
+
+  accept ($config.libfcpp.nbuff >= 65536 && \
+          $config.libfcpp.nwork >= 65536 && \
+          $config.libfcpp.ninclude >= 64)
+}
+\
