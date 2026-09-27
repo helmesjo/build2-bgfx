@@ -1,0 +1,6 @@
+$out_root/
+{
+  include tools/texturec/
+}
+
+export $out_root/tools/texturec/$import.target

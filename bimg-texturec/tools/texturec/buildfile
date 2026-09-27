@@ -1,7 +1,13 @@
+# Static libs: public bx inlines reference global data (for example
+# Ticks::s_kInvFreq) that Windows DLL auto-import does not cover.
+#
 libs =
-#import libs += libhello%lib{hello}
+import libs += libbimg-decode%liba{bimg-decode}
+import libs += libbimg-encode%liba{bimg-encode}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
 
-exe{bimg-texturec}: {hxx ixx txx cxx}{**} $libs testscript
+exe{texturec}: {hxx ixx txx cxx}{**} $libs testscript
 
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
