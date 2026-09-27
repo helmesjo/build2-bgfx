@@ -1,0 +1,1 @@
+../../../upstream/bgfx/tools/geometryc/geometryc.cpp
