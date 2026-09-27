@@ -7,13 +7,25 @@ import libs += libbimg-encode%liba{bimg-encode}
 import libs += libbimg%liba{bimg}
 import libs += libbx%liba{bx}
 
-exe{texturec}: {hxx ixx txx cxx}{**} $libs testscript
+exe{texturec}: {hxx ixx txx cxx}{** -texturec} $libs testscript
+exe{texturec}: cxx{texturec}: include = adhoc # Included in texturec-build2.cpp.
 
 # Test input image.
 #
 exe{texturec}: file{msdf.png}: include = adhoc
 
+# Metadata (see also --build2-metadata in texturec-build2.cpp).
+#
+exe{texturec}:
+{
+  export.metadata = 1 texturec
+  texturec.name = [string] texturec
+  texturec.version = [string] $version
+  texturec.checksum = [string] $version
+}
+
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
 cxx.poptions =+ "-I$out_pfx" "-I$src_pfx"
+cxx.poptions += "-DTEXTUREC_BUILD2_VERSION=\"$version\""
