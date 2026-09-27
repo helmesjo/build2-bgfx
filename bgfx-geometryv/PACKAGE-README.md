@@ -1,9 +1,8 @@
-# bgfx-geometryv - An executable
+# bgfx-geometryv - Geometry viewer for the bgfx rendering library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-executable. It is a <SUMMARY-OF-FUNCTIONALITY>.
-
-Note that the `bgfx-geometryv` executable in this package provides `build2` metadata.
+This is a `build2` package for the [`geometryv`](https://github.com/bkaradzic/bgfx)
+executable. It is an interactive viewer for meshes in the `bgfx` mesh format
+produced by `geometryc`.
 
 
 ## Usage
@@ -13,13 +12,13 @@ To start using `bgfx-geometryv` in your project, add the following build-time
 appropriate:
 
 ```
-depends: * bgfx-geometryv ^<VERSION>
+depends: * bgfx-geometryv ^1.153.0
 ```
 
 Then import the executable in your `buildfile`:
 
 ```
-import! [metadata] <TARGET> = bgfx-geometryv%exe{<TARGET>}
+import geometryv = bgfx-geometryv%exe{geometryv}
 ```
 
 
@@ -28,18 +27,13 @@ import! [metadata] <TARGET> = bgfx-geometryv%exe{<TARGET>}
 This package provides the following importable targets:
 
 ```
-exe{<TARGET>}
+exe{geometryv}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+The geometry viewer. See the upstream
+[tools documentation](https://bkaradzic.github.io/bgfx/tools.html) for usage.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.bgfx_geometryv.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.
