@@ -1,1 +1,0 @@
-../../../upstream/bgfx/examples/common/shaderlib.sh

@@ -1,1 +1,0 @@
-../../../upstream/bgfx/examples/common/common.sh

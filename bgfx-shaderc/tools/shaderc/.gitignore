@@ -1,5 +1,1 @@
 shaderc
-
-# Testscript output directory (can be symlink).
-#
-test-shaderc

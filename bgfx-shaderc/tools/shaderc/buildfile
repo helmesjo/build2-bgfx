@@ -19,14 +19,10 @@ import libs += libspirv-cross%liba{spirv-cross-reflect}
 exe{shaderc}: {hxx ixx txx}{**} cxx{** -shaderc} \
               ../../src/{hxx cxx}{shader vertexlayout} \
               ../../src/hxx{bgfx_p config version} \
-              $libs testscript
+              $libs
 exe{shaderc}: cxx{shaderc}: include = adhoc # Included in shaderc-build2.cpp.
 exe{shaderc}: ../../include/bgfx/hxx{**}: include = adhoc
 exe{shaderc}: ../../3rdparty/hxx{**}: include = adhoc
-
-# Test inputs: upstream example shaders and the bgfx shader include files.
-#
-exe{shaderc}: ../../examples/file{**} ../../src/file{*.sh}: include = adhoc
 
 # Metadata (see also --build2-metadata in shaderc-build2.cpp).
 #
