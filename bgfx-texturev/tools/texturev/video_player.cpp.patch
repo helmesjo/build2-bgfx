@@ -1,0 +1,108 @@
+--- video_player.cpp.orig	2026-08-06 01:50:08
++++ video_player.cpp	2026-09-27 14:41:14
+@@ -5,6 +5,12 @@
+ 
+ #include "video_player.h"
+ 
++#ifndef TEXTUREV_CONFIG_VIDEO
++#	define TEXTUREV_CONFIG_VIDEO 0
++#endif // TEXTUREV_CONFIG_VIDEO
++
++#if TEXTUREV_CONFIG_VIDEO
++
+ #include <bx/allocator.h>
+ #include <bx/bx.h>
+ #include <bx/math.h>
+@@ -1136,4 +1142,92 @@
+ 		m_aMarkerUs = -1;
+ 		m_bMarkerUs = -1;
+ 	}
++}
++
++#else // TEXTUREV_CONFIG_VIDEO
++
++// Built without l-smash (MP4 demuxer), video files never open.
++
++VideoPlayer::VideoPlayer()
++	: m_impl(NULL)
++	, m_isOpen(false)
++	, m_hasError(false)
++	, m_paused(false)
++	, m_pendingSet(false)
++	, m_width(0)
++	, m_height(0)
++	, m_durationUs(0)
++	, m_playbackTimeUs(0)
++	, m_lastTickHpc(0)
++	, m_nextAuToSubmit(0)
++	, m_lastSetIdr(UINT32_MAX)
++	, m_playbackRate(1.0f)
++	, m_aMarkerUs(-1)
++	, m_bMarkerUs(-1)
++	, m_videoTexture(BGFX_INVALID_HANDLE)
++{
++}
++
++VideoPlayer::~VideoPlayer()
++{
++}
++
++bool VideoPlayer::isVideoExt(const bx::StringView& _ext)
++{
++	return 0 == bx::strCmpI(_ext, "mp4")
++		|| 0 == bx::strCmpI(_ext, "m4v")
++		;
++}
++
++bool VideoPlayer::open(const char* _filePath)
++{
++	BX_UNUSED(_filePath);
++	m_hasError = true;
++	return false;
+ }
++
++void VideoPlayer::close()
++{
++	m_hasError = false;
++}
++
++bgfx::VideoCodec::Enum VideoPlayer::codec() const
++{
++	return bgfx::VideoCodec::Count;
++}
++
++void VideoPlayer::tick()
++{
++}
++
++void VideoPlayer::seekTo(uint64_t _targetUs)
++{
++	BX_UNUSED(_targetUs);
++}
++
++void VideoPlayer::seekRelative(int64_t _deltaUs)
++{
++	BX_UNUSED(_deltaUs);
++}
++
++void VideoPlayer::restart()
++{
++}
++
++void VideoPlayer::togglePause()
++{
++}
++
++void VideoPlayer::rateUp()
++{
++}
++
++void VideoPlayer::rateDown()
++{
++}
++
++void VideoPlayer::cycleAbMarker()
++{
++}
++
++#endif // TEXTUREV_CONFIG_VIDEO
