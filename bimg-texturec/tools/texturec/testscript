@@ -1,9 +1,27 @@
-: basics
-:
-$* 'World' >'Hello, World!'
+in = $src_base/msdf.png
 
-: missing-name
+: version
 :
-$* 2>>EOE != 0
-error: missing name
-EOE
+$* --version >>~/EOO/
+/texturec, bgfx texture compiler tool, version .+/
+EOO
+
+: rgba8
+:
+$* -f $in -o out.ktx -t RGBA8 &out.ktx
+
+: bc1
+:
+$* -f $in -o out.ktx -t BC1 &out.ktx
+
+: etc2
+:
+$* -f $in -o out.ktx -t ETC2 &out.ktx
+
+: astc
+:
+$* -f $in -o out.ktx -t ASTC4x4 &out.ktx
+
+: mips
+:
+$* -f $in -o out.dds -t BC3 -m &out.dds
