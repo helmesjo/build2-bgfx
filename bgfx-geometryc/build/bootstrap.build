@@ -1,0 +1,7 @@
+project = bgfx-geometryc
+
+using version
+using config
+using test
+using install
+using dist

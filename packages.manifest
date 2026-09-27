@@ -27,3 +27,6 @@ location: bgfx-geometryv/
 
 :
 location: bgfx-texturev/
+
+:
+location: bgfx-geometryc/
