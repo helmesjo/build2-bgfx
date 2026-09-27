@@ -15,6 +15,11 @@ exe{geometryc}: {hxx ixx txx cxx}{**} ../../src/{hxx cxx}{vertexlayout} \
 exe{geometryc}: ../../include/bgfx/hxx{**}: include = adhoc
 exe{geometryc}: ../../3rdparty/hxx{**}: include = adhoc
 
+# Test inputs (triangle.gltf is a minimal glTF 2.0 file with an embedded
+# buffer).
+#
+exe{geometryc}: file{cube.obj triangle.gltf}: include = adhoc
+
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
