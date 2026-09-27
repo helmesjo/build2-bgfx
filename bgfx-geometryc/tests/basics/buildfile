@@ -1,0 +1,4 @@
+# Test inputs: an upstream example mesh and a minimal glTF 2.0 file with an
+# embedded buffer.
+#
+./: testscript $t file{cube.obj triangle.gltf}
