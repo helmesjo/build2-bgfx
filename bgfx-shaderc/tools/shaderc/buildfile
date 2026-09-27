@@ -1,9 +1,58 @@
+# Static libs: public bx inlines reference global data (for example
+# Ticks::s_kInvFreq) that Windows DLL auto-import does not cover.
+#
 libs =
-#import libs += libhello%lib{hello}
+import libs += libbx%liba{bx}
+import libs += libbimg%liba{bimg}
+import libs += libtinystl%lib{tinystl}
+import libs += libfcpp%lib{fpp}
+import libs += libglslang%lib{glslang}
+import libs += libglslang%lib{glslang-default-resource-limits}
+import libs += libspirv-tools%lib{SPIRV-Tools}
+import libs += libspirv-tools%liba{SPIRV-Tools-opt}
+import libs += libspirv-cross%liba{spirv-cross-msl}
+import libs += libspirv-cross%liba{spirv-cross-reflect}
 
-exe{bgfx-shaderc}: {hxx ixx txx cxx}{**} $libs testscript
+# Upstream compiles bgfx's shader and vertex layout code into shaderc rather
+# than linking the bgfx library.
+#
+exe{shaderc}: {hxx ixx txx cxx}{**} \
+              ../../src/{hxx cxx}{shader vertexlayout} \
+              ../../src/hxx{bgfx_p config version} \
+              $libs testscript
+exe{shaderc}: ../../include/bgfx/hxx{**}: include = adhoc
+exe{shaderc}: ../../3rdparty/hxx{**}: include = adhoc
 
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
-cxx.poptions =+ "-I$out_pfx" "-I$src_pfx"
+# bgfx public headers and the glslang path shims under 3rdparty/ (shaderc
+# includes bgfx's vendored glslang paths).
+#
+cxx.poptions =+ "-I$out_pfx" "-I$src_pfx" \
+                "-I$src_root/include" "-I$src_root/3rdparty/glslang"
+
+# Output backends. GLSL/ESSL (glsl-optimizer) and WGSL (Tint) are compiled
+# out. HLSL (D3DCompiler) is available on Windows only and DXIL (DXC) with
+# the Windows SDK only. SPIR-V and Metal (glslang, SPIRV-Tools, SPIRV-Cross)
+# are available everywhere.
+#
+windows = ($cxx.target.class == 'windows')
+msvc    = ($cxx.target.system == 'win32-msvc')
+
+cxx.poptions += -DSHADERC_CONFIG_HAS_GLSLANG=1 \
+                -DSHADERC_CONFIG_HAS_TINT=0 \
+                -DSHADERC_CONFIG_HAS_GLSL_OPTIMIZER=0 \
+                -DSHADERC_CONFIG_HAS_D3DCOMPILER=($windows ? 1 : 0) \
+                -DSHADERC_CONFIG_HAS_DXC=($msvc ? 1 : 0)
+
+# With the GLSL optimizer compiled out, upstream's shaderc_glsl.cpp defines its
+# fallback stub as compileSPIRVShader() instead of compileGLSLShader(). The
+# name is only used by that stub and its shaderc.h declaration there.
+#
+obje{shaderc_glsl}: cxx.poptions += -DcompileSPIRVShader=compileGLSLShader
+
+../../src/
+{
+  cxx.poptions =+ "-I$src_root/include"
+}

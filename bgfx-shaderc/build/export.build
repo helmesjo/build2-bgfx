@@ -1,0 +1,6 @@
+$out_root/
+{
+  include tools/shaderc/
+}
+
+export $out_root/tools/shaderc/$import.target
