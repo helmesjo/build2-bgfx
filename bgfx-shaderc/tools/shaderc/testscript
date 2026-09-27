@@ -63,3 +63,13 @@ $* --platform linux -p 120 --type vertex -i $i \
 GLSL optimizer compiler is not compiled in.
 Failed to build shader.
 EOO
+
+: build2-metadata
+:
+$* --build2-metadata=1 >>~/EOO/
+# build2 buildfile shaderc
+export.metadata = 1 shaderc
+shaderc.name = [string] shaderc
+/shaderc.version = \[string\] .+/
+/shaderc.checksum = \[string\] .+/
+EOO
