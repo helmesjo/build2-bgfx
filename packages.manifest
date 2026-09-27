@@ -21,3 +21,6 @@ location: libbimg-decode/
 
 :
 location: bimg-texturec/
+
+:
+location: bgfx-geometryv/
