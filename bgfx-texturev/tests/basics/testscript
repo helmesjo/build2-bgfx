@@ -1,0 +1,6 @@
+: imported
+:
+: Interactive viewer (it opens a window), so only check that the imported
+: executable is built.
+:
+test -f $0
