@@ -30,3 +30,6 @@ location: bgfx-texturev/
 
 :
 location: bgfx-geometryc/
+
+:
+location: bgfx-shaderc/
