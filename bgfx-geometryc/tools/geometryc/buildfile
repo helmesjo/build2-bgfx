@@ -1,9 +1,30 @@
+# Static libs: public bx inlines reference global data (for example
+# Ticks::s_kInvFreq) that Windows DLL auto-import does not cover.
+#
 libs =
-#import libs += libhello%lib{hello}
+import libs += libbx%liba{bx}
+import libs += libtinystl%lib{tinystl}
+import libs += libmeshoptimizer%lib{meshoptimizer}
+import libs += libcgltf%lib{cgltf}
 
-exe{bgfx-geometryc}: {hxx ixx txx cxx}{**} $libs testscript
+# Upstream compiles bgfx's vertex layout code into geometryc rather than
+# linking the bgfx library.
+#
+exe{geometryc}: {hxx ixx txx cxx}{**} ../../src/{hxx cxx}{vertexlayout} \
+                $libs testscript
+exe{geometryc}: ../../include/bgfx/hxx{**}: include = adhoc
+exe{geometryc}: ../../3rdparty/hxx{**}: include = adhoc
 
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
-cxx.poptions =+ "-I$out_pfx" "-I$src_pfx"
+# bgfx public headers and the meshoptimizer and cgltf path shims under
+# 3rdparty/ (geometryc includes bgfx's vendored paths).
+#
+cxx.poptions =+ "-I$out_pfx" "-I$src_pfx" \
+                "-I$src_root/include" "-I$src_root/3rdparty"
+
+../../src/
+{
+  cxx.poptions =+ "-I$src_root/include"
+}
