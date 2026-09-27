@@ -1,0 +1,3 @@
+# Test input image (upstream bgfx example texture).
+#
+./: testscript $t file{msdf.png}
