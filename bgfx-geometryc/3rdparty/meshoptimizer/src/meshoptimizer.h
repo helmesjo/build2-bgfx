@@ -1,0 +1,1 @@
+../../../../bgfx-examples/common/3rdparty/meshoptimizer/src/meshoptimizer.h
