@@ -1,9 +1,11 @@
-# bgfx-geometryc - An executable
+# bgfx-geometryc - Geometry compiler for the bgfx rendering library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-executable. It is a <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package for the [`geometryc`](https://github.com/bkaradzic/bgfx)
+executable. It is a geometry compiler that converts Wavefront `.obj` and
+glTF 2.0 (`.gltf`, `.glb`) meshes into the `bgfx` mesh format.
 
-Note that the `bgfx-geometryc` executable in this package provides `build2` metadata.
+Note that the `geometryc` executable in this package provides `build2`
+metadata.
 
 
 ## Usage
@@ -13,13 +15,13 @@ To start using `bgfx-geometryc` in your project, add the following build-time
 appropriate:
 
 ```
-depends: * bgfx-geometryc ^<VERSION>
+depends: * bgfx-geometryc ^1.153.0
 ```
 
 Then import the executable in your `buildfile`:
 
 ```
-import! [metadata] <TARGET> = bgfx-geometryc%exe{<TARGET>}
+import! [metadata] geometryc = bgfx-geometryc%exe{geometryc}
 ```
 
 
@@ -28,18 +30,14 @@ import! [metadata] <TARGET> = bgfx-geometryc%exe{<TARGET>}
 This package provides the following importable targets:
 
 ```
-exe{<TARGET>}
+exe{geometryc}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+The geometry compiler command line tool. See `geometryc --help` and the
+upstream [tools documentation](https://bkaradzic.github.io/bgfx/tools.html)
+for usage.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.bgfx_geometryc.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.
