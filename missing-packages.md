@@ -34,6 +34,10 @@ queue/testing/stable, or `build2-packaging` GitHub):
 | `libimgui` | cppget testing (`^1.92.3`, core only) |
 | `stb_image_resize2`, `stb_image`, `stb_truetype`, `stb_rect_pack` | cppget (`build2-packaging/stb`) |
 | `catch2` | cppget stable |
+| `libcgltf` | dir `../build2-cgltf` (`^1.15.0-`), consumed by `bgfx-geometryc` via a path shim (`3rdparty/cgltf/cgltf.h`, implementation compiled into the library) |
+| `libfcpp` | dir `../build2-fcpp` (`^0.0.1-`), `bagder/fcpp` plus patches, consumed by `bgfx-shaderc` with bgfx's buffer sizes |
+| `libglslang` | dir `../build2-glslang` (16.5.0+1, `config.libglslang.opt`), consumed by `bgfx-shaderc` via path shims (`3rdparty/glslang/`) |
+| `libspirv-tools`, `libspirv-cross` | cppget testing (`^1.4.357`), consumed by `bgfx-shaderc` |
 
 Official `libimgui-docking` is also on cppget. This repo does not use it.
 
@@ -160,15 +164,13 @@ more widely, none of them are vendored in the package trees today):
 
 | Missing package (candidate) | Would unlock | Notes |
 |---|---|---|
-| **cgltf** | `geometryc` glTF path (with meshoptimizer) | Header-only. Not used by current extras |
 | **NanoVG** | `10-font`, `11-fontsdf`, `18-ibl`, `20-nanovg` | Lives under upstream `examples/common/nanovg/` with a bgfx backend |
 | **sdf** | Font SDF path (`font_manager.cpp`) | Mikko Mononen / Stefan Gustavson snippet, same class as edtaa3 |
 | **native_app_glue** | Android entry | NDK helper, not a product to package |
 
-`geometryc` itself (the offline mesh-authoring tool, as opposed to the
-runtime decode path examples use) additionally needs `cgltf` and is still
-not part of any local package; it is a separate, optional consumer of
-`libmeshoptimizer`, not required for the examples above.
+`geometryc` (the offline mesh-authoring tool, as opposed to the runtime
+decode path examples use) is packaged as `bgfx-geometryc` with `libcgltf`
+and `libmeshoptimizer`.
 
 Other skipped upstream examples (`13-stencil`, `16-shadowmaps`, `25-c99`,
 `32-particles`, `51-gpufont`, ...) are not necessarily waiting on a missing
@@ -196,13 +198,16 @@ remaining mesh/font examples.
 
 | Future package surface | Upstream third-party (still missing) |
 |---|---|
-| **remaining mesh examples** / **geometryc** | meshoptimizer, cgltf |
 | **font / nanovg examples** | NanoVG, sdf |
-| **shaderc** / tools | fcpp, glsl-optimizer, glslang, spirv-cross, spirv-headers, spirv-tools, dawn/tint, d3d4linux |
-| **texturev** | l-smash |
 
-A local `build2-SPIRV-Cross` tree already exists under the packaging workspace
-and may help if/when shaderc is packaged.
+### Compiled out of the tool packages
+
+| Item | Package | Effect |
+|---|---|---|
+| **glsl-optimizer** | `bgfx-shaderc` | No GLSL/ESSL output (`libbgfx` has OpenGL/ES compiled out) |
+| **dawn/tint** | `bgfx-shaderc` | No WGSL output (`libbgfx` has WebGPU compiled out) |
+| **d3d4linux**, DXC headers | `bgfx-shaderc` | HLSL/DXIL output on Windows only |
+| **l-smash** | `bgfx-texturev` | No MP4 video playback (`libbgfx` has `BGFX_CONFIG_VIDEO=0`) |
 
 ### Cleanup only (not new packages)
 
@@ -239,8 +244,12 @@ ETC1/PVRTC is unchanged.
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
 | `bgfx-examples` | vassvik dock and color wheel stay. NanoVG/cgltf/sdf not in the current extras | Done: meshoptimizer wired, 15 mesh examples added |
 | `libbx-tests` | none (`catch2` packaged) | Done |
-| *(future)* remaining font examples, geometryc | cgltf, NanoVG, sdf | Next if those ship |
-| *(future)* shaderc / tools | see section 3 | Deferred |
+| `bgfx-shaderc` | glsl-optimizer, dawn/tint, d3d4linux (compiled out) | Done for v1 |
+| `bgfx-geometryc` | none | Done |
+| `bgfx-geometryv` | none | Done |
+| `bgfx-texturev` | l-smash (compiled out) | Done for v1 |
+| `bimg-texturec` | none (encoders as in `libbimg-encode`) | Done |
+| *(future)* remaining font examples | NanoVG, sdf | Next if those ship |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
 
 ---
@@ -249,8 +258,7 @@ ETC1/PVRTC is unchanged.
 
 1. ~~**meshoptimizer**~~ Done: packaged at `../build2-meshoptimizer`,
    `meshLoad`/`weldVertices` restored in `bgfx_utils.cpp`, and the 15
-   unblocked mesh examples added. **cgltf** is still open, only needed for
-   `geometryc`'s glTF import path (not required by any current example).
+   unblocked mesh examples added. **cgltf** is packaged for `geometryc`.
 
 2. **dav1d** / **libavif** if AVIF should be compiled in.
 
@@ -260,7 +268,8 @@ ETC1/PVRTC is unchanged.
 
 4. **nvtt** only to restore BC6H/BC7 encode. Already compiled out.
 
-5. **Tool stacks** (shaderc, texturev / l-smash, `geometryc`'s `cgltf` need)
-   when those packages are added.
+5. ~~**Tool stacks**~~ Done: all upstream tools packaged. **l-smash**
+   (texturev video), **glsl-optimizer**, and **dawn/tint** (shaderc GLSL/ESSL
+   and WGSL output) only if the matching `libbgfx` features are enabled.
 
 6. **Legacy encode** (**etc1**, **pvrtc**) and **libheif** last.
