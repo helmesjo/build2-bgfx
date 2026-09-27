@@ -25,3 +25,30 @@ depends: libtinystl ^0.0.1
 depends: libimgui ^1.92.3
 depends: libimguizmo ^1.10.0-
 depends: libmeshoptimizer ^1.2.0
+
+# entry_x11 needs X11 development packages. Drop bare Linux bots and use
+# named sys configurations that install them (CI uses --sys-no-stub:
+# libx11 -> libx11-dev, libX11 -> libX11-devel on Fedora).
+#
+builds: -linux
+
+debian-builds: sys
+debian-builds: -static
+debian-builds: -bindist
+debian-build-include: linux_debian*-**
+debian-build-include: linux_ubuntu*-**
+debian-build-exclude: **
+debian-build-config:
+\
+sys:libx11
+\
+
+fedora-builds: sys
+fedora-builds: -static
+fedora-builds: -bindist
+fedora-build-include: linux_fedora*-**
+fedora-build-exclude: **
+fedora-build-config:
+\
+sys:libX11
+\
