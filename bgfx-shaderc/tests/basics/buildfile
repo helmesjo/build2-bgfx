@@ -1,0 +1,4 @@
+# Test inputs: upstream example shaders and the bgfx shader include files,
+# mirroring upstream's layout for the shaders' relative includes.
+#
+./: testscript $t file{examples/** src/**}

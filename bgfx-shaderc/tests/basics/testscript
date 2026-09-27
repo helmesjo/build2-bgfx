@@ -1,8 +1,8 @@
 # Upstream example shaders (see examples/) compiled with the bgfx shader
 # include files (see src/), mirroring upstream's layout.
 #
-e = $src_root/examples
-i = $src_root/src/
+e = $src_base/examples
+i = $src_base/src/
 
 : version
 :
