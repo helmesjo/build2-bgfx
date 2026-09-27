@@ -1,0 +1,1 @@
+../../../upstream/bgfx/tools/texturev/fs_texture_sdf.sc

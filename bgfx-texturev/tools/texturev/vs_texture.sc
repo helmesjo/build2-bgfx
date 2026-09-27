@@ -1,0 +1,1 @@
+../../../upstream/bgfx/tools/texturev/vs_texture.sc
