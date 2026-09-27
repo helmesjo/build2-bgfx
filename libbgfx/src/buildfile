@@ -61,6 +61,11 @@ libul{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/** -h264/**} \
 libul{bgfx}: file{**.bin.h}: include = adhoc
 libul{bgfx}: file{**.sc}: include = adhoc
 libul{bgfx}: file{**.sh}: include = adhoc
+
+# Shader include files for shaderc (bgfx_shader.sh, bgfx_compute.sh), installed
+# next to the public headers as upstream's bgfx.cmake does.
+#
+file{bgfx_*.sh}: install = include/bgfx/
 libul{bgfx}: file{**.idl.inl}: include = adhoc
 
 # RenderDoc and metal-cpp path shims (not installed).
