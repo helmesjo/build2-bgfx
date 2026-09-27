@@ -24,3 +24,6 @@ location: bimg-texturec/
 
 :
 location: bgfx-geometryv/
+
+:
+location: bgfx-texturev/
