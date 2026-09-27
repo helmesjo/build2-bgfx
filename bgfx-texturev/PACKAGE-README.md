@@ -1,9 +1,9 @@
-# bgfx-texturev - An executable
+# bgfx-texturev - Texture viewer for the bgfx rendering library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-executable. It is a <SUMMARY-OF-FUNCTIONALITY>.
-
-Note that the `bgfx-texturev` executable in this package provides `build2` metadata.
+This is a `build2` package for the [`texturev`](https://github.com/bkaradzic/bgfx)
+executable. It is an interactive viewer for the texture and image formats
+`bimg` decodes (DDS, KTX, PNG, EXR, and others). Video playback (MP4) is
+compiled out.
 
 
 ## Usage
@@ -13,13 +13,13 @@ To start using `bgfx-texturev` in your project, add the following build-time
 appropriate:
 
 ```
-depends: * bgfx-texturev ^<VERSION>
+depends: * bgfx-texturev ^1.153.0
 ```
 
 Then import the executable in your `buildfile`:
 
 ```
-import! [metadata] <TARGET> = bgfx-texturev%exe{<TARGET>}
+import texturev = bgfx-texturev%exe{texturev}
 ```
 
 
@@ -28,18 +28,13 @@ import! [metadata] <TARGET> = bgfx-texturev%exe{<TARGET>}
 This package provides the following importable targets:
 
 ```
-exe{<TARGET>}
+exe{texturev}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+The texture viewer. See the upstream
+[tools documentation](https://bkaradzic.github.io/bgfx/tools.html) for usage.
 
 
 ## Configuration variables
 
-This package provides the following configuration variables:
-
-```
-[bool] config.bgfx_texturev.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+This package provides no configuration variables.
