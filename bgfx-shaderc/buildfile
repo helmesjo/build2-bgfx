@@ -1,5 +1,6 @@
 # src/, include/, and 3rdparty/ hold bgfx sources, headers, and path shims
-# that are built as part of tools/shaderc/ and have no targets of their own.
+# that are built as part of tools/shaderc/, and examples/ holds its test
+# inputs. None of them have targets of their own.
 #
-./: {*/ -build/ -src/ -include/ -3rdparty/} \
+./: {*/ -build/ -src/ -include/ -3rdparty/ -examples/} \
     doc{README.md PACKAGE-README.md} legal{LICENSE} manifest

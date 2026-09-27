@@ -1,0 +1,1 @@
+../../upstream/bgfx/src/bgfx_compute.sh

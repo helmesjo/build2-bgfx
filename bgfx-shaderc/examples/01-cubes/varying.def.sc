@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/01-cubes/varying.def.sc

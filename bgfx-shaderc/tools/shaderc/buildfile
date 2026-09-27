@@ -23,6 +23,10 @@ exe{shaderc}: {hxx ixx txx cxx}{**} \
 exe{shaderc}: ../../include/bgfx/hxx{**}: include = adhoc
 exe{shaderc}: ../../3rdparty/hxx{**}: include = adhoc
 
+# Test inputs: upstream example shaders and the bgfx shader include files.
+#
+exe{shaderc}: ../../examples/file{**} ../../src/file{*.sh}: include = adhoc
+
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
