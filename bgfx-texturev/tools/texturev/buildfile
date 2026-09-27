@@ -1,9 +1,78 @@
+# Static libs: public bx inlines reference global data (for example
+# Ticks::s_kInvFreq) that Windows DLL auto-import does not cover.
+#
 libs =
-#import libs += libhello%lib{hello}
+import libs += libbgfx%liba{bgfx}
+import libs += libbimg-decode%liba{bimg-decode}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
+import libs += libimgui%liba{imgui}
+import libs += libimguizmo%liba{imguizmo}
+import libs += libiconfontcppheaders%lib{iconfontcppheaders}
+import libs += libtinystl%lib{tinystl}
+import libs += libmeshoptimizer%lib{meshoptimizer}
 
-exe{bgfx-texturev}: {hxx ixx txx cxx}{**} $libs testscript
+# Upstream links example-common (entry, imgui overlay, and bgfx_utils).
+# Only the parts the viewer uses are compiled.
+#
+exe{texturev}: {hxx ixx txx cxx}{**} \
+  ../../examples/common/cxx{bgfx_utils} \
+  ../../examples/common/entry/cxx{entry cmd input dialog} \
+  ../../examples/common/imgui/cxx{imgui} \
+  ../../examples/common/imgui/widgets/cxx{widgets} \
+  $libs
+
+# Platform entry. Prerequisite-specific include (not an if around the
+# declaration) so that all platforms end up in the distribution.
+#
+macos   = ($cxx.target.class == 'macos')
+windows = ($cxx.target.class == 'windows')
+
+exe{texturev}: ../../examples/common/entry/mm{entry_osx dialog_darwin}: \
+  include = $macos
+exe{texturev}: ../../examples/common/entry/cxx{entry_windows}: \
+  include = $windows
+exe{texturev}: ../../examples/common/entry/cxx{entry_x11}: \
+  include = (!$macos && !$windows)
+
+# Headers, embedded shaders and fonts, widget inlines, and shader sources
+# are only #included (or kept for reference).
+#
+exe{texturev}: ../../examples/common/hxx{**}: include = adhoc
+exe{texturev}: ../../examples/common/file{**.inl **.sc}: include = adhoc
+exe{texturev}: file{*.sc}: include = adhoc
+
+# Interactive viewer (opens a window), not run as a test.
+#
+exe{texturev}: test = false
 
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
-cxx.poptions =+ "-I$out_pfx" "-I$src_pfx"
+cxx.poptions =+ "-I$out_pfx" "-I$src_pfx" "-I$src_root/examples/common"
+
+# Upstream example-common configuration with packaged imgui. The
+# meshoptimizer/src/meshoptimizer.h shim under 3rdparty/ maps bgfx's vendored
+# path onto libmeshoptimizer's <meshoptimizer.h>.
+#
+../../examples/common/
+{
+  cxx.poptions =+ "-I$src_root/examples/common" \
+                  "-I$src_root/examples/common/3rdparty" \
+                  -DUSE_ENTRY=1 \
+                  -DUSE_LOCAL_STB=0
+}
+
+if $macos
+  cxx.libs += -framework Cocoa -framework QuartzCore -framework Metal \
+              -framework IOKit
+elif $windows
+{
+  if ($cxx.target.system == 'mingw32')
+    cxx.libs += -luser32 -lgdi32 -lshell32 -lcomdlg32 -lxinput
+  else
+    cxx.libs += user32.lib gdi32.lib shell32.lib comdlg32.lib xinput.lib
+}
+else
+  cxx.libs += -lX11
+

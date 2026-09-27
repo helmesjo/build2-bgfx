@@ -1,0 +1,6 @@
+$out_root/
+{
+  include tools/texturev/
+}
+
+export $out_root/tools/texturev/$import.target
