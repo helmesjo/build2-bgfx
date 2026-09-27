@@ -76,3 +76,8 @@ elif $windows
 else
   cxx.libs += -lX11
 
+
+# Upstream texturev.cpp updates a time variable it never reads.
+#
+if ($cxx.class == 'gcc' || $cxx.class == 'clang')
+  cxx.coptions += -Wno-unused-but-set-variable
