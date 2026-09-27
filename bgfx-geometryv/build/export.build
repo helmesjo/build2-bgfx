@@ -1,0 +1,6 @@
+$out_root/
+{
+  include tools/geometryv/
+}
+
+export $out_root/tools/geometryv/$import.target
