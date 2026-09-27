@@ -1,9 +1,65 @@
-: basics
-:
-$* 'World' >'Hello, World!'
+# Upstream example shaders (see examples/) compiled with the bgfx shader
+# include files (see src/), mirroring upstream's layout.
+#
+e = $src_root/examples
+i = $src_root/src/
 
-: missing-name
+: version
 :
-$* 2>>EOE != 0
-error: missing name
-EOE
+$* --version >>~/EOO/
+/shaderc, bgfx shader compiler tool, version .+/
+EOO
+
+: spirv-vertex
+:
+$* --platform linux -p spirv --type vertex -i $i \
+   --varyingdef $e/01-cubes/varying.def.sc \
+   -f $e/01-cubes/vs_cubes.sc -o out.bin &out.bin
+
+: spirv-fragment
+:
+$* --platform linux -p spirv --type fragment -i $i \
+   --varyingdef $e/01-cubes/varying.def.sc \
+   -f $e/01-cubes/fs_cubes.sc -o out.bin &out.bin
+
+: spirv-compute
+:
+$* --platform linux -p spirv --type compute -i $i \
+   --varyingdef $e/08-update/varying.def.sc \
+   -f $e/08-update/cs_update.sc -o out.bin &out.bin
+
+: metal-vertex
+:
+$* --platform osx -p metal --type vertex -i $i \
+   --varyingdef $e/01-cubes/varying.def.sc \
+   -f $e/01-cubes/vs_cubes.sc -o out.bin &out.bin
+
+: metal-fragment
+:
+$* --platform osx -p metal --type fragment -i $i \
+   --varyingdef $e/01-cubes/varying.def.sc \
+   -f $e/01-cubes/fs_cubes.sc -o out.bin &out.bin
+
+: metal-compute
+:
+$* --platform osx -p metal --type compute -i $i \
+   --varyingdef $e/08-update/varying.def.sc \
+   -f $e/08-update/cs_update.sc -o out.bin &out.bin
+
+: depends
+:
+{
+  $* --platform linux -p spirv --type vertex -i $i \
+     --varyingdef $e/01-cubes/varying.def.sc \
+     -f $e/01-cubes/vs_cubes.sc -o out.bin --depends &out.bin &out.bin.d
+  sed -n -e 's/.*(common\.sh).*/\1/p' out.bin.d >'common.sh'
+}
+
+: glsl-compiled-out
+:
+$* --platform linux -p 120 --type vertex -i $i \
+   --varyingdef $e/01-cubes/varying.def.sc \
+   -f $e/01-cubes/vs_cubes.sc -o out.bin >>EOO != 0
+GLSL optimizer compiler is not compiled in.
+Failed to build shader.
+EOO
