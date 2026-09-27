@@ -22,7 +22,7 @@ exe{shaderc}: {hxx ixx txx}{**} cxx{** -shaderc} \
               $libs
 exe{shaderc}: cxx{shaderc}: include = adhoc # Included in shaderc-build2.cpp.
 exe{shaderc}: ../../include/bgfx/hxx{**}: include = adhoc
-exe{shaderc}: ../../3rdparty/hxx{**}: include = adhoc
+exe{shaderc}: ../../3rdparty/hxx{** **.hpp}: include = adhoc
 
 # Metadata (see also --build2-metadata in shaderc-build2.cpp).
 #
@@ -37,11 +37,13 @@ exe{shaderc}:
 out_pfx = [dir_path] $out_root/tools/
 src_pfx = [dir_path] $src_root/tools/
 
-# bgfx public headers and the glslang path shims under 3rdparty/ (shaderc
-# includes bgfx's vendored glslang paths).
+# bgfx public headers and the glslang and SPIRV-Cross shims under 3rdparty/
+# (shaderc includes bgfx's vendored glslang paths and names the SPIRV-Cross
+# namespace directly).
 #
 cxx.poptions =+ "-I$out_pfx" "-I$src_pfx" \
-                "-I$src_root/include" "-I$src_root/3rdparty/glslang"
+                "-I$src_root/include" "-I$src_root/3rdparty/glslang" \
+                "-I$src_root/3rdparty/spirv-cross"
 cxx.poptions += "-DSHADERC_BUILD2_VERSION=\"$version\""
 
 # Output backends. GLSL/ESSL (glsl-optimizer) and WGSL (Tint) are compiled
