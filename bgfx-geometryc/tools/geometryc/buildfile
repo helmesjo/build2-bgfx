@@ -12,15 +12,10 @@ import libs += libcgltf%lib{cgltf}
 #
 exe{geometryc}: {hxx ixx txx cxx}{** -geometryc} \
                 ../../src/{hxx cxx}{vertexlayout} \
-                $libs testscript
+                $libs
 exe{geometryc}: cxx{geometryc}: include = adhoc # Included in geometryc-build2.cpp.
 exe{geometryc}: ../../include/bgfx/hxx{**}: include = adhoc
 exe{geometryc}: ../../3rdparty/hxx{**}: include = adhoc
-
-# Test inputs (triangle.gltf is a minimal glTF 2.0 file with an embedded
-# buffer).
-#
-exe{geometryc}: file{cube.obj triangle.gltf}: include = adhoc
 
 # Metadata (see also --build2-metadata in geometryc-build2.cpp).
 #
