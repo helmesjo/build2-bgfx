@@ -1,5 +1,5 @@
 --- imgui.h.orig	2026-08-16 01:43:24
-+++ imgui.h	2026-08-21 00:54:45
++++ imgui.h	2026-09-27 14:43:36
 @@ -8,9 +8,9 @@
  
  #include <bgfx/bgfx.h>
@@ -33,11 +33,13 @@
  #define IMGUI_FLAGS_NONE        UINT8_C(0x00)
  #define IMGUI_FLAGS_ALPHA_BLEND UINT8_C(0x01)
  
-@@ -135,4 +148,7 @@
+@@ -135,4 +148,9 @@
  
  } // namespace ImGui
  
 +#include "widgets/dock.h"
++#include "widgets/color_wheel.h"
++#include "widgets/range_slider.h"
 +#include <imguizmo/ImGuizmo.h>
 +
  #endif // IMGUI_H_HEADER_GUARD
