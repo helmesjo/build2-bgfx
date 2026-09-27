@@ -17,6 +17,11 @@ packages in your `build2`-based project, then instead see the accompanying
 - [`libbgfx`](libbgfx/PACKAGE-README.md)
 - [`bgfx-examples`](bgfx-examples/PACKAGE-README.md)
 - [`libbx-tests`](libbx-tests/PACKAGE-README.md)
+- [`bgfx-shaderc`](bgfx-shaderc/PACKAGE-README.md)
+- [`bgfx-geometryc`](bgfx-geometryc/PACKAGE-README.md)
+- [`bgfx-geometryv`](bgfx-geometryv/PACKAGE-README.md)
+- [`bgfx-texturev`](bgfx-texturev/PACKAGE-README.md)
+- [`bimg-texturec`](bimg-texturec/PACKAGE-README.md)
 
 ## Development
 
