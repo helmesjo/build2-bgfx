@@ -1,0 +1,6 @@
+$out_root/
+{
+  include tools/geometryc/
+}
+
+export $out_root/tools/geometryc/$import.target

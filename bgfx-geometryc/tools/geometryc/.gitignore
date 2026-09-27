@@ -1,5 +1,5 @@
-bgfx-geometryc
+geometryc
 
 # Testscript output directory (can be symlink).
 #
-test-bgfx-geometryc
+test-geometryc
