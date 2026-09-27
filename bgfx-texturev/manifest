@@ -16,3 +16,12 @@ package-email: packaging@build2.org
 upstream-version: d2633c6ac2cce448ab3a7ba7f5873ae677b385aa
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: libbx == $
+depends: libbimg == $
+depends: libbimg-decode == $
+depends: libbgfx == $
+depends: libiconfontcppheaders >= 2026.6.5
+depends: libtinystl ^0.0.1
+depends: libimgui ^1.92.3
+depends: libimguizmo ^1.10.0-
+depends: libmeshoptimizer ^1.2.0
