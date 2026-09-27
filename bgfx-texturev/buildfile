@@ -1,1 +1,4 @@
-./: {*/ -build/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
+# examples/common/ holds upstream example-common sources that are built as
+# part of tools/texturev/ and has no targets of its own.
+#
+./: {*/ -build/ -examples/} doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
