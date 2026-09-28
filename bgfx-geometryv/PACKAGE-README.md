@@ -33,6 +33,11 @@ exe{geometryv}
 The geometry viewer. See the upstream
 [tools documentation](https://bkaradzic.github.io/bgfx/tools.html) for usage.
 
+On macOS the viewer depends on and links `libmoltenvk`, so the Vulkan backend
+(`--vk`) uses that build, found through the executable's rpath, with no Vulkan
+SDK or environment setup. In a static-only configuration MoltenVK is linked
+statically, which bgfx cannot load, and `--vk` falls back to Metal.
+
 
 ## Configuration variables
 

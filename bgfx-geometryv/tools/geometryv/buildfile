@@ -12,6 +12,14 @@ import libs += libiconfontcppheaders%lib{iconfontcppheaders}
 import libs += libtinystl%lib{tinystl}
 import libs += libmeshoptimizer%lib{meshoptimizer}
 
+# bgfx's Vulkan backend dlopen()s libMoltenVK.dylib by name on macOS,
+# bypassing the Khronos loader. Linking lib{MoltenVK} (direct-link mode, see
+# libmoltenvk's PACKAGE-README) puts this build on the executable's rpath,
+# where that dlopen() finds it.
+#
+if ($cxx.target.class == 'macos')
+  import libs += libmoltenvk%lib{MoltenVK}
+
 # Upstream links example-common (entry, imgui overlay, debug draw, and
 # bgfx_utils). Only the parts the viewer uses are compiled.
 #
