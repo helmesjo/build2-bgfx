@@ -45,6 +45,12 @@ on macOS, `libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows, `d3d11.dll` and
 `d3d12.dll` on Windows). Install a Vulkan loader or MoltenVK to use the Vulkan
 backend at runtime.
 
+On macOS the Vulkan backend is patched to report `BGFX_CAPS_HIDPI` (see
+`src/renderer_vk.cpp.patch`), since it applies `BGFX_RESET_HIDPI` to the
+surface. Unpatched, `bgfx::reset()` strips the flag and the surface drops to
+scale 1.0 on the first resize. Pass `BGFX_RESET_HIDPI` and framebuffer (pixel)
+sizes to `bgfx::init()` and `bgfx::reset()` for Retina rendering.
+
 The Vulkan backend depends on `libvulkan-headers` (Khronos Vulkan-Headers,
 header-only) for the API declarations used to resolve function pointers.
 Until published on cppget, resolve it from the git prerequisite

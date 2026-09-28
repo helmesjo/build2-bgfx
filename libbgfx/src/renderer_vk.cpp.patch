@@ -1,0 +1,16 @@
+--- renderer_vk.cpp.orig	2026-08-06 01:50:08
++++ renderer_vk.cpp	2026-09-28 17:15:14
+@@ -1882,6 +1882,13 @@
+ 					| (m_deviceFeatures.geometryShader ? BGFX_CAPS_PRIMITIVE_ID : 0)
+ 					);
+ 
++#if BX_PLATFORM_OSX
++				// SwapChainVK::createSurface() applies BGFX_RESET_HIDPI (the
++				// layer's contentsScale). Without the cap, bgfx::reset() strips
++				// the flag and the surface is recreated at scale 1.0.
++				g_caps.supported |= BGFX_CAPS_HIDPI;
++#endif // BX_PLATFORM_OSX
++
+ 				g_caps.supported |= 0
+ 					| (s_extension[Extension::EXT_conservative_rasterization ].m_supported ? BGFX_CAPS_CONSERVATIVE_RASTER  : 0)
+ 					| (s_extension[Extension::EXT_shader_viewport_index_layer].m_supported ? BGFX_CAPS_VIEWPORT_LAYER_ARRAY : 0)
