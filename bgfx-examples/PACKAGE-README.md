@@ -5,6 +5,11 @@ This is a `build2` package for a subset of the official
 
 Examples are interactive demos and are not run as automated tests.
 
+On macOS the examples depend on and link `libmoltenvk`, so the Vulkan backend
+(`--vk`) uses that build, found through the executable's rpath, with no Vulkan
+SDK or environment setup. In a static-only configuration MoltenVK is linked
+statically, which bgfx cannot load, and `--vk` falls back to Metal.
+
 
 ## Importable targets
 
