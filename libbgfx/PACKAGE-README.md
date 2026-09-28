@@ -42,8 +42,26 @@ This build enables Vulkan and Noop on all platforms, Metal on macOS, and
 Direct3D 11 and 12 on Windows. OpenGL and WebGPU are compiled out. The Vulkan
 and D3D runtimes are not linked. bgfx loads them dynamically (`libMoltenVK.dylib`
 on macOS, `libvulkan.so.1` on Linux, `vulkan-1.dll` on Windows, `d3d11.dll` and
-`d3d12.dll` on Windows). Install a Vulkan loader or MoltenVK to use the Vulkan
-backend at runtime.
+`d3d12.dll` on Windows). On Linux and Windows, install a Vulkan loader to use
+the Vulkan backend at runtime.
+
+On macOS bgfx does not use the Khronos loader. It loads `libMoltenVK.dylib` by
+name, so an application should depend on `libmoltenvk` and link
+`lib{MoltenVK}` (its direct-link mode):
+
+```
+depends: libmoltenvk ^1.4.2 ? ($cxx.target.class == 'macos')
+```
+
+```
+if ($cxx.target.class == 'macos')
+  import libs += libmoltenvk%lib{MoltenVK}
+```
+
+This puts that build on the executable's rpath, where bgfx finds it. `libbgfx`
+itself does not depend on `libmoltenvk`, which leaves the choice of driver to
+the application. A statically linked MoltenVK leaves no dylib to load, and the
+Vulkan backend then falls back to Metal.
 
 On macOS the Vulkan backend is patched to report `BGFX_CAPS_HIDPI` (see
 `src/renderer_vk.cpp.patch`), since it applies `BGFX_RESET_HIDPI` to the
