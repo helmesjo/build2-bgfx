@@ -51,6 +51,11 @@ surface. Unpatched, `bgfx::reset()` strips the flag and the surface drops to
 scale 1.0 on the first resize. Pass `BGFX_RESET_HIDPI` and framebuffer (pixel)
 sizes to `bgfx::init()` and `bgfx::reset()` for Retina rendering.
 
+It is also patched (see `src/renderer_vk.cpp.patch` and
+`src/renderer_vk.h.patch`) to create its surface through `VK_EXT_metal_surface`
+instead of the deprecated `VK_MVK_macos_surface`, so the Vulkan driver (e.g.
+MoltenVK) must provide that extension.
+
 The Vulkan backend depends on `libvulkan-headers` (Khronos Vulkan-Headers,
 header-only) for the API declarations used to resolve function pointers.
 Until published on cppget, resolve it from the git prerequisite
