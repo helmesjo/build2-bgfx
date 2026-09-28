@@ -407,7 +407,7 @@ VK_IMPORT_DEVICE
 #	elif BX_PLATFORM_WINDOWS
 			KHR_win32_surface,
 #	elif BX_PLATFORM_OSX
-			MVK_macos_surface,
+			EXT_metal_surface,
 #	elif BX_PLATFORM_NX
 			NN_vi_surface,
 #	endif
@@ -454,7 +454,7 @@ VK_IMPORT_DEVICE
 #	elif BX_PLATFORM_WINDOWS
 		{ VK_KHR_WIN32_SURFACE_EXTENSION_NAME,      1, false, false, true,                                                          Layer::Count },
 #	elif BX_PLATFORM_OSX
-		{ VK_MVK_MACOS_SURFACE_EXTENSION_NAME,      1, false, false, true,                                                          Layer::Count },
+		{ VK_EXT_METAL_SURFACE_EXTENSION_NAME,      1, false, false, true,                                                          Layer::Count },
 #	elif BX_PLATFORM_NX
 		{ VK_NN_VI_SURFACE_EXTENSION_NAME,          1, false, false, true,                                                          Layer::Count },
 #	endif
@@ -507,7 +507,7 @@ VK_IMPORT_DEVICE
 			|| s_extension[Extension::KHR_xcb_surface    ].m_supported
 			;
 #elif BX_PLATFORM_OSX
-		return s_extension[Extension::MVK_macos_surface].m_supported;
+		return s_extension[Extension::EXT_metal_surface].m_supported;
 #elif BX_PLATFORM_NX
 		return s_extension[Extension::NN_vi_surface].m_supported;
 #else
@@ -8018,7 +8018,7 @@ VK_DESTROY
 
 #elif BX_PLATFORM_OSX
 		{
-			if (NULL != vkCreateMacOSSurfaceMVK)
+			if (NULL != vkCreateMetalSurfaceEXT)
 			{
 				NSWindow* window    = (NSWindow*)(m_nwh);
 				CAMetalLayer* layer = (CAMetalLayer*)(m_nwh);
@@ -8047,13 +8047,13 @@ VK_DESTROY
 					layer.contentsScale = [window backingScaleFactor];
 				}
 
-				VkMacOSSurfaceCreateInfoMVK sci;
-				sci.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
-				sci.pNext = NULL;
-				sci.flags = 0;
-				sci.pView = (__bridge void*)layer;
-				result = vkCreateMacOSSurfaceMVK(instance, &sci, allocatorCb, &m_surface);
-				BX_WARN(VK_SUCCESS == result, "vkCreateMacOSSurfaceMVK failed %d: %s.", result, getName(result) );
+				VkMetalSurfaceCreateInfoEXT sci;
+				sci.sType  = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+				sci.pNext  = NULL;
+				sci.flags  = 0;
+				sci.pLayer = layer;
+				result = vkCreateMetalSurfaceEXT(instance, &sci, allocatorCb, &m_surface);
+				BX_WARN(VK_SUCCESS == result, "vkCreateMetalSurfaceEXT failed %d: %s.", result, getName(result) );
 			}
 		}
 #elif BX_PLATFORM_NX
