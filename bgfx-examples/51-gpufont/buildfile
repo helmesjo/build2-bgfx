@@ -1,0 +1,38 @@
+# Static libs: see ../common/buildfile (auto-symexport data caveat on MSVC).
+#
+import libs = libbgfx%liba{bgfx}
+import libs += libbimg%liba{bimg}
+import libs += libbx%liba{bx}
+
+include ../common/
+
+# gpufont uses font/utf8, not the font manager.
+#
+exe{gpufont}: \
+  {hxx cxx}{**} \
+  ../common/libue{example-stb-truetype} \
+  ../common/libue{example-load-program} \
+  ../common/libue{example-common} \
+  $libs
+{
+  test = false
+
+  cxx.poptions =+ \
+    "-I$out_base" "-I$src_base" \
+    "-I$src_root/common" \
+    "-I$src_root/common/3rdparty" \
+    -DENTRY_CONFIG_IMPLEMENT_MAIN=1 \
+    -DUSE_ENTRY=1
+}
+
+exe{gpufont}: ../common/hxx{common args bgfx_utils}: include = adhoc
+exe{gpufont}: ../common/font/hxx{utf8} ../common/font/cxx{utf8}: include = adhoc
+exe{gpufont}: ../common/3rdparty/stb/hxx{stb_truetype}: include = adhoc
+
+# Extra example sources stay in git. Target-specific dist so collect()
+# drops them even if dist_include rewrites include=false to adhoc.
+#
+{hxx cxx file}{*}:
+{
+  dist = false
+}
