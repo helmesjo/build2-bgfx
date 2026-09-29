@@ -101,6 +101,16 @@ libue{example-load-program}: ../meshes/file{**}:
   include = adhoc
 }
 
+libue{example-load-program}: ../font/file{**}:
+{
+  include = adhoc
+}
+
+libue{example-load-program}: ../text/file{**}:
+{
+  include = adhoc
+}
+
 # First-party debug draw (embedded shaders). Only 29-debugdraw links this.
 #
 libue{example-debugdraw}: cxx{debugdraw/debugdraw} $impl_libs $intf_libs
@@ -132,6 +142,7 @@ libue{example-stb-truetype}: 3rdparty/stb/hxx{stb_truetype}: include = adhoc
 
 cxx{stb_truetype*}: dist = false
 3rdparty/stb/hxx{*}: dist = false
+3rdparty/iconfontheaders/hxx{*}: dist = false
 
 # In-tree signed-distance snippet. font_manager.cpp is the only TU that
 # defines SDF_IMPLEMENTATION. Not a package.
