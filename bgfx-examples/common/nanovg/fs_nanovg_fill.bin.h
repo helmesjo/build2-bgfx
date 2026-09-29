@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/nanovg/fs_nanovg_fill.bin.h
