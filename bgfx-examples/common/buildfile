@@ -227,6 +227,26 @@ libue{example-common}:
   cxx.export.libs = $intf_libs
 }
 
+# bx/macros.h and entry/dbg.h paste ##__VA_ARGS__. Clang -Wpedantic reports
+# that as -Wgnu-zero-variadic-macro-arguments. Scoped to the TUs that include
+# those headers so widgets.cpp stays under the user's pedantic flags.
+#
+if ($cxx.id.type == 'clang')
+{
+  if ($cxx.target.class == 'macos')
+    plat_entry = entry/entry_osx entry/dialog_darwin
+  elif ($cxx.target.class == 'windows')
+    plat_entry = entry/entry_windows
+  else
+    plat_entry = entry/entry_x11
+
+  obj{example-glue camera \
+      entry/entry entry/cmd entry/input entry/dialog \
+      $plat_entry \
+      imgui/imgui}: \
+    cxx.coptions += -Wno-gnu-zero-variadic-macro-arguments
+}
+
 libue{example-common}: imgui/file{**.bin.h **.ttf.h **.inl}: include = adhoc
 libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc
 libue{example-common}: hxx{common args bgfx_utils camera packrect}: include = adhoc

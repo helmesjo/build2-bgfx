@@ -20,3 +20,9 @@ exe{helloworld}: {hxx cxx}{**} ../common/libue{example-common} $libs
 }
 
 exe{helloworld}: ../common/hxx{common args bgfx_utils}: include = adhoc
+
+# helloworld.cpp includes common.h, which pulls in bx/macros.h and entry/dbg.h.
+# Same per-TU suppression as common/buildfile.
+#
+if ($cxx.id.type == 'clang')
+  obj{helloworld}: cxx.coptions += -Wno-gnu-zero-variadic-macro-arguments
