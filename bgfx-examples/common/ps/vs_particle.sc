@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/ps/vs_particle.sc
