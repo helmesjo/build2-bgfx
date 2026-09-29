@@ -111,6 +111,11 @@ libue{example-load-program}: ../text/file{**}:
   include = adhoc
 }
 
+libue{example-load-program}: ../images/file{**}:
+{
+  include = adhoc
+}
+
 # First-party debug draw (embedded shaders). Only 29-debugdraw links this.
 #
 libue{example-debugdraw}: cxx{debugdraw/debugdraw} $impl_libs $intf_libs
