@@ -1,8 +1,8 @@
 # Auto-include non-example dirs (common/, etc.). Numbered example dirs are
 # excluded from the wildcard and added explicitly. shaders/, textures/,
-# meshes/, font/, and text/ are runtime fixtures, not build scopes.
+# meshes/, font/, images/, and text/ are runtime fixtures, not build scopes.
 #
-./: {*/ -build/ -shaders/ -textures/ -meshes/ -font/ -text/ -[0-9]*-*/} \
+./: {*/ -build/ -shaders/ -textures/ -meshes/ -font/ -images/ -text/ -[0-9]*-*/} \
   00-helloworld/ \
   doc{README.md PACKAGE-README.md} legal{LICENSE} manifest
 
@@ -16,18 +16,19 @@ shaders/: install = false
 textures/: install = false
 meshes/: install = false
 font/: install = false
+images/: install = false
 text/: install = false
 
 # Large git-only fixtures. include = false keeps the unpacked dist archive
 # from trying to update files that were never copied. dist = false is
 # target-specific (own declaration) so collect() actually drops them.
 #
-./: file{shaders/** textures/** meshes/** font/** text/**}:
+./: file{shaders/** textures/** meshes/** font/** images/** text/**}:
 {
   include = false
 }
 
-file{shaders/** textures/** meshes/** font/** text/**}:
+file{shaders/** textures/** meshes/** font/** images/** text/**}:
 {
   dist = false
 }
