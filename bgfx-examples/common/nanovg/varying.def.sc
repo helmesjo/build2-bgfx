@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/nanovg/varying.def.sc

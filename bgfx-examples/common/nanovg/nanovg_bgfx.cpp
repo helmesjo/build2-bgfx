@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/nanovg/nanovg_bgfx.cpp

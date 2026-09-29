@@ -173,6 +173,26 @@ font/{hxx cxx file}{*}:
   dist = false
 }
 
+# First-party NanoVG (bgfx backend, embedded shaders). 20-nanovg.
+# stb_truetype is example-stb-truetype. Do not define FONS_USE_FREETYPE.
+#
+libue{example-nanovg}: \
+  cxx{nanovg/nanovg nanovg/nanovg_bgfx} \
+  libue{example-stb-truetype} \
+  $intf_libs
+{
+  cxx.poptions =+ "-I$out_base" "-I$src_base" "-I$src_base/3rdparty"
+}
+
+libue{example-nanovg}: nanovg/file{**.bin.h}: include = adhoc
+libue{example-nanovg}: nanovg/hxx{*}: include = adhoc
+libue{example-nanovg}: 3rdparty/stb/hxx{stb_truetype}: include = adhoc
+
+nanovg/{hxx cxx file}{*}:
+{
+  dist = false
+}
+
 libue{example-common}: \
   cxx{example-glue camera} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
