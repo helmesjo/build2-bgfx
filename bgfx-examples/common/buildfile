@@ -54,14 +54,10 @@ else
 #
 ./: libue{example-common}
 
-# bgfx_utils (loadProgram, mesh/texture loading) for monorepo extras that
-# use shaders/, textures/, and meshes/ (not distributed). Prerequisite-
-# specific include, not an if around the declaration.
+# bgfx_utils (loadProgram, mesh/texture loading) for git-only extras.
+# Not a default target: the distributed archive has no shaders or meshes,
+# and only the extra examples link this library.
 #
-./: libue{example-load-program}:
-{
-  include = ($build.meta_operation != 'dist')
-}
 
 # POSIX separators so the string literal is valid on Windows (no \U, \h, ...).
 #
