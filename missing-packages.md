@@ -5,39 +5,42 @@ but that are **not** yet available as separate `build2` packages
 (import/`depends`). Already unbundled packages are listed only for context.
 
 After the unbundle stretch, no in-tree third-party **product** remains in the
-local packages. Snippets (edtaa3, h264, vassvik dock) stay in-tree on purpose.
+local packages. Snippets (edtaa3, h264, vassvik dock, color wheel, sdf) stay
+in-tree on purpose.
 Compiled-out and future-tool vendors live in the upstream submodule only.
 
 Focus is **modern hardware** support (ETC2/EAC and ASTC already packaged,
 BC6H/BC7 encode compiled out). Legacy GPU formats are listed at the bottom.
 
-**Already external** (git prereqs in `repositories.manifest`, cppget
-queue/testing/stable, or `build2-packaging` GitHub):
+**Already external** (git prereqs in `repositories.manifest`, or cppget
+alpha, queue/testing, testing, or stable):
 
 | Package | Source |
 |---|---|
-| `libastcenc` | git `helmesjo/build2-astc-encoder#review` |
-| `libmetal-cpp` | git `helmesjo/build2-metal-cpp#review` |
-| `libdirectx-headers` | git `helmesjo/build2-DirectX-Headers#review` |
-| `libvulkan-headers` | git `helmesjo/build2-Vulkan-Headers#review` |
-| `libetcpak` | git `build2-packaging/etcpak#main` |
-| `libimguizmo` | git `helmesjo/build2-imguizmo#review` |
-| `librenderdoc-app` | dir `../build2-renderdoc` (`^1.45.0-`), in-application API header |
-| `libmeshoptimizer` | dir `../build2-meshoptimizer` (`^1.2.0-`), consumed by `bgfx_utils.cpp`'s `Mesh::load()`/`weldVertices()` via a path shim (`common/3rdparty/meshoptimizer/`, v1.2 exports `<meshoptimizer.h>` unqualified) |
-| `libsquish` | cppget queue (`^1.15.104-`) |
-| `libiqa` | cppget queue (`^1.1.2-`) |
-| `liblodepng` | cppget queue (`== 2026.1.19`) |
-| `libsimplewebp` | cppget queue (`== 2026.7.18`) |
-| `libtinyexr` | cppget (`^1.0.8`, pulls `libminiz`) |
+| `libastcenc` | cppget testing (`^5.7.0`) |
+| `libmetal-cpp` | cppget testing (`^381.0.0`), macOS only |
+| `libdirectx-headers` | cppget testing (`^1.619.5-`), Windows only |
+| `libvulkan-headers` | cppget testing (`^1.4.359`) |
+| `libmoltenvk` | cppget testing (`^1.4.2`), macOS only. Linked by `bgfx-examples`, `bgfx-geometryv`, and `bgfx-texturev`. `libbgfx` does not depend on it. |
+| `libetcpak` | cppget testing (`^2.1.0`) |
+| `libimguizmo` | git `helmesjo/build2-imguizmo#review` (`^1.10.0-`) |
+| `librenderdoc-app` | git `helmesjo/build2-renderdoc#review` (`^1.45.0-`), in-application API header |
+| `libmeshoptimizer` | cppget testing (`^1.2.0`), consumed by `bgfx_utils.cpp`'s `Mesh::load()`/`weldVertices()` and by `bgfx-geometryc` via path shims (`bgfx-examples/common/3rdparty/meshoptimizer/`, `bgfx-geometryc/3rdparty/meshoptimizer/`). v1.2 exports `<meshoptimizer.h>` unqualified. |
+| `libsquish` | cppget testing (`^1.15.104-`) |
+| `libiqa` | cppget testing (`^1.1.2-`) |
+| `liblodepng` | cppget testing (`== 2026.1.19`) |
+| `libsimplewebp` | cppget testing (`== 2026.7.18`) |
+| `libtinyexr` | cppget testing (`^1.0.8`, pulls `libminiz`) |
 | `libiconfontcppheaders` | cppget testing (`>= 2026.6.5-`), `build2-packaging/IconFontCppHeaders` |
-| `libtinystl` | `build2-packaging/tinystl` (`^0.0.1-`) |
+| `libtinystl` | cppget alpha (`^0.0.1-`) |
 | `libimgui` | cppget testing (`^1.92.3`, core only) |
-| `stb_image_resize2`, `stb_image`, `stb_truetype`, `stb_rect_pack` | cppget (`build2-packaging/stb`) |
-| `catch2` | cppget stable |
-| `libcgltf` | dir `../build2-cgltf` (`^1.15.0-`), consumed by `bgfx-geometryc` via a path shim (`3rdparty/cgltf/cgltf.h`, implementation compiled into the library) |
-| `libfcpp` | dir `../build2-fcpp` (`^0.0.1-`), `bagder/fcpp` plus patches, consumed by `bgfx-shaderc` with bgfx's buffer sizes |
-| `libglslang` | dir `../build2-glslang` (16.5.0+1, `config.libglslang.opt`), consumed by `bgfx-shaderc` via path shims (`3rdparty/glslang/`) |
-| `libspirv-tools`, `libspirv-cross` | cppget testing (`^1.4.357`), consumed by `bgfx-shaderc` |
+| `stb_image_resize2`, `stb_image`, `stb_truetype` | cppget testing (`build2-packaging/stb`). `stb_rect_pack` is on cppget stable and is not a dependency. |
+| `catch2` | cppget stable (`^3.5.0`) |
+| `libcgltf` | git `helmesjo/build2-cgltf#review` (`^1.15.0-`), consumed by `bgfx-geometryc` via a path shim (`3rdparty/cgltf/cgltf.h`, implementation compiled into the library) |
+| `libfcpp` | git `helmesjo/build2-fcpp#review` (`^0.0.1-`), `bagder/fcpp` plus patches, consumed by `bgfx-shaderc` with bgfx's buffer sizes |
+| `libglslang` | cppget queue/testing (`^16.5.0+1`, `config.libglslang.opt`), consumed by `bgfx-shaderc` via path shims (`3rdparty/glslang/`) |
+| `libspirv-tools` | cppget queue/testing (`^1.4.357+1`), consumed by `bgfx-shaderc` |
+| `libspirv-cross` | cppget testing (`^1.4.357+1`, glsl, msl, and reflect), consumed by `bgfx-shaderc` via path shims (`3rdparty/spirv-cross/`) |
 
 Official `libimgui-docking` is also on cppget. This repo does not use it.
 
@@ -152,7 +155,8 @@ backend under `common/nanovg/`, not a separate package. `sdf` stays in-tree.
 
 No remaining required in-tree third-party **product**. Depends on
 `libimgui` (core only), `libimguizmo`, `libiconfontcppheaders`,
-`libtinystl`, `libmeshoptimizer`, and `stb_truetype`.
+`libtinystl`, `libmeshoptimizer`, and `stb_truetype`. On macOS it also
+depends on `libmoltenvk`.
 
 Dock and color wheel stay as first-party overlay extras (file-level
 symlinks under `common/imgui/widgets/`). Both are `dear-imgui/widgets/`
@@ -253,9 +257,9 @@ ETC1/PVRTC is unchanged.
 
 ## Suggested unbundle order
 
-1. ~~**meshoptimizer**~~ Done: packaged at `../build2-meshoptimizer`,
-   `meshLoad`/`weldVertices` restored in `bgfx_utils.cpp`, and the 15
-   unblocked mesh examples added. **cgltf** is packaged for `geometryc`.
+1. ~~**meshoptimizer**~~ Done: cppget testing, `meshLoad`/`weldVertices`
+   restored in `bgfx_utils.cpp`, and the 15 unblocked mesh examples added.
+   **cgltf** is packaged for `geometryc`.
 
 2. **dav1d** / **libavif** if AVIF should be compiled in.
 
