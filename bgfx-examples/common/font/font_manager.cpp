@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/font/font_manager.cpp

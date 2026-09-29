@@ -141,6 +141,27 @@ cxx{stb_truetype*}: dist = false
   dist = false
 }
 
+# First-party font manager (embedded shaders). 10-font and 11-fontsdf.
+#
+libue{example-font}: \
+  cxx{cube_atlas} \
+  cxx{font/font_manager font/text_buffer_manager font/text_metrics font/utf8} \
+  libue{example-stb-truetype} \
+  $intf_libs
+{
+  cxx.poptions =+ "-I$out_base" "-I$src_base" "-I$src_base/3rdparty"
+}
+
+libue{example-font}: font/file{**.bin.h}: include = adhoc
+libue{example-font}: font/hxx{*} hxx{cube_atlas}: include = adhoc
+libue{example-font}: 3rdparty/sdf/hxx{sdf} 3rdparty/stb/hxx{stb_truetype}: include = adhoc
+
+{hxx cxx}{cube_atlas*}: dist = false
+font/{hxx cxx file}{*}:
+{
+  dist = false
+}
+
 libue{example-common}: \
   cxx{example-glue camera} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \

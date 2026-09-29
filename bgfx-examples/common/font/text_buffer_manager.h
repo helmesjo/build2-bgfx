@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/font/text_buffer_manager.h
