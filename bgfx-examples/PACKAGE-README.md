@@ -1,7 +1,9 @@
 # bgfx-examples - Interactive examples for the bgfx rendering library
 
-This is a `build2` package for a subset of the official
-[bgfx](https://github.com/bkaradzic/bgfx) examples.
+This is a `build2` package for the upstream desktop
+[bgfx](https://github.com/bkaradzic/bgfx) examples. Only `00-helloworld`
+is in the distributed archive. The other examples stay in the git
+repository because they need the runtime shader and asset tree.
 
 Examples are interactive demos and are not run as automated tests.
 

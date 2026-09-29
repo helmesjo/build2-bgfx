@@ -57,6 +57,9 @@ These are the only third-party leftovers **inside the local packages**
 | metal-cpp shim | `libbgfx/src/3rdparty/metal-cpp/metal.hpp` | macOS only | Not vendored product code. Path shim onto packaged `libmetal-cpp`. |
 | renderdoc shim | `libbgfx/src/3rdparty/renderdoc/renderdoc_app.h` | Windows/Linux | Not vendored product code. Path shim onto packaged `librenderdoc-app`. |
 | meshoptimizer shim | `bgfx-examples/common/3rdparty/meshoptimizer/src/meshoptimizer.h` | `bgfx_utils.cpp` | Not vendored product code. Path shim onto packaged `libmeshoptimizer` (v1.2 exports `<meshoptimizer.h>` unqualified; bgfx code expects `<meshoptimizer/src/meshoptimizer.h>`). |
+| **sdf** | `bgfx-examples/common/3rdparty/sdf/` | Yes, `font_manager.cpp` defines `SDF_IMPLEMENTATION` | **No.** Mikko Mononen snippet, same class as edtaa3. |
+| stb_truetype shim | `bgfx-examples/common/3rdparty/stb/stb_truetype.h` | font manager, NanoVG, `51-gpufont` | Not vendored product code. Path shim onto packaged `stb_truetype` (`<stb_truetype.h>`). One implementation translation unit. |
+| iconfont shim | `bgfx-examples/common/3rdparty/iconfontheaders/` | `10-font` | Not vendored product code. Maps `<iconfontheaders/icons_font_awesome.h>` and `<iconfontheaders/icons_kenney.h>` onto `libiconfontcppheaders`. |
 | catch stub | `libbx-tests/tests/catch/catch_amalgamated.hpp` | Tests include it | Not vendored product code. Redirects to packaged `catch2`. |
 
 No other in-tree third-party mounts remain under `libbx`, `libbimg`,
@@ -141,40 +144,40 @@ packaged and wired in: `bgfx_utils.cpp` (a patched local copy of upstream,
 not a symlink, so it keeps the CWD-independent `BGFX_EXAMPLES_*_DIR` path
 resolution `load_program.cpp` used to carry) replaced `load_program.cpp`,
 and the 15 `meshLoad`-gated examples plus their `meshes/` runtime assets
-were added as git-only extras. `18-ibl` and the remaining upstream examples
-still need NanoVG.
+were added as git-only extras. The numbered desktop examples are all
+present. Only `00-helloworld` is distributed. NanoVG is bgfx's own example
+backend under `common/nanovg/`, not a separate package. `sdf` stays in-tree.
 
 ### `bgfx-examples`
 
 No remaining required in-tree third-party **product**. Depends on
 `libimgui` (core only), `libimguizmo`, `libiconfontcppheaders`,
-`libtinystl`, and `libmeshoptimizer`.
+`libtinystl`, `libmeshoptimizer`, and `stb_truetype`.
 
 Dock and color wheel stay as first-party overlay extras (file-level
 symlinks under `common/imgui/widgets/`). Both are `dear-imgui/widgets/`
 snippets (vassvik `imgui_docking_minimal`, upstream `color_wheel`), not
 packaged libraries. Other 3rdparty widgets (markdown, ...) are unused by
-this example subset and are not compiled.
+these examples and are not compiled.
 
-`stb_truetype` / `stb_rect_pack` are not example dependencies. Packaged
-imgui ships `imstb_*`. Overlay is built with `USE_LOCAL_STB=0`.
+`stb_truetype` is a dependency of the font manager, NanoVG, and
+`51-gpufont`. `stb_rect_pack` is not. Packaged imgui ships `imstb_*`.
+Overlay is built with `USE_LOCAL_STB=0` so it does not compile a second stb.
 
-Still not compiled by the current example-common build (upstream uses them
-more widely, none of them are vendored in the package trees today):
+Not compiled, and not vendored in the package trees:
 
 | Missing package (candidate) | Would unlock | Notes |
 |---|---|---|
-| **NanoVG** | `10-font`, `11-fontsdf`, `18-ibl`, `20-nanovg` | Lives under upstream `examples/common/nanovg/` with a bgfx backend |
-| **sdf** | Font SDF path (`font_manager.cpp`) | Mikko Mononen / Stefan Gustavson snippet, same class as edtaa3 |
 | **native_app_glue** | Android entry | NDK helper, not a product to package |
 
 `geometryc` (the offline mesh-authoring tool, as opposed to the runtime
 decode path examples use) is packaged as `bgfx-geometryc` with `libcgltf`
 and `libmeshoptimizer`.
 
-Other skipped upstream examples (`13-stencil`, `16-shadowmaps`, `25-c99`,
-`32-particles`, `51-gpufont`, ...) are not necessarily waiting on a missing
-package.
+The numbered desktop examples, including `10-font`, `11-fontsdf`,
+`13-stencil`, `16-shadowmaps`, `18-ibl`, `20-nanovg`, `25-c99`,
+`32-particles`, and `51-gpufont`, are in the git repository. They are not
+in the distributed archive.
 
 ---
 
@@ -193,12 +196,7 @@ are added.
 
 ### Not packaged yet (upstream has them, no local package consumes them)
 
-Would become missing-package work only when adding tools packages or the
-remaining mesh/font examples.
-
-| Future package surface | Upstream third-party (still missing) |
-|---|---|
-| **font / nanovg examples** | NanoVG, sdf |
+Would become missing-package work only when adding tools packages.
 
 ### Compiled out of the tool packages
 
@@ -242,14 +240,13 @@ ETC1/PVRTC is unchanged.
 | `libbx` | none | Done |
 | `libbimg` | none | Done |
 | `libbimg-decode` | dav1d/libavif (compiled out) | Done for v1 |
-| `bgfx-examples` | vassvik dock and color wheel stay. NanoVG/cgltf/sdf not in the current extras | Done: meshoptimizer wired, 15 mesh examples added |
+| `bgfx-examples` | vassvik dock, color wheel, and sdf stay in-tree | Done: desktop examples added |
 | `libbx-tests` | none (`catch2` packaged) | Done |
 | `bgfx-shaderc` | glsl-optimizer, dawn/tint, d3d4linux (compiled out) | Done for v1 |
 | `bgfx-geometryc` | none | Done |
 | `bgfx-geometryv` | none | Done |
 | `bgfx-texturev` | l-smash (compiled out) | Done for v1 |
 | `bimg-texturec` | none (encoders as in `libbimg-encode`) | Done |
-| *(future)* remaining font examples | NanoVG, sdf | Next if those ship |
 | *(legacy)* etc1, pvrtc | section 4 | Lowest |
 
 ---
@@ -262,9 +259,8 @@ ETC1/PVRTC is unchanged.
 
 2. **dav1d** / **libavif** if AVIF should be compiled in.
 
-3. **NanoVG** if font/nanovg examples (`10-font`, `11-fontsdf`, `18-ibl`,
-   `20-nanovg`) should ship. **sdf** may stay in-tree the way edtaa3 does
-   (same class of snippet).
+3. ~~**NanoVG**~~ Not a package. bgfx's example backend is compiled in
+   `bgfx-examples`. **sdf** stays in-tree, same class of snippet as edtaa3.
 
 4. **nvtt** only to restore BC6H/BC7 encode. Already compiled out.
 
