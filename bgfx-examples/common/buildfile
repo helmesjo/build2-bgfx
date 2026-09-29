@@ -116,6 +116,31 @@ debugdraw/{hxx cxx file}{*}:
   dist = false
 }
 
+# Single stb_truetype implementation for the font manager, NanoVG, and
+# 51-gpufont. Not linked into example-common (that would pull it into the
+# distributed helloworld).
+#
+import stb_libs = stb_truetype%lib{stb_truetype}
+
+libue{example-stb-truetype}: cxx{stb_truetype} $stb_libs
+{
+  cxx.export.poptions = "-I$src_base/3rdparty"
+  cxx.export.libs = $stb_libs
+}
+
+libue{example-stb-truetype}: 3rdparty/stb/hxx{stb_truetype}: include = adhoc
+
+cxx{stb_truetype*}: dist = false
+3rdparty/stb/hxx{*}: dist = false
+
+# In-tree signed-distance snippet. font_manager.cpp is the only TU that
+# defines SDF_IMPLEMENTATION. Not a package.
+#
+3rdparty/sdf/{hxx file}{*}:
+{
+  dist = false
+}
+
 libue{example-common}: \
   cxx{example-glue camera} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
