@@ -198,6 +198,21 @@ nanovg/{hxx cxx file}{*}:
   dist = false
 }
 
+# First-party particle system (embedded shaders). 32-particles.
+#
+libue{example-ps}: cxx{ps/particle_system} $intf_libs
+{
+  cxx.poptions =+ "-I$out_base" "-I$src_base"
+}
+
+libue{example-ps}: ps/file{**.bin.h}: include = adhoc
+libue{example-ps}: ps/hxx{*}: include = adhoc
+
+ps/{hxx cxx file}{*}:
+{
+  dist = false
+}
+
 libue{example-common}: \
   cxx{example-glue camera} \
   cxx{entry/entry entry/cmd entry/input entry/dialog} \
