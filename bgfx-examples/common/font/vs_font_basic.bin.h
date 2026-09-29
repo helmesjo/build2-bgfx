@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/font/vs_font_basic.bin.h

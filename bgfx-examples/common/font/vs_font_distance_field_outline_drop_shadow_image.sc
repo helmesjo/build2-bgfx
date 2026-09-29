@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/font/vs_font_distance_field_outline_drop_shadow_image.sc

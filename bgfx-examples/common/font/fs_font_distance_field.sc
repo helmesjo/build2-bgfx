@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/font/fs_font_distance_field.sc

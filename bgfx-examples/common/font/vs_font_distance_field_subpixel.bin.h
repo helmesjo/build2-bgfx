@@ -1,0 +1,1 @@
+../../../upstream/bgfx/examples/common/font/vs_font_distance_field_subpixel.bin.h
