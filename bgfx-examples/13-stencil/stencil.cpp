@@ -1,0 +1,1 @@
+../../upstream/bgfx/examples/13-stencil/stencil.cpp
