@@ -4,7 +4,7 @@ import libs  = libbx%lib{bx} \
 
 # Benches ship their own main() and are not part of the unit suite.
 #
-exe{bx-tests}: cxx{* -handle_bench -math_bench -simd_bench} \
+exe{bx-tests}: {hxx h}{**} cxx{* -handle_bench -math_bench -simd_bench} \
                $libs testscript
 
 exe{bx-tests}:
