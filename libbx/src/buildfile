@@ -31,20 +31,24 @@ cxx.poptions =+ "-I$out_pfx_inc" "-I$src_pfx_inc"
 
 # Platform compatibility headers (also exported to consumers).
 #
-compat_inc = [dir_path]
+compat = [dir_path]
 if ($cxx.target.class == 'windows')
 {
   if ($cxx.target.system == 'mingw32')
-    compat_inc = [dir_path] $src_pfx_inc/compat/mingw/
+    compat = [dir_path] compat/mingw/
   else
-    compat_inc = [dir_path] $src_pfx_inc/compat/msvc/
+    compat = [dir_path] compat/msvc/
 }
 elif ($cxx.target.class == 'macos')
-  compat_inc = [dir_path] $src_pfx_inc/compat/osx/
+  compat = [dir_path] compat/osx/
 elif ($cxx.target.class == 'linux')
-  compat_inc = [dir_path] $src_pfx_inc/compat/linux/
+  compat = [dir_path] compat/linux/
 elif ($cxx.target.class == 'bsd')
-  compat_inc = [dir_path] $src_pfx_inc/compat/freebsd/
+  compat = [dir_path] compat/freebsd/
+
+compat_inc = [dir_path]
+if ($compat != [dir_path])
+  compat_inc = [dir_path] $src_pfx_inc/$compat
 
 if ($compat_inc != [dir_path])
   cxx.poptions =+ "-I$compat_inc"
@@ -83,8 +87,11 @@ lib{bx}:
   cxx.export.libs = $intf_libs
 }
 
-if ($compat_inc != [dir_path])
+if ($compat != [dir_path])
+{
   lib{bx}: cxx.export.poptions =+ "-I$compat_inc"
+  lib{bx}: cxx.pkgconfig.include = include/ include/"$compat"
+}
 
 if ($sys_libs != [null])
 {
