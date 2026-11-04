@@ -1,7 +1,7 @@
-# C++26 breaks Apple SDK headers when compiling Objective-C++ (ColorSync
-# enum arithmetic). Upstream targets modern C++ without requiring latest.
+# Apple SDK headers use enum arithmetic that C++26 makes ill-formed.
 #
-cxx.std = c++20
+using cxx.guess
+cxx.std = ($cxx.target.class == 'macos' ? 20 : latest)
 
 using c
 using cxx

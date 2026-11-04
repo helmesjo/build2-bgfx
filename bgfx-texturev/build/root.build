@@ -2,9 +2,10 @@
 #
 #cxx.internal.scope = current
 
-# Match libbgfx: C++20 avoids Apple SDK + C++26 Objective-C++ issues.
+# Apple SDK headers use enum arithmetic that C++26 makes ill-formed.
 #
-cxx.std = c++20
+using cxx.guess
+cxx.std = ($cxx.target.class == 'macos' ? 20 : latest)
 
 using cxx
 using cxx.objcxx
