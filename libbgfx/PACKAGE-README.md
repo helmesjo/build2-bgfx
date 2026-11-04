@@ -3,6 +3,10 @@
 This is a `build2` package for the [bgfx](https://github.com/bkaradzic/bgfx) C++
 library. It provides a cross-platform rendering API.
 
+The bundled H.264 parser (`src/h264/`) comes from Wicked Engine under the MIT
+license. Upstream bgfx ships no license file for it, so the package provides
+the Wicked Engine MIT text as `src/h264/LICENSE.txt`.
+
 
 ## Usage
 
