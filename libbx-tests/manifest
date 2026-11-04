@@ -4,7 +4,7 @@ version: 1.153.9149-a.0.z
 type: exe
 language: c++
 project: bgfx
-summary: Unit tests for libbx
+summary: Base C++ utilities used by bgfx and bimg (tests)
 license: BSD-2-Clause
 description-file: README.md
 package-description-file: PACKAGE-README.md

@@ -1,4 +1,4 @@
-# bgfx-examples - Interactive examples for the bgfx rendering library
+# bgfx-examples - Cross-platform rendering library (examples)
 
 This is a `build2` package for the upstream desktop
 [bgfx](https://github.com/bkaradzic/bgfx) examples. Only `00-helloworld`
