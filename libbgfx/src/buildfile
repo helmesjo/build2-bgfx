@@ -165,4 +165,4 @@ else
 
 # Don't install private headers.
 #
-{hxx ixx txx}{*}: install = false
+{h hxx ixx txx}{*}: install = false
