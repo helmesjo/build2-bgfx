@@ -132,6 +132,35 @@ cxx.poptions += \
   -DBGFX_CONFIG_RENDERER_NVN=0 \
   -DBGFX_CONFIG_VIDEO=0
 
+# Upstream configuration (see config.libbgfx.* in build/root.build). These
+# macros are only used in the library sources, so they are not exported.
+#
+profiler      = ($config.libbgfx.profiler                             ? 1 : 0)
+multithreaded = ($config.libbgfx.multithreaded                        ? 1 : 0)
+encoder_only  = ($config.libbgfx.encoder_api_only                     ? 1 : 0)
+discrete_gpu  = ($config.libbgfx.prefer_discrete_gpu                  ? 1 : 0)
+vk_robust     = ($config.libbgfx.renderer_vulkan_robust_buffer_access ? 1 : 0)
+
+cxx.poptions += \
+  "-DBGFX_CONFIG_PROFILER=$profiler" \
+  "-DBGFX_CONFIG_MULTITHREADED=$multithreaded" \
+  "-DBGFX_CONFIG_ENCODER_API_ONLY=$encoder_only" \
+  "-DBGFX_CONFIG_PREFER_DISCRETE_GPU=$discrete_gpu" \
+  "-DBGFX_CONFIG_RENDERER_VULKAN_ROBUST_BUFFER_ACCESS=$vk_robust" \
+  "-DBGFX_CONFIG_MAX_DRAW_CALLS=$config.libbgfx.max_draw_calls" \
+  "-DBGFX_CONFIG_MAX_BLIT_ITEMS=$config.libbgfx.max_blit_items" \
+  "-DBGFX_CONFIG_MAX_VIEWS=$config.libbgfx.max_views" \
+  "-DBGFX_CONFIG_MAX_VERTEX_LAYOUTS=$config.libbgfx.max_vertex_layouts" \
+  "-DBGFX_CONFIG_MAX_INDEX_BUFFERS=$config.libbgfx.max_index_buffers" \
+  "-DBGFX_CONFIG_MAX_VERTEX_BUFFERS=$config.libbgfx.max_vertex_buffers" \
+  "-DBGFX_CONFIG_MAX_DYNAMIC_INDEX_BUFFERS=$config.libbgfx.max_dynamic_index_buffers" \
+  "-DBGFX_CONFIG_MAX_DYNAMIC_VERTEX_BUFFERS=$config.libbgfx.max_dynamic_vertex_buffers" \
+  "-DBGFX_CONFIG_MAX_SHADERS=$config.libbgfx.max_shaders" \
+  "-DBGFX_CONFIG_MAX_TEXTURES=$config.libbgfx.max_textures" \
+  "-DBGFX_CONFIG_MAX_FRAME_BUFFERS=$config.libbgfx.max_frame_buffers" \
+  "-DBGFX_CONFIG_MAX_UNIFORMS=$config.libbgfx.max_uniforms" \
+  "-DBGFX_CONFIG_MAX_OCCLUSION_QUERIES=$config.libbgfx.max_occlusion_queries"
+
 # Platform system libraries (not importable targets: use *.libs).
 # Vulkan is dlopen'd at runtime. pthread/dl come from libbx export.
 #

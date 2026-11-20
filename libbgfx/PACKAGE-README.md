@@ -114,5 +114,56 @@ declared in this project's `repositories.manifest`.
 
 ## Configuration variables
 
-This package provides no configuration variables. Debug behaviour follows
-`config.libbx.debug` from the `libbx` dependency.
+This package provides the following configuration variables:
+
+```
+[bool]   config.libbgfx.profiler                             ?= false
+[bool]   config.libbgfx.multithreaded                        ?= true
+[bool]   config.libbgfx.encoder_api_only                     ?= false
+[bool]   config.libbgfx.prefer_discrete_gpu                  ?= <true on Windows>
+[bool]   config.libbgfx.renderer_vulkan_robust_buffer_access ?= false
+
+[uint64] config.libbgfx.max_draw_calls                       ?= 65535
+[uint64] config.libbgfx.max_blit_items                       ?= 1024
+[uint64] config.libbgfx.max_views                            ?= 256
+[uint64] config.libbgfx.max_vertex_layouts                   ?= 64
+[uint64] config.libbgfx.max_index_buffers                    ?= 4096
+[uint64] config.libbgfx.max_vertex_buffers                   ?= 4096
+[uint64] config.libbgfx.max_dynamic_index_buffers            ?= 4096
+[uint64] config.libbgfx.max_dynamic_vertex_buffers           ?= 4096
+[uint64] config.libbgfx.max_shaders                          ?= 512
+[uint64] config.libbgfx.max_textures                         ?= 4096
+[uint64] config.libbgfx.max_frame_buffers                    ?= 128
+[uint64] config.libbgfx.max_uniforms                         ?= 512
+[uint64] config.libbgfx.max_occlusion_queries                ?= 256
+```
+
+Each variable sets the upstream `BGFX_CONFIG_*` macro of the same name (for
+example, `config.libbgfx.max_vertex_buffers` sets
+`BGFX_CONFIG_MAX_VERTEX_BUFFERS`), with the upstream default. See upstream
+`src/config.h` for details. `config.libbgfx.profiler` corresponds to upstream's
+`--with-profiler` build option. The limits that `bgfx::Init::limits` sets at
+runtime are not configuration variables.
+
+A dependent that needs a higher limit can raise it when the dependency is
+configured:
+
+```
+depends:
+\
+libbgfx ^1.153.0
+{
+  prefer
+  {
+    config.libbgfx.max_vertex_buffers = \
+      ($config.libbgfx.max_vertex_buffers < 8192 \
+       ? 8192                                     \
+       : $config.libbgfx.max_vertex_buffers)
+  }
+
+  accept ($config.libbgfx.max_vertex_buffers >= 8192)
+}
+\
+```
+
+Debug behaviour follows `config.libbx.debug` from the `libbx` dependency.

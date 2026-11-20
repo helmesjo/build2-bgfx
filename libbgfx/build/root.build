@@ -15,7 +15,29 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
-# BX_CONFIG_DEBUG comes from libbx export. Backend selection is fixed in the
-# source buildfile for the initial Vulkan + Noop package.
+# Upstream compile-time configuration (src/config.h). Each variable sets the
+# BGFX_CONFIG_* macro of the same name and defaults to the upstream value.
+# Renderer backends are selected in the source buildfile. BGFX_CONFIG_DEBUG
+# follows BX_CONFIG_DEBUG from the libbx export (config.libbx.debug).
+#
+config [bool] config.libbgfx.profiler                             ?= false
+config [bool] config.libbgfx.multithreaded                        ?= true
+config [bool] config.libbgfx.encoder_api_only                     ?= false
+config [bool] config.libbgfx.prefer_discrete_gpu                  ?= ($cxx.target.class == 'windows')
+config [bool] config.libbgfx.renderer_vulkan_robust_buffer_access ?= false
+
+config [uint64] config.libbgfx.max_draw_calls             ?= 65535
+config [uint64] config.libbgfx.max_blit_items             ?= 1024
+config [uint64] config.libbgfx.max_views                  ?= 256
+config [uint64] config.libbgfx.max_vertex_layouts         ?= 64
+config [uint64] config.libbgfx.max_index_buffers          ?= 4096
+config [uint64] config.libbgfx.max_vertex_buffers         ?= 4096
+config [uint64] config.libbgfx.max_dynamic_index_buffers  ?= 4096
+config [uint64] config.libbgfx.max_dynamic_vertex_buffers ?= 4096
+config [uint64] config.libbgfx.max_shaders                ?= 512
+config [uint64] config.libbgfx.max_textures               ?= 4096
+config [uint64] config.libbgfx.max_frame_buffers          ?= 128
+config [uint64] config.libbgfx.max_uniforms               ?= 512
+config [uint64] config.libbgfx.max_occlusion_queries      ?= 256
 
 test.target = $cxx.target
