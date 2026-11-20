@@ -56,9 +56,9 @@ libul{bgfx}: {hxx cxx}{** -amalgamated -3rdparty/** -h264/**} \
              $impl_libs $intf_libs: \
                include = ($cxx.target.class != 'macos')
 
-# Embedded shader binaries and shader sources are included from C++ headers.
+# Sources of the embedded shader binaries (*.bin.h, which hxx{**} above
+# already lists as private headers).
 #
-libul{bgfx}: file{**.bin.h}: include = adhoc
 libul{bgfx}: file{**.sc}: include = adhoc
 libul{bgfx}: file{**.sh}: include = adhoc
 
