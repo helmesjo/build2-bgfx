@@ -26,9 +26,18 @@ import libs = libbgfx%lib{bgfx}
 Public headers use the `<bgfx/...>` include style. `libbx` is an interface
 dependency (for example `bx::AllocatorI` and `<bgfx/embedded_shader.h>`).
 
-The shader include files `bgfx_shader.sh` and `bgfx_compute.sh` are
-installed next to the public headers (`include/bgfx/`) for use with the
-shader compiler (`bgfx-shaderc`).
+The shader include files `bgfx_shader.sh` and `bgfx_compute.sh` for the
+shader compiler (`bgfx-shaderc`) are installed next to the public headers
+(`include/bgfx/`). Their directory is the `libbgfx.shader_include` metadata
+variable of `lib{bgfx}`, in the development build and once installed. Query
+it with an immediate import (kept separate from the one in `libs`) and pass
+it to `shaderc` with `-i`:
+
+```
+import! [metadata, rule_hint=cxx.link] bgfx = libbgfx%lib{bgfx}
+
+shader_include = $($bgfx: libbgfx.shader_include)
+```
 
 
 ## Importable targets

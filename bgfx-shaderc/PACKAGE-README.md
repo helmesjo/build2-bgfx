@@ -26,8 +26,9 @@ Then import the executable in your `buildfile`:
 import! [metadata] shaderc = bgfx-shaderc%exe{shaderc}
 ```
 
-Shaders include `<bgfx_shader.sh>` (and `bgfx_compute.sh`), which `libbgfx`
-installs into `include/bgfx/`. Pass that directory to `shaderc` with `-i`.
+Shaders include `<bgfx_shader.sh>` (and `bgfx_compute.sh`) from `libbgfx`.
+Pass their directory, the `libbgfx.shader_include` metadata variable of
+`lib{bgfx}` (see the `libbgfx` package), to `shaderc` with `-i`.
 
 
 ## Importable targets
