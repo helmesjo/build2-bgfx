@@ -41,6 +41,13 @@ if ($cxx.target.system == 'mingw32')
 if ($cxx.class == 'msvc')
   cxx.coptions += /Zc:preprocessor
 
+# Upstream requires SSE4.2 on x86 (bx/simd_t.h) and builds with -msse4.2.
+# image.cpp calls bx SIMD functions that use SSE4.1, which compilers other
+# than MSVC only accept with the instruction set enabled.
+#
+if ($cxx.id != 'msvc' && $regex.match($cxx.target.cpu, 'x86_64|i[3-6]86'))
+  obj{image}: cxx.coptions += -msse4.2
+
 # Export options (bimg is not in public headers of consumers of libbgfx as
 # interface, but libbimg consumers need bimg headers + libbx).
 #
