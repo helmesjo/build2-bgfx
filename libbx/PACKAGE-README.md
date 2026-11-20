@@ -24,6 +24,11 @@ Public headers use the `<bx/...>` include style. With MSVC, enable
 `/Zc:preprocessor` when compiling code that includes those headers (public
 headers require the conforming preprocessor).
 
+Upstream requires SSE4.2 on x86. Some SIMD functions in the public headers
+(for example `bx::simd128_f32_dot()` and `bx::float4x4_inverse()`) use SSE4.1
+instructions, so on x86 with compilers other than MSVC, compile code that
+calls them with `-msse4.2`.
+
 
 ## Importable targets
 
