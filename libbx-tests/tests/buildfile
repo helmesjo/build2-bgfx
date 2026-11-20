@@ -23,3 +23,21 @@ if ($cxx.class == 'gcc' || $cxx.class == 'clang')
 #
 if ($cxx.class == 'msvc')
   exe{bx-tests}: cxx.coptions += /Zc:preprocessor
+
+# Warnings the upstream tests accept: structure padding from bx alignment
+# specifiers (upstream builds with /wd4324), the minimum int64_t written as
+# -9223372036854775808ll, saturating casts that narrow values already in
+# range, a scanner value read only by BX_TRACE, the implicit copy of tinystl
+# hash nodes, and bx's 256-bit reference SIMD without AVX (upstream requires
+# SSE4.2 only).
+#
+if ($cxx.class == 'msvc')
+  exe{bx-tests}: cxx.coptions += /wd4324 /wd4146 /wd4244
+else
+{
+  exe{bx-tests}: cxx.coptions += -Wno-unused-but-set-variable \
+                                 -Wno-deprecated-copy
+
+  if ($cxx.id == 'gcc')
+    exe{bx-tests}: cxx.coptions += -Wno-psabi
+}
