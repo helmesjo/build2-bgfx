@@ -63,7 +63,8 @@ libul{bgfx}: file{**.sc}: include = adhoc
 libul{bgfx}: file{**.sh}: include = adhoc
 
 # Shader include files for shaderc (bgfx_shader.sh, bgfx_compute.sh), installed
-# next to the public headers as upstream's bgfx.cmake does.
+# next to the public headers as upstream's bgfx.cmake does. Their directory is
+# exported as the libbgfx.shader_include metadata variable (see below).
 #
 file{bgfx_*.sh}: install = include/bgfx/
 libul{bgfx}: file{**.idl.inl}: include = adhoc
@@ -165,6 +166,19 @@ lib{bgfx}:
 {
   cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
   cxx.export.libs = $intf_libs
+}
+
+# Metadata: the directory with bgfx_shader.sh and bgfx_compute.sh, to pass to
+# shaderc with -i.
+#
+lib{bgfx}:
+{
+  export.metadata = 1 libbgfx
+
+  libbgfx.shader_include = [dir_path] $src_base
+  libbgfx.shader_include.for_install = ($install.root != [null] \
+                                        ? $install.resolve([dir_path] include/bgfx/) \
+                                        : )
 }
 
 if ($sys_libs != [null])

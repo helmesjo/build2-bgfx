@@ -1,0 +1,8 @@
+# The libbgfx.shader_include metadata variable, from the export stub in the
+# development build and from the pkg-config file once installed.
+#
+import! [metadata, rule_hint=cxx.link] bgfx = libbgfx%lib{bgfx}
+
+./: testscript
+
+testscript{*}: shader_include = $($bgfx: libbgfx.shader_include)

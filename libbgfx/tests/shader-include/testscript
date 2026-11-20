@@ -1,0 +1,7 @@
+: bgfx-shader
+:
+test -f $shader_include/bgfx_shader.sh
+
+: bgfx-compute
+:
+test -f $shader_include/bgfx_compute.sh
