@@ -36,10 +36,11 @@ if ($cxx.class == 'msvc')
   cxx.coptions += /wd4324 /wd4146 /wd4244
 else
 {
-  cxx.coptions += -Wno-unused-but-set-variable -Wno-deprecated-copy
+  cxx.coptions += -Wno-unused-variable -Wno-unused-but-set-variable \
+                  -Wno-deprecated-copy -Wno-psabi
 
-  if ($cxx.id == 'gcc')
-    cxx.coptions += -Wno-psabi
+  if ($cxx.id.type == 'clang')
+    cxx.coptions += -Wno-implicitly-unsigned-literal
 }
 
 # Upstream requires SSE4.2 on x86 (bx/simd_t.h) and builds with -msse4.2.
