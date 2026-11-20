@@ -135,6 +135,15 @@ else
 if ($cxx.target.system == 'win32-msvc')
   cxx.poptions += -D_CRT_SECURE_NO_WARNINGS
 
+# Upstream requires SSE4.2 on x86 (bx/simd_t.h) and builds with -msse4.2.
+# The predefined uniforms in renderer.h invert matrices with bx SIMD functions
+# that use SSE4.1, which compilers other than MSVC only accept with the
+# instruction set enabled. Every enabled backend includes that code.
+#
+if ($cxx.id != 'msvc' && $regex.match($cxx.target.cpu, 'x86_64|i[3-6]86'))
+  obj{renderer_d3d11 renderer_d3d12 renderer_mtl renderer_vk}: \
+    cxx.coptions += -msse4.2
+
 # Desktop backends: Vulkan everywhere, Metal on Apple, D3D11+D3D12 on Windows.
 # Defining any BGFX_CONFIG_RENDERER_* skips the platform-default block in config.h.
 #
