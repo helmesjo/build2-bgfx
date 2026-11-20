@@ -16,6 +16,12 @@ cxx{*}: extension = cpp
 if ($cxx.target.system == 'win32-msvc')
   cxx.coptions += /Zc:preprocessor
 
+# Structure padding from bx alignment specifiers is accepted upstream (it
+# builds with /wd4324).
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /wd4324
+
 # The test target for cross-testing (running tests under Wine, etc).
 #
 test.target = $cxx.target

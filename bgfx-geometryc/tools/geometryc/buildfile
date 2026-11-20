@@ -41,3 +41,8 @@ cxx.poptions += "-DGEOMETRYC_BUILD2_VERSION=\"$version\""
 {
   cxx.poptions =+ "-I$src_root/include"
 }
+
+# Upstream geometryc.cpp increments a group counter it never reads.
+#
+if ($cxx.class == 'gcc' || $cxx.class == 'clang')
+  cxx.coptions += -Wno-unused-but-set-variable
