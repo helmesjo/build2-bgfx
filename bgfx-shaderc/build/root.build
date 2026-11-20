@@ -16,6 +16,16 @@ cxx{*}: extension = cpp
 if ($cxx.target.system == 'win32-msvc')
   cxx.coptions += /Zc:preprocessor
 
+# Warnings upstream accepts: structure padding from bx alignment specifiers
+# (upstream builds with /wd4324) and the CRT functions it calls on purpose
+# (upstream defines _CRT_SECURE_NO_WARNINGS).
+#
+if ($cxx.class == 'msvc')
+  cxx.coptions += /wd4324
+
+if ($cxx.target.system == 'win32-msvc')
+  cxx.poptions += -D_CRT_SECURE_NO_WARNINGS
+
 # The test target for cross-testing (running tests under Wine, etc).
 #
 test.target = $cxx.target
