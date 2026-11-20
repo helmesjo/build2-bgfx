@@ -20,4 +20,14 @@ cxx{*}: extension = cpp
 if ($cxx.class == 'msvc')
   cc.coptions += /Zc:preprocessor
 
+# Warnings upstream accepts: nameless structs and unions, structure padding
+# from alignment specifiers (upstream builds with /wd4201 /wd4324), and the
+# CRT functions it calls on purpose (upstream defines _CRT_SECURE_NO_WARNINGS).
+#
+if ($cxx.class == 'msvc')
+  cc.coptions += /wd4201 /wd4324
+
+if ($cxx.target.system == 'win32-msvc')
+  cc.poptions += -D_CRT_SECURE_NO_WARNINGS
+
 test.target = $cxx.target
