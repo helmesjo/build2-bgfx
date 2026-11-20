@@ -247,7 +247,9 @@ if ($cxx.id.type == 'clang')
     cxx.coptions += -Wno-gnu-zero-variadic-macro-arguments
 }
 
-libue{example-common}: imgui/file{**.bin.h **.ttf.h **.inl}: include = adhoc
+# imgui/hxx{**} also covers the embedded shaders (*.bin.h) and fonts (*.ttf.h).
+#
+libue{example-common}: imgui/file{**.inl}: include = adhoc
 libue{example-common}: entry/hxx{**} imgui/hxx{**}: include = adhoc
 libue{example-common}: hxx{common args bgfx_utils camera packrect}: include = adhoc
 
