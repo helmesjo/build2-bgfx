@@ -7,22 +7,23 @@ import libs  = libbx%lib{bx} \
 exe{bx-tests}: {hxx h}{**} cxx{* -handle_bench -math_bench -simd_bench} \
                $libs testscript
 
-exe{bx-tests}:
-{
-  test = true
-  cxx.poptions =+ "-I$out_base" "-I$src_base"
-}
+exe{bx-tests}: test = true
+
+# Compile options are set on the scope rather than on exe{bx-tests} so that
+# individual objects can add their own (see -msse4.2 below).
+#
+cxx.poptions =+ "-I$out_base" "-I$src_base"
 
 # test.h redefines BX_ASSERT to throw for REQUIRE_ASSERTS. That trips
 # -Wexceptions in noexcept destructors in public bx headers (error.inl).
 #
 if ($cxx.class == 'gcc' || $cxx.class == 'clang')
-  exe{bx-tests}: cxx.coptions += -Wno-exceptions
+  cxx.coptions += -Wno-exceptions
 
 # Required when including libbx public headers under MSVC.
 #
 if ($cxx.class == 'msvc')
-  exe{bx-tests}: cxx.coptions += /Zc:preprocessor
+  cxx.coptions += /Zc:preprocessor
 
 # Warnings the upstream tests accept: structure padding from bx alignment
 # specifiers (upstream builds with /wd4324), the minimum int64_t written as
@@ -32,12 +33,18 @@ if ($cxx.class == 'msvc')
 # SSE4.2 only).
 #
 if ($cxx.class == 'msvc')
-  exe{bx-tests}: cxx.coptions += /wd4324 /wd4146 /wd4244
+  cxx.coptions += /wd4324 /wd4146 /wd4244
 else
 {
-  exe{bx-tests}: cxx.coptions += -Wno-unused-but-set-variable \
-                                 -Wno-deprecated-copy
+  cxx.coptions += -Wno-unused-but-set-variable -Wno-deprecated-copy
 
   if ($cxx.id == 'gcc')
-    exe{bx-tests}: cxx.coptions += -Wno-psabi
+    cxx.coptions += -Wno-psabi
 }
+
+# Upstream requires SSE4.2 on x86 (bx/simd_t.h) and builds with -msse4.2.
+# These tests call bx SIMD functions that use SSE4.1, which compilers other
+# than MSVC only accept with the instruction set enabled.
+#
+if ($cxx.id != 'msvc' && $regex.match($cxx.target.cpu, 'x86_64|i[3-6]86'))
+  obj{float4x4_test simd_test}: cxx.coptions += -msse4.2
