@@ -60,13 +60,18 @@ if ($cxx.class != 'msvc')
 }
 
 # Required when including libbx public headers under MSVC.
-# edtaa3func.cpp contains a non-UTF-8 byte (C4828 under /utf-8).
+#
+# edtaa3func.cpp contains a non-UTF-8 byte in a comment (C4828 under /utf-8,
+# -Winvalid-utf8 with GCC 13 and later) and stores distances in short arrays
+# by design (C4244).
 #
 if ($cxx.class == 'msvc')
 {
   cxx.coptions += /Zc:preprocessor
-  edtaa3/libul{edtaa3}: cxx.coptions += /wd4828
+  edtaa3/libul{edtaa3}: cxx.coptions += /wd4828 /wd4244
 }
+elif ($cxx.id == 'gcc' && $cxx.version.major >= 13)
+  edtaa3/libul{edtaa3}: cxx.coptions += -Wno-invalid-utf8
 
 # Export options.
 #
