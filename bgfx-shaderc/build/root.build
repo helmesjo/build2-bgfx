@@ -13,7 +13,7 @@ cxx{*}: extension = cpp
 
 # Required when including libbx public headers under MSVC.
 #
-if ($cxx.target.system == 'win32-msvc')
+if ($cxx.class == 'msvc')
   cxx.coptions += /Zc:preprocessor
 
 # Warnings upstream accepts: structure padding from bx alignment specifiers
